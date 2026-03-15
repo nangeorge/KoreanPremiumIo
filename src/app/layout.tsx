@@ -5,7 +5,7 @@ import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://koreanpremium.io";
 // Google AdSense 발급 후 아래 ID 교체
-const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID || "";
+const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID || "8327952774757997";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "google142258d97f185908",
   },
 };
 
