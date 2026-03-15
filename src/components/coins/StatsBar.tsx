@@ -125,7 +125,7 @@ export function StatsBar() {
     },
     {
       label: t("exchangeRate"),
-      value: isLoading ? "—" : `₩${exchangeRate.toLocaleString("ko-KR")}`,
+      value: isLoading ? "—" : `$1 = ₩${exchangeRate.toLocaleString("ko-KR")}`,
       color: "text-indigo-300",
     },
     {

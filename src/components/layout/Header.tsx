@@ -48,11 +48,10 @@ export function Header() {
               <span className="text-xs text-gray-400">LIVE</span>
             </div>
             {exchangeRate > 0 && (
-              <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-gray-500">USD/KRW</span>
-                <span className="font-number text-gray-200 font-medium">
-                  ₩{exchangeRate.toLocaleString("ko-KR")}
-                </span>
+              <div className="flex items-center gap-1 text-xs font-number">
+                <span className="text-gray-500">$1</span>
+                <span className="text-gray-600">=</span>
+                <span className="text-gray-200 font-medium">₩{exchangeRate.toLocaleString("ko-KR")}</span>
               </div>
             )}
             {updatedAt && (
@@ -69,7 +68,7 @@ export function Header() {
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
               {exchangeRate > 0 && (
                 <span className="font-number text-xs text-gray-300 font-medium">
-                  ₩{exchangeRate.toLocaleString("ko-KR")}
+                  $1 = ₩{exchangeRate.toLocaleString("ko-KR")}
                 </span>
               )}
             </div>
