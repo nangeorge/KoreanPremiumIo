@@ -64,8 +64,15 @@ export function Header() {
 
           {/* Right: Locale switcher */}
           <div className="flex items-center gap-3">
-            {/* Mobile live dot */}
-            <span className="live-dot h-2 w-2 rounded-full bg-emerald-400 md:hidden" />
+            {/* Mobile: live dot + 환율 */}
+            <div className="flex items-center gap-1.5 md:hidden">
+              <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
+              {exchangeRate > 0 && (
+                <span className="font-number text-xs text-gray-300 font-medium">
+                  ₩{exchangeRate.toLocaleString("ko-KR")}
+                </span>
+              )}
+            </div>
 
             <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
               {LOCALES.map((loc) => (
