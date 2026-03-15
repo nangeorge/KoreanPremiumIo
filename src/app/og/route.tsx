@@ -47,12 +47,12 @@ export async function GET(request: Request) {
   const premiumBorder = premium === null ? "rgba(107,114,128,0.3)" : isPositive ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)";
 
   const upbitStr = upbitPrice > 0
-    ? `₩${Math.round(upbitPrice).toLocaleString("en-US")}`
+    ? `KRW ${Math.round(upbitPrice).toLocaleString("en-US")}`
     : "—";
   const binanceStr = binancePrice > 0
     ? `$${binancePrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
     : "—";
-  const rateStr = rate > 0 ? `₩${rate.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—";
+  const rateStr = rate > 0 ? `$1 = KRW ${rate.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—";
 
   const labels = {
     ko: { title: "Korea Premium Index", subtitle: "김치 프리미엄 실시간 — 업비트 vs 코인베이스", upbit: "업비트 (KRW)", binance: "코인베이스 (USD)", exchangeRate: "USD/KRW", live: "LIVE · 실시간" },
