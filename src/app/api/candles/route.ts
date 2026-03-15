@@ -191,14 +191,14 @@ export async function GET(req: Request) {
     }
 
     // premium OHLC — always needs upbit + reference exchange
-    const [upbitBTC, binanceBTC, fxRes] = await Promise.all([
+    const [upbitBTC, bybitBTC, fxRes] = await Promise.all([
       fetchUpbitOHLC("KRW-BTC", interval),
       fetchBybitOHLC("BTCUSDT", interval),
       fetch("https://api.exchangerate-api.com/v4/latest/USD", { next: { revalidate: 300 } }),
     ]);
     const fxData = fxRes.ok ? await fxRes.json() : null;
     const usdToKrw: number = fxData?.rates?.KRW ?? 1350;
-    const premiumCandles = calcPremiumOHLC(upbitBTC, binanceBTC, usdToKrw);
+    const premiumCandles = calcPremiumOHLC(upbitBTC, bybitBTC, usdToKrw);
 
     return NextResponse.json({ candles: premiumCandles }, {
       headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=30" },

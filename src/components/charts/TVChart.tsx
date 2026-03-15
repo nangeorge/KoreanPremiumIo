@@ -182,14 +182,20 @@ export function TVChart({
       chart.timeScale().fitContent();
     }
 
+    let rafId: number | null = null;
     const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        chart.applyOptions({ width: entry.contentRect.width });
-      }
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        for (const entry of entries) {
+          chart.applyOptions({ width: entry.contentRect.width });
+        }
+      });
     });
     ro.observe(containerRef.current);
 
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
       chart.remove();
       chartRef.current = null;

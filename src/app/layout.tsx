@@ -95,14 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href={BASE_URL} />
         {ADSENSE_ID && (
-          <>
-            <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
-            <script
-              async
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${ADSENSE_ID}`}
-              crossOrigin="anonymous"
-            />
-          </>
+          <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
         )}
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

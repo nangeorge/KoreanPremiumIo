@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useAppStore } from "@/store";
 import {
@@ -54,9 +55,9 @@ function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
                 src={coin.logoUrl}
                 alt={coin.symbol}
                 fill
+                sizes="36px"
                 className="object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-               
               />
             )}
           </div>
@@ -181,7 +182,7 @@ export function PremiumTable() {
     }
   }
 
-  const sorted = [...coins].sort((a, b) => {
+  const sorted = useMemo(() => [...coins].sort((a, b) => {
     if (sortField === "default") {
       return COIN_ORDER.indexOf(a.symbol) - COIN_ORDER.indexOf(b.symbol);
     }
@@ -199,7 +200,7 @@ export function PremiumTable() {
     if (sortField === "change24h") return val * (a.change24h - b.change24h);
     if (sortField === "volume24h") return val * (a.volume24h - b.volume24h);
     return 0;
-  });
+  }), [coins, sortField, sortDirection, selectedExchange]);
 
   const headerClass =
     "cursor-pointer select-none py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-300 transition-colors";
