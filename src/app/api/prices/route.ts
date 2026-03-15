@@ -189,10 +189,14 @@ export async function GET() {
       const coinbasePrice = coinbase?.usdPrice ?? 0;
       const coinbasePriceKrw = coinbasePrice * exchangeRate;
 
-      const premium = (upbitPrice > 0 && binancePriceKrw > 0)
+      const rawPremium = (upbitPrice > 0 && binancePriceKrw > 0)
         ? ((upbitPrice - binancePriceKrw) / binancePriceKrw) * 100 : null;
-      const coinbasePremium = (upbitPrice > 0 && coinbasePriceKrw > 0)
+      const rawCoinbasePremium = (upbitPrice > 0 && coinbasePriceKrw > 0)
         ? ((upbitPrice - coinbasePriceKrw) / coinbasePriceKrw) * 100 : null;
+
+      // 100% 초과 or -100% 미만은 데이터 오염으로 간주 → null 처리
+      const premium = rawPremium !== null && Math.abs(rawPremium) <= 100 ? rawPremium : null;
+      const coinbasePremium = rawCoinbasePremium !== null && Math.abs(rawCoinbasePremium) <= 100 ? rawCoinbasePremium : null;
       const change24h = upbit.signed_change_rate * 100;
       const volume24h = upbit.acc_trade_price_24h;
 
