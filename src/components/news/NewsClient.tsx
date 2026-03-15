@@ -81,7 +81,7 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
               alt={item.title}
               fill
               className="object-cover"
-              unoptimized
+             
               onError={(e) => {
                 const parent = (e.currentTarget as HTMLImageElement).parentElement;
                 if (parent) parent.style.display = "none";

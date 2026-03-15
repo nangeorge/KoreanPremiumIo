@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   devIndicators: false,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "assets.coingecko.com" },
+    ],
+  },
   async headers() {
     return [
       {

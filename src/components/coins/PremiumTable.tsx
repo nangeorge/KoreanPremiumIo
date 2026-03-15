@@ -56,7 +56,7 @@ function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
                 fill
                 className="object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                unoptimized
+               
               />
             )}
           </div>

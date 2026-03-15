@@ -97,7 +97,7 @@ export default function CoinDetailPage() {
       <div className="glass rounded-2xl p-6 flex items-center gap-5">
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-white/5">
           {coin?.logoUrl && (
-            <Image src={coin.logoUrl} alt={symbol} fill className="object-cover" unoptimized />
+            <Image src={coin.logoUrl} alt={symbol} fill className="object-cover" />
           )}
         </div>
         <div className="flex-1 min-w-0">
