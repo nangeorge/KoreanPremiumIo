@@ -70,13 +70,13 @@ export const metadata: Metadata = {
     siteName: "KimchiPremium",
     locale: "ko_KR",
     alternateLocale: ["en_US", "zh_CN"],
-    images: [{ url: "/og", width: 1200, height: 630, alt: "KimchiPremium — Real-time Kimchi Premium Tracker" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Korea Premium Index — Real-time Kimchi Premium Tracker" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Kimchi Premium Live | 실시간 김프 트래커",
     description: "Real-time Kimchi Premium — Upbit vs Binance price difference for BTC, ETH, XRP & 40 coins. 업비트 바이낸스 실시간 김프.",
-    images: ["/og"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
