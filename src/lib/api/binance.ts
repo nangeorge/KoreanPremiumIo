@@ -1,4 +1,5 @@
-const BINANCE_API = "https://api.binance.com/api/v3";
+// Bybit API — Binance 대체 (Vercel에서 Binance IP 차단 대응)
+const BYBIT_API = "https://api.bybit.com/v5/market/tickers?category=spot";
 
 export interface BinanceTicker {
   symbol: string;
@@ -7,40 +8,48 @@ export interface BinanceTicker {
   quoteVolume: string;
 }
 
-const CHUNK = 40;
-
-async function fetchChunk(symbols: string[]): Promise<BinanceTicker[]> {
-  const res = await fetch(
-    `${BINANCE_API}/ticker/24hr?symbols=${encodeURIComponent(JSON.stringify(symbols))}&type=MINI`,
-    { next: { revalidate: 5 } }
-  );
-  if (res.ok) return res.json();
-
-  // 청크 실패 → 개별 요청으로 fallback (미상장 심볼 있을 경우)
-  const individual = await Promise.allSettled(
-    symbols.map(async (sym) => {
-      const r = await fetch(
-        `${BINANCE_API}/ticker/24hr?symbol=${sym}&type=MINI`,
-        { next: { revalidate: 5 } }
-      );
-      if (!r.ok) return null;
-      return r.json() as Promise<BinanceTicker>;
-    })
-  );
-  return individual.flatMap((r) =>
-    r.status === "fulfilled" && r.value ? [r.value] : []
-  );
+interface BybitTicker {
+  symbol: string;
+  lastPrice: string;
+  price24hPcnt: string;
+  volume24h: string;
+  turnover24h: string;
 }
+
+interface BybitResponse {
+  retCode: number;
+  result: { list: BybitTicker[] };
+}
+
+let cache: { data: BinanceTicker[]; ts: number } | null = null;
+const CACHE_MS = 5000;
 
 export async function fetchBinancePrices(symbols: string[]): Promise<BinanceTicker[]> {
   const valid = symbols.filter(Boolean);
   if (valid.length === 0) return [];
 
-  const chunks: string[][] = [];
-  for (let i = 0; i < valid.length; i += CHUNK) {
-    chunks.push(valid.slice(i, i + CHUNK));
+  // 5초 캐시
+  if (cache && Date.now() - cache.ts < CACHE_MS) {
+    return cache.data.filter((t) => valid.includes(t.symbol));
   }
 
-  const results = await Promise.allSettled(chunks.map(fetchChunk));
-  return results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
+  try {
+    const res = await fetch(BYBIT_API, { next: { revalidate: 5 } });
+    if (!res.ok) return [];
+
+    const json: BybitResponse = await res.json();
+    if (json.retCode !== 0) return [];
+
+    const all: BinanceTicker[] = json.result.list.map((t) => ({
+      symbol: t.symbol,
+      lastPrice: t.lastPrice,
+      priceChangePercent: (parseFloat(t.price24hPcnt) * 100).toFixed(2),
+      quoteVolume: t.turnover24h,
+    }));
+
+    cache = { data: all, ts: Date.now() };
+    return all.filter((t) => valid.includes(t.symbol));
+  } catch {
+    return [];
+  }
 }
