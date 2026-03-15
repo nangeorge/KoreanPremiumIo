@@ -67,11 +67,25 @@ export function StatsBar() {
   const marketStatus = refPremium > 2 ? t("bullish") : refPremium < -1 ? t("bearish") : t("neutral");
   const statusColor = refPremium > 2 ? "text-emerald-400" : refPremium < -1 ? "text-rose-400" : "text-yellow-400";
 
+  // 김프 시그널
+  const btcSignal = btcPremium === null ? null
+    : btcPremium >= 20  ? { ko: "🔴 초고점", en: "🔴 Extreme Peak", zh: "🔴 极高点", color: "text-red-400 bg-red-500/10 border-red-500/20" }
+    : btcPremium >= 10  ? { ko: "🟠 고점",   en: "🟠 Peak",         zh: "🟠 高点",  color: "text-orange-400 bg-orange-500/10 border-orange-500/20" }
+    : btcPremium >= 3   ? { ko: "🟡 주의",   en: "🟡 Caution",      zh: "🟡 注意",  color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20" }
+    : btcPremium >= 0   ? { ko: "🟢 보통",   en: "🟢 Normal",       zh: "🟢 正常",  color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" }
+    : btcPremium >= -3  ? { ko: "⚪ 무관심", en: "⚪ Apathy",        zh: "⚪ 冷漠",  color: "text-gray-400 bg-white/5 border-white/10" }
+    :                     { ko: "🔵 공포",   en: "🔵 Fear",          zh: "🔵 恐慌",  color: "text-blue-400 bg-blue-500/10 border-blue-500/20" };
+
   const stats: { label: string; value: string; color: string; tooltip?: { ko: string; en: string; zh: string }; href?: string }[] = [
     {
       label: isKo ? "현재 BTC 프리미엄" : "BTC Premium",
       value: isLoading ? "—" : btcPremium !== null ? formatPremium(btcPremium) : "—",
       color: btcPremium === null ? "text-gray-500" : btcPremium >= 0 ? "text-emerald-400" : "text-rose-400",
+      tooltip: {
+        ko: "한국 거래소(업비트)와 해외 거래소의 BTC 가격 차이 비율.\n\n🔵 공포 (−3% 이하): 해외 대비 국내가 크게 낮음. 시장 공황, 투자자 이탈.\n⚪ 무관심 (0 ~ −3%): 약한 역프리미엄. 국내 수요 저조.\n🟢 보통 (0 ~ +3%): 정상 범위. 국내외 가격 균형.\n🟡 주의 (+3 ~ +10%): 국내 매수 열기 상승. 과열 가능성 주의.\n🟠 고점 (+10 ~ +20%): 과거 고점 근처. 단기 조정 가능성↑\n🔴 초고점 (+20% 이상): 극단적 과열. 역사적 고점 수준.\n\n※ 경험치 기반 기준선으로 투자 결론을 내리지 마세요.",
+        en: "BTC price premium of Korean exchange (Upbit) vs offshore.\n\n🔵 Fear (below −3%): Korea trades well below global. Panic selling.\n⚪ Apathy (0 ~ −3%): Weak negative premium. Low local demand.\n🟢 Normal (0 ~ +3%): Balanced range.\n🟡 Caution (+3 ~ +10%): Rising local demand. Watch for overheating.\n🟠 Peak (+10 ~ +20%): Near historical highs. Short-term correction risk↑\n🔴 Extreme Peak (+20%+): Extreme overheating. Historical peak levels.\n\n※ Heuristic guidelines only — not financial advice.",
+        zh: "韩国交易所(Upbit)与海外的BTC价格差异比率。\n\n🔵 恐慌 (低于−3%): 国内远低于全球。恐慌抛售。\n⚪ 冷漠 (0 ~ −3%): 弱负溢价。国内需求低迷。\n🟢 正常 (0 ~ +3%): 均衡区间。\n🟡 注意 (+3 ~ +10%): 国内买入热情上升，注意过热。\n🟠 高点 (+10 ~ +20%): 接近历史高位，短期调整风险↑\n🔴 极高点 (+20%以上): 极度过热，历史顶部水平。\n\n※ 仅供参考，不构成投资建议。",
+      },
     },
     {
       label: isKo ? "Alt 평균 프리미엄" : "Avg Alt Premium",
@@ -159,6 +173,11 @@ export function StatsBar() {
             >
               {isLoading ? "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0" : stat.value}
             </div>
+            {isBtcPremium && !isLoading && btcSignal && (
+              <div className={`mt-2 inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold ${btcSignal.color}`}>
+                {locale === "ko" ? btcSignal.ko : locale === "zh" ? btcSignal.zh : btcSignal.en}
+              </div>
+            )}
           </div>
         );
       })}
