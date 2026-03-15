@@ -47,7 +47,7 @@ export async function GET(request: Request) {
   const premiumBorder = premium === null ? "rgba(107,114,128,0.3)" : isPositive ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)";
 
   const upbitStr = upbitPrice > 0
-    ? `₩${(upbitPrice / 100_000_000).toFixed(2)}억`
+    ? `₩${Math.round(upbitPrice).toLocaleString("en-US")}`
     : "—";
   const binanceStr = binancePrice > 0
     ? `$${binancePrice.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
@@ -55,9 +55,9 @@ export async function GET(request: Request) {
   const rateStr = rate > 0 ? `₩${rate.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—";
 
   const labels = {
-    ko: { title: "김치 프리미엄", subtitle: "업비트 vs 바이낸스 · 실시간", upbit: "업비트 (KRW)", binance: "바이낸스 (USD)", exchangeRate: "USD/KRW", live: "LIVE · 실시간" },
-    en: { title: "Kimchi Premium", subtitle: "Upbit vs Binance · Live", upbit: "Upbit (KRW)", binance: "Binance (USD)", exchangeRate: "USD/KRW", live: "LIVE · Real-time" },
-    zh: { title: "泡菜溢价", subtitle: "Upbit vs Binance · 实时", upbit: "Upbit (KRW)", binance: "Binance (USD)", exchangeRate: "USD/KRW", live: "LIVE · 实时" },
+    ko: { title: "Korea Premium Index", subtitle: "김치 프리미엄 실시간 — 업비트 vs 코인베이스", upbit: "업비트 (KRW)", binance: "코인베이스 (USD)", exchangeRate: "USD/KRW", live: "LIVE · 실시간" },
+    en: { title: "Korea Premium Index", subtitle: "Kimchi Premium Live — Upbit vs Coinbase", upbit: "Upbit (KRW)", binance: "Coinbase (USD)", exchangeRate: "USD/KRW", live: "LIVE · Real-time" },
+    zh: { title: "Korea Premium Index", subtitle: "韩国溢价实时 — Upbit vs Coinbase", upbit: "Upbit (KRW)", binance: "Coinbase (USD)", exchangeRate: "USD/KRW", live: "LIVE · 实时" },
   };
   const L = labels[locale as keyof typeof labels] ?? labels.en;
 
