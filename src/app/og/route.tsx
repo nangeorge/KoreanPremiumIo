@@ -32,11 +32,26 @@ async function fetchBtcPremium(): Promise<{ premium: number | null; upbitPrice: 
   }
 }
 
+async function loadFont(text: string): Promise<ArrayBuffer | null> {
+  try {
+    const url = `https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&text=${encodeURIComponent(text)}`;
+    const css = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } }).then((r) => r.text());
+    const match = css.match(/src: url\((.+?)\) format\('woff2'\)/);
+    if (!match) return null;
+    return fetch(match[1]).then((r) => r.arrayBuffer());
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const locale = searchParams.get("locale") ?? "en";
 
-  const { premium, upbitPrice, binancePrice, rate } = await fetchBtcPremium();
+  const [{ premium, upbitPrice, binancePrice, rate }, fontData] = await Promise.all([
+    fetchBtcPremium(),
+    loadFont("Korea Premium Index Kimchi Live Upbit Coinbase KRW USD +-.0123456789%"),
+  ]);
 
   const premiumStr = premium !== null
     ? `${premium >= 0 ? "+" : ""}${premium.toFixed(2)}%`
@@ -61,6 +76,10 @@ export async function GET(request: Request) {
   };
   const L = labels[locale as keyof typeof labels] ?? labels.en;
 
+  const fonts: ConstructorParameters<typeof ImageResponse>[1]["fonts"] = fontData
+    ? [{ name: "Inter", data: fontData, weight: 900, style: "normal" }]
+    : [];
+
   return new ImageResponse(
     (
       <div
@@ -72,7 +91,7 @@ export async function GET(request: Request) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: "'Segoe UI', system-ui, sans-serif",
+          fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif",
           position: "relative",
           overflow: "hidden",
         }}
@@ -144,6 +163,7 @@ export async function GET(request: Request) {
     {
       width: 1200,
       height: 630,
+      fonts,
       headers: {
         "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=120",
       },
