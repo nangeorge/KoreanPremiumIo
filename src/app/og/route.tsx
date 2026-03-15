@@ -76,9 +76,9 @@ export async function GET(request: Request) {
   };
   const L = labels[locale as keyof typeof labels] ?? labels.en;
 
-  const fonts: ConstructorParameters<typeof ImageResponse>[1]["fonts"] = fontData
-    ? [{ name: "Inter", data: fontData, weight: 900, style: "normal" }]
-    : [];
+  const fonts = fontData
+    ? [{ name: "Inter", data: fontData, weight: 900 as const, style: "normal" as const }]
+    : undefined;
 
   return new ImageResponse(
     (
