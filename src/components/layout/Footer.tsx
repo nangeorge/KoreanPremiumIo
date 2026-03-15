@@ -30,12 +30,12 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="https://binance.com"
+                  href="https://bybit.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-500 hover:text-indigo-400 transition-colors"
                 >
-                  Binance ↗
+                  Bybit ↗
                 </a>
               </li>
               <li>
@@ -83,26 +83,26 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Coming soon */}
+          {/* Data sources */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">{t("comingSoon")}</h3>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-                <span className="text-sm text-gray-500">{t("chromeExtension")}</span>
-                <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs text-indigo-400 border border-indigo-500/20">Soon</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
-                <span className="text-sm text-gray-500">{t("mobileApp")}</span>
-                <span className="rounded-full bg-purple-500/10 px-2 py-0.5 text-xs text-purple-400 border border-purple-500/20">Soon</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                <span className="text-sm text-gray-500">{t("subscription")}</span>
-                <span className="rounded-full bg-rose-500/10 px-2 py-0.5 text-xs text-rose-400 border border-rose-500/20">Soon</span>
-              </div>
-            </div>
+            <h3 className="text-sm font-semibold text-gray-300 mb-3">
+              {locale === "ko" ? "데이터 출처" : locale === "zh" ? "数据来源" : "Data Sources"}
+            </h3>
+            <ul className="space-y-2">
+              {[
+                { name: "Upbit API", href: "https://docs.upbit.com" },
+                { name: "Bybit API", href: "https://bybit-exchange.github.io/docs" },
+                { name: "Coinbase API", href: "https://docs.cdp.coinbase.com" },
+                { name: "Alternative.me F&G", href: "https://alternative.me/crypto/fear-and-greed-index/" },
+                { name: "CoinMetrics", href: "https://coinmetrics.io" },
+              ].map(({ name, href }) => (
+                <li key={name}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                    {name} ↗
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 

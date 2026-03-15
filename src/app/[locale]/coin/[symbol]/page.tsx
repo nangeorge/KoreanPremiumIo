@@ -56,7 +56,7 @@ export default function CoinDetailPage() {
       color: "text-white",
     },
     {
-      label: isKo ? "바이낸스 (USD)" : "Binance (USD)",
+      label: isKo ? "Bybit (USD)" : "Bybit (USD)",
       value: formatUsd(coin.binancePrice),
       color: "text-white",
     },

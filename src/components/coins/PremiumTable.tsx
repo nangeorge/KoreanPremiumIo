@@ -226,7 +226,7 @@ export function PremiumTable() {
                   : "text-gray-500 hover:text-gray-300"
               )}
             >
-              {ex === "binance" ? "🌏 Binance" : "🇺🇸 Coinbase"}
+              {ex === "binance" ? "🌏 Bybit" : "🇺🇸 Coinbase"}
             </button>
           ))}
         </div>

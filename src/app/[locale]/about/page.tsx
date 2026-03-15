@@ -47,9 +47,9 @@ const CONTENT = {
     back: "Back",
     tagline: "Real-time Cryptocurrency Kimchi Premium Tracker",
     description:
-      "KimchiPremium is a free data service that tracks real-time price differences between domestic (Upbit) and international (Binance, Coinbase) cryptocurrency exchanges. The kimchi premium auto-refreshes every 5 seconds, and you can check the Fear & Greed Index, on-chain metrics, and the latest news all in one place.",
+      "KimchiPremium is a free data service that tracks real-time price differences between domestic (Upbit) and international (Bybit, Coinbase) cryptocurrency exchanges. The kimchi premium auto-refreshes every 5 seconds, and you can check the Fear & Greed Index, on-chain metrics, and the latest news all in one place.",
     features: [
-      { icon: "zap", title: "Real-time Data", desc: "Upbit & Binance prices auto-refresh every 5 seconds" },
+      { icon: "zap", title: "Real-time Data", desc: "Upbit & Bybit prices auto-refresh every 5 seconds" },
       { icon: "chart", title: "130+ Coins", desc: "Full coverage of Upbit KRW market coins" },
       { icon: "globe", title: "3 Languages", desc: "Full support for Korean, English & Chinese" },
       { icon: "shield", title: "Free & Ad-supported", desc: "No registration required, supported by Google AdSense" },
@@ -58,7 +58,7 @@ const CONTENT = {
       heading: "Data Sources",
       items: [
         "Upbit API — Real-time KRW prices",
-        "Binance API — Real-time USD prices",
+        "Bybit API — Real-time USD prices",
         "Coinbase API — USD reference prices",
         "exchangerate-api.com — Real-time USD/KRW exchange rate",
         "Alternative.me — Fear & Greed Index",
@@ -69,7 +69,7 @@ const CONTENT = {
     },
     premiumSection: {
       heading: "What is the Kimchi Premium?",
-      body: "The kimchi premium refers to the percentage difference in the price of the same cryptocurrency between Korean and international exchanges. Due to capital movement restrictions and the unique KRW ecosystem, Korean exchange prices tend to be higher than global markets. A positive (+) difference is called a premium; a negative (−) difference is called a discount or reverse kimchi premium.\n\nFormula:\nPremium (%) = (Upbit KRW − Binance USD × Rate) ÷ (Binance USD × Rate) × 100",
+      body: "The kimchi premium refers to the percentage difference in the price of the same cryptocurrency between Korean and international exchanges. Due to capital movement restrictions and the unique KRW ecosystem, Korean exchange prices tend to be higher than global markets. A positive (+) difference is called a premium; a negative (−) difference is called a discount or reverse kimchi premium.\n\nFormula:\nPremium (%) = (Upbit KRW − Bybit USD × Rate) ÷ (Binance USD × Rate) × 100",
     },
     disclaimer: "This Service is operated for informational purposes only. All data provided does not constitute investment advice, and all investment decisions are solely the responsibility of the user.",
     contactSection: {
@@ -86,7 +86,7 @@ const CONTENT = {
     description:
       "KimchiPremium是一项免费数据服务，实时追踪韩国国内（Upbit）与海外（Binance、Coinbase）加密货币交易所之间的价格差异。泡菜溢价每5秒自动刷新，恐慌贪婪指数、链上指标和最新新闻均可一站式查看。",
     features: [
-      { icon: "zap", title: "实时数据", desc: "Upbit和Binance价格每5秒自动刷新" },
+      { icon: "zap", title: "实时数据", desc: "Upbit和Bybit价格每5秒自动刷新" },
       { icon: "chart", title: "130+种加密货币", desc: "全面覆盖Upbit KRW市场币种" },
       { icon: "globe", title: "3种语言", desc: "完整支持韩语、英语和中文" },
       { icon: "shield", title: "免费及广告支持", desc: "无需注册，由Google AdSense广告支持运营" },
@@ -95,7 +95,7 @@ const CONTENT = {
       heading: "数据来源",
       items: [
         "Upbit API — 实时韩元价格",
-        "Binance API — 实时美元价格",
+        "Bybit API — 实时美元价格",
         "Coinbase API — 美元参考价格",
         "exchangerate-api.com — 实时美元/韩元汇率",
         "Alternative.me — 恐慌贪婪指数",
@@ -106,7 +106,7 @@ const CONTENT = {
     },
     premiumSection: {
       heading: "什么是泡菜溢价？",
-      body: "泡菜溢价是指韩国加密货币交易所与海外交易所之间同一币种价格差异的百分比指标。由于资本流动限制和韩元生态系统的特殊性，韩国交易所价格往往高于全球市场。正差值(+)称为溢价，负差值(-)称为折价或反向泡菜溢价。\n\n计算公式：\n溢价(%) = (Upbit韩元 − Binance美元 × 汇率) ÷ (Binance美元 × 汇率) × 100",
+      body: "泡菜溢价是指韩国加密货币交易所与海外交易所之间同一币种价格差异的百分比指标。由于资本流动限制和韩元生态系统的特殊性，韩国交易所价格往往高于全球市场。正差值(+)称为溢价，负差值(-)称为折价或反向泡菜溢价。\n\n计算公式：\n溢价(%) = (Upbit韩元 − Bybit美元 × 汇率) ÷ (Binance美元 × 汇率) × 100",
     },
     disclaimer: "本服务仅供参考。所提供的所有数据不构成投资建议，所有投资决策完全由用户本人负责。",
     contactSection: {

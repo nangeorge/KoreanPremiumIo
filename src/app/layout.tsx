@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://kimchipremium.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://koreanpremium.io";
 // Google AdSense 발급 후 아래 ID 교체
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID || "";
 

@@ -8,14 +8,14 @@
   "hero": {
     "title": "Kimchi Premium",
     "subtitle": "Real-time Korean crypto price difference tracker",
-    "description": "Track the premium between Upbit (KRW) and Binance (USD) in real-time",
+    "description": "Track the premium between Upbit (KRW) and Bybit (USD) in real-time",
     "liveUpdate": "Live updates · Refreshes every 5s"
   },
   "table": {
     "coin": "Coin",
     "upbit": "Upbit (KRW)",
-    "binance": "Binance (USD)",
-    "binanceKrw": "Binance (KRW eq.)",
+    "binance": "Bybit (USD)",
+    "binanceKrw": "Bybit (KRW eq.)",
     "premium": "Kimchi Premium",
     "change24h": "24h Change",
     "volume": "Volume"
@@ -41,7 +41,7 @@
     "description": "Real-time cryptocurrency kimchi premium tracker",
     "disclaimer": "This site is for informational purposes only. Users are solely responsible for their investment decisions.",
     "rights": "All rights reserved.",
-    "dataSource": "Data: Upbit, Binance",
+    "dataSource": "Data: Upbit, Bybit",
     "exchangeLinks": "Exchange Links",
     "community": "Community & Resources",
     "comingSoon": "Coming Soon",

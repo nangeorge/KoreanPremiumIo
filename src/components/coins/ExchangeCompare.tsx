@@ -3,7 +3,7 @@
 import { useAppStore } from "@/store";
 
 const EXCHANGE_INFO = {
-  binance:  { flag: "🌏", label: "바이낸스",  labelEn: "Binance",  currency: "USD" },
+  binance:  { flag: "🌏", label: "Bybit",  labelEn: "Bybit",  currency: "USD" },
   coinbase: { flag: "🇺🇸", label: "코인베이스", labelEn: "Coinbase", currency: "USD" },
 };
 

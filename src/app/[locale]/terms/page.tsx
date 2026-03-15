@@ -71,7 +71,7 @@ const CONTENT = {
     sections: [
       {
         heading: "1. Service Overview",
-        body: "KimchiPremium is an informational website that displays real-time cryptocurrency price differences (kimchi premium) between Upbit (KRW) and Binance (USD). The Service is free to use and requires no registration.",
+        body: "KimchiPremium is an informational website that displays real-time cryptocurrency price differences (kimchi premium) between Upbit (KRW) and Bybit (USD). The Service is free to use and requires no registration.",
       },
       {
         heading: "2. Terms of Use",
@@ -79,11 +79,11 @@ const CONTENT = {
       },
       {
         heading: "3. Data Accuracy & Disclaimer",
-        body: "This Service collects and provides data from external APIs (Upbit, Binance, Coinbase, etc.). We are not responsible for:\n\n• Accuracy, completeness, or timeliness of data\n• Data gaps or errors due to API failures\n• Service interruptions due to network failures or maintenance\n• Results of investment decisions based on the data\n\nPrice data may be delayed by a few seconds and may differ from actual transaction prices.",
+        body: "This Service collects and provides data from external APIs (Upbit, Bybit, Coinbase, etc.). We are not responsible for:\n\n• Accuracy, completeness, or timeliness of data\n• Data gaps or errors due to API failures\n• Service interruptions due to network failures or maintenance\n• Results of investment decisions based on the data\n\nPrice data may be delayed by a few seconds and may differ from actual transaction prices.",
       },
       {
         heading: "4. Kimchi Premium Calculation",
-        body: "The kimchi premium is calculated as follows:\n\nPremium (%) = (Upbit KRW price - Binance USD price × USD/KRW rate) / (Binance USD price × USD/KRW rate) × 100\n\nExchange rates are fetched in real-time from external APIs. Discrepancies due to exchange rate fluctuations may cause differences from the actual premium.",
+        body: "The kimchi premium is calculated as follows:\n\nPremium (%) = (Upbit KRW price - Bybit USD price × USD/KRW rate) / (Bybit USD price × USD/KRW rate) × 100\n\nExchange rates are fetched in real-time from external APIs. Discrepancies due to exchange rate fluctuations may cause differences from the actual premium.",
       },
       {
         heading: "5. Intellectual Property",
@@ -134,11 +134,11 @@ const CONTENT = {
       },
       {
         heading: "3. 数据准确性及免责声明",
-        body: "本服务从外部API（Upbit、Binance、Coinbase等）收集并提供数据。对以下事项不承担责任：\n\n• 数据的准确性、完整性或及时性\n• 因API故障导致的数据缺失或错误\n• 因网络故障或维护导致的服务中断\n• 基于数据做出投资决策的结果\n\n价格数据可能延迟数秒，可能与实际交易价格不同。",
+        body: "本服务从外部API（Upbit、Bybit、Coinbase等）收集并提供数据。对以下事项不承担责任：\n\n• 数据的准确性、完整性或及时性\n• 因API故障导致的数据缺失或错误\n• 因网络故障或维护导致的服务中断\n• 基于数据做出投资决策的结果\n\n价格数据可能延迟数秒，可能与实际交易价格不同。",
       },
       {
         heading: "4. 泡菜溢价计算方式",
-        body: "泡菜溢价计算公式如下：\n\n溢价(%) = (Upbit韩元价格 - Binance美元价格 × 美元/韩元汇率) / (Binance美元价格 × 美元/韩元汇率) × 100\n\n汇率通过外部API实时获取。汇率波动可能导致与实际溢价存在差异。",
+        body: "泡菜溢价计算公式如下：\n\n溢价(%) = (Upbit韩元价格 - Bybit美元价格 × 美元/韩元汇率) / (Bybit美元价格 × 美元/韩元汇率) × 100\n\n汇率通过外部API实时获取。汇率波动可能导致与实际溢价存在差异。",
       },
       {
         heading: "5. 知识产权",

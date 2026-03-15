@@ -32,7 +32,7 @@ const CONTENT = {
       },
       {
         heading: "6. 외부 API 및 데이터",
-        body: "서비스는 다음 외부 소스에서 가격 데이터를 가져옵니다:\n\n• 업비트(Upbit) API — 원화 시세\n• 바이낸스(Binance) API — 달러 시세\n• Coinbase API — 달러 시세\n• exchangerate-api.com — 환율 데이터\n• Alternative.me — 공포탐욕지수\n• CryptoCompare — 뉴스\n\n이 과정에서 사용자의 개인정보는 전달되지 않습니다.",
+        body: "서비스는 다음 외부 소스에서 가격 데이터를 가져옵니다:\n\n• 업비트(Upbit) API — 원화 시세\n• Bybit API — 달러 시세\n• Coinbase API — 달러 시세\n• exchangerate-api.com — 환율 데이터\n• Alternative.me — 공포탐욕지수\n• CryptoCompare — 뉴스\n\n이 과정에서 사용자의 개인정보는 전달되지 않습니다.",
       },
       {
         heading: "7. 채팅 기능",
@@ -83,7 +83,7 @@ const CONTENT = {
       },
       {
         heading: "6. External APIs & Data",
-        body: "The Service fetches price data from the following external sources:\n\n• Upbit API — KRW prices\n• Binance API — USD prices\n• Coinbase API — USD prices\n• exchangerate-api.com — Exchange rate data\n• Alternative.me — Fear & Greed Index\n• CryptoCompare — News\n\nNo personal information is transmitted in this process.",
+        body: "The Service fetches price data from the following external sources:\n\n• Upbit API — KRW prices\n• Bybit API — USD prices\n• Coinbase API — USD prices\n• exchangerate-api.com — Exchange rate data\n• Alternative.me — Fear & Greed Index\n• CryptoCompare — News\n\nNo personal information is transmitted in this process.",
       },
       {
         heading: "7. Chat Feature",
@@ -134,7 +134,7 @@ const CONTENT = {
       },
       {
         heading: "6. 外部API及数据",
-        body: "本服务从以下外部来源获取价格数据：\n\n• Upbit API — 韩元价格\n• Binance API — 美元价格\n• Coinbase API — 美元价格\n• exchangerate-api.com — 汇率数据\n• Alternative.me — 恐慌贪婪指数\n• CryptoCompare — 新闻\n\n此过程中不传输任何个人信息。",
+        body: "本服务从以下外部来源获取价格数据：\n\n• Upbit API — 韩元价格\n• Bybit API — 美元价格\n• Coinbase API — 美元价格\n• exchangerate-api.com — 汇率数据\n• Alternative.me — 恐慌贪婪指数\n• CryptoCompare — 新闻\n\n此过程中不传输任何个人信息。",
       },
       {
         heading: "7. 聊天功能",

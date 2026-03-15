@@ -14,8 +14,8 @@
   "table": {
     "coin": "코인",
     "upbit": "업비트 (KRW)",
-    "binance": "바이낸스 (USD)",
-    "binanceKrw": "바이낸스 (KRW 환산)",
+    "binance": "Bybit (USD)",
+    "binanceKrw": "Bybit (KRW 환산)",
     "premium": "김치 프리미엄",
     "change24h": "24시간 변동",
     "volume": "거래량"

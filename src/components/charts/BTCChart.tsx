@@ -23,7 +23,7 @@ type BtcExchange = "upbit" | "binance" | "coinbase";
 
 const EXCHANGE_LABELS: Record<BtcExchange, { ko: string; en: string }> = {
   upbit:    { ko: "업비트",    en: "Upbit"    },
-  binance:  { ko: "바이낸스",  en: "Binance"  },
+  binance:  { ko: "Bybit",  en: "Bybit"  },
   coinbase: { ko: "코인베이스", en: "Coinbase" },
 };
 const EXCHANGE_CURRENCY: Record<BtcExchange, string> = {

@@ -232,9 +232,81 @@ function FundingRateBadge({ value }: { value: number }) {
 }
 
 const LABELS = {
-  ko: { title: "지표 분석", subtitle: "BTC 온체인 · 시장 · 파생상품 지표", tabs: ["온체인", "시장", "파생상품"] },
-  en: { title: "Market Indicators", subtitle: "BTC On-chain · Market · Derivatives", tabs: ["On-chain", "Market", "Derivatives"] },
-  zh: { title: "市场指标", subtitle: "BTC链上数据 · 市场 · 衍生品", tabs: ["链上数据", "市场", "衍生品"] },
+  ko: {
+    title: "지표 분석", subtitle: "BTC 온체인 · 시장 · 파생상품 지표", tabs: ["온체인", "시장", "파생상품"],
+    hashRateSub: "네트워크 채굴 능력", addrSub: "24h 활성 주소 수", txSub: "24h 트랜잭션 수",
+    mvrvChartSub: "3.7 과열 · 2.4 주의 · 1.0 적정 · 0.6 저평가 기준선",
+    hashChartSub: "네트워크 전체 채굴 해시파워 (EH/s)",
+    addrChartSub: "일일 활성 지갑 수", txChartSub: "일일 온체인 트랜잭션 수",
+    fearGreedTitle: "공포·탐욕 지수", globalTitle: "글로벌 시장 개요",
+    coinPremiumTitle: "코인별 현재 김치 프리미엄",
+    kimchiHistoryTitle: "평균 김치 프리미엄 히스토리", kimchiHistorySub: "전체 코인 평균 · 5초 갱신",
+    collectingData: "실시간 데이터 수집 중...",
+    btcFundingLabel: "BTC 펀딩비 (현재)", ethFundingLabel: "ETH 펀딩비 (현재)",
+    fundingPeriod: "8시간 주기", annualFundingLabel: "BTC 연환산 펀딩비",
+    sentimentLabel: "시장 심리", sentimentBasis: "펀딩비 기준",
+    longOverheat: "롱 과열", shortOverheat: "숏 과열", neutral: "중립",
+    btcFundingTitle: "BTC 펀딩비 히스토리", btcFundingSub: "양수(+): 롱 우세 · 음수(-): 숏 우세 · 8시간마다 정산",
+    ethFundingTitle: "ETH 펀딩비 히스토리", ethFundingSub: "8시간 주기 펀딩비",
+    fundingGuideTitle: "📖 펀딩비 해석 가이드",
+    vixSub: "30↑ 공포 · 20~30 주의 · 20↓ 안정",
+    globalStats: ["총 시가총액", "24h 거래량", "BTC 도미넌스", "ETH 도미넌스", "시총 24h 변동", "활성 코인 수"],
+    fundingGuides: [
+      { range: "+0.05% 이상", label: "롱 과열", desc: "청산 위험↑, 매도 신호 가능성" },
+      { range: "-0.01% ~ +0.01%", label: "중립", desc: "시장 균형 상태, 추세 불명확" },
+      { range: "-0.05% 이하", label: "숏 과열", desc: "청산 위험↑, 반등 가능성" },
+    ],
+  },
+  en: {
+    title: "Market Indicators", subtitle: "BTC On-chain · Market · Derivatives", tabs: ["On-chain", "Market", "Derivatives"],
+    hashRateSub: "Network mining power", addrSub: "24h active addresses", txSub: "24h transactions",
+    mvrvChartSub: "3.7↑ overheated · 2.4↑ caution · 1.0 fair · 0.6↓ undervalued",
+    hashChartSub: "Total network hash power (EH/s)",
+    addrChartSub: "Daily active wallets", txChartSub: "Daily on-chain transactions",
+    fearGreedTitle: "Fear & Greed Index", globalTitle: "Global Market Overview",
+    coinPremiumTitle: "Korea Premium by Coin",
+    kimchiHistoryTitle: "Avg Korea Premium History", kimchiHistorySub: "All coins avg · 5s refresh",
+    collectingData: "Collecting live data...",
+    btcFundingLabel: "BTC Funding Rate", ethFundingLabel: "ETH Funding Rate",
+    fundingPeriod: "8h interval", annualFundingLabel: "BTC Annualized Funding",
+    sentimentLabel: "Market Sentiment", sentimentBasis: "Funding rate basis",
+    longOverheat: "Long Overheated", shortOverheat: "Short Overheated", neutral: "Neutral",
+    btcFundingTitle: "BTC Funding Rate History", btcFundingSub: "Positive: longs dominant · Negative: shorts dominant · Settled every 8h",
+    ethFundingTitle: "ETH Funding Rate History", ethFundingSub: "8-hour funding rate",
+    fundingGuideTitle: "📖 Funding Rate Guide",
+    vixSub: "30↑ Fear · 20–30 Caution · 20↓ Calm",
+    globalStats: ["Total Market Cap", "24h Volume", "BTC Dominance", "ETH Dominance", "Market Cap 24h", "Active Coins"],
+    fundingGuides: [
+      { range: "Above +0.05%", label: "Long Overheated", desc: "Liquidation risk↑, potential sell signal" },
+      { range: "-0.01% ~ +0.01%", label: "Neutral", desc: "Balanced market, trend unclear" },
+      { range: "Below -0.05%", label: "Short Overheated", desc: "Liquidation risk↑, potential rebound" },
+    ],
+  },
+  zh: {
+    title: "市场指标", subtitle: "BTC链上数据 · 市场 · 衍生品", tabs: ["链上数据", "市场", "衍生品"],
+    hashRateSub: "网络算力", addrSub: "24h活跃地址数", txSub: "24h交易数",
+    mvrvChartSub: "3.7↑过热 · 2.4↑注意 · 1.0合理 · 0.6↓低估",
+    hashChartSub: "全网算力 (EH/s)",
+    addrChartSub: "每日活跃钱包数", txChartSub: "每日链上交易数",
+    fearGreedTitle: "恐慌贪婪指数", globalTitle: "全球市场概况",
+    coinPremiumTitle: "各币种当前韩国溢价",
+    kimchiHistoryTitle: "平均韩国溢价历史", kimchiHistorySub: "全币种均值 · 5秒刷新",
+    collectingData: "实时数据收集中...",
+    btcFundingLabel: "BTC资金费率(当前)", ethFundingLabel: "ETH资金费率(当前)",
+    fundingPeriod: "8小时周期", annualFundingLabel: "BTC年化资金费率",
+    sentimentLabel: "市场情绪", sentimentBasis: "资金费率基准",
+    longOverheat: "多头过热", shortOverheat: "空头过热", neutral: "中性",
+    btcFundingTitle: "BTC资金费率历史", btcFundingSub: "正数:多头主导 · 负数:空头主导 · 每8小时结算",
+    ethFundingTitle: "ETH资金费率历史", ethFundingSub: "8小时资金费率",
+    fundingGuideTitle: "📖 资金费率解读指南",
+    vixSub: "30↑恐慌 · 20~30注意 · 20↓平稳",
+    globalStats: ["总市值", "24h交易量", "BTC主导率", "ETH主导率", "市值24h变动", "活跃币种数"],
+    fundingGuides: [
+      { range: "+0.05%以上", label: "多头过热", desc: "爆仓风险↑，可能卖出信号" },
+      { range: "-0.01% ~ +0.01%", label: "中性", desc: "市场均衡，趋势不明" },
+      { range: "-0.05%以下", label: "空头过热", desc: "爆仓风险↑，可能反弹" },
+    ],
+  },
 };
 
 const INFO: Record<string, InfoText> = {
@@ -270,7 +342,7 @@ const INFO: Record<string, InfoText> = {
   },
   kimchiPremium: {
     ko: "국내 거래소(업비트) 가격이 해외 거래소(바이낸스) 대비 얼마나 높은지 나타내는 수치. 양수면 한국 시장 과열, 음수면 할인 상태. 강세장에서 역사적 최고 50% 이상 기록.",
-    en: "Percentage difference between Korean exchange (Upbit) and overseas exchange (Binance) prices. Positive = Korean market premium, negative = discount. Historically peaked above 50% in bull markets.",
+    en: "Percentage difference between Korean exchange (Upbit) and overseas exchange (Bybit) prices. Positive = Korean market premium, negative = discount. Historically peaked above 50% in bull markets.",
     zh: "韩国交易所（Upbit）与海外交易所（Binance）价格差的百分比。正数=韩国溢价，负数=折价。牛市历史最高曾超过50%。",
   },
   vix: {
@@ -280,8 +352,8 @@ const INFO: Record<string, InfoText> = {
   },
   fundingBtc: {
     ko: "무기한 선물에서 8시간마다 롱/숏 간 정산 비용. 양수(+)=롱 과열, 음수(-)=숏 과열. 바이낸스 선물 기준.",
-    en: "8-hourly fee between long/short futures positions. Positive = longs pay shorts (long overheated). Negative = shorts pay longs (short overheated). Source: Binance Futures.",
-    zh: "永续合约中每8小时多空之间结算的资金费率。正数=多头过热，负数=空头过热。数据来源：Binance合约。",
+    en: "8-hourly fee between long/short futures positions. Positive = longs pay shorts (long overheated). Negative = shorts pay longs (short overheated). Source: Bybit.",
+    zh: "永续合约中每8小时多空之间结算的资金费率。正数=多头过热，负数=空头过热。数据来源：Bybit。",
   },
   fundingEth: {
     ko: "이더리움 무기한 선물 펀딩비. BTC와 함께 전체 시장의 레버리지 과열 여부를 판단하는 데 활용됩니다.",
@@ -429,21 +501,21 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             <MetricCard
               label="Hash Rate"
               value={isLoading ? "—" : (hashData.at(-1)?.value.toFixed(0) ?? "—") + " EH/s"}
-              subValue="네트워크 채굴 능력"
+              subValue={t.hashRateSub}
               color="text-purple-400"
               info={INFO.hashRate} locale={locale}
             />
             <MetricCard
               label="Active Addresses"
               value={isLoading ? "—" : Number(addrData.at(-1)?.value ?? 0).toLocaleString()}
-              subValue="24h 활성 주소 수"
+              subValue={t.addrSub}
               color="text-cyan-400"
               info={INFO.activeAddr} locale={locale}
             />
             <MetricCard
               label="Transactions / day"
               value={isLoading ? "—" : Number(txData.at(-1)?.value ?? 0).toLocaleString()}
-              subValue="24h 트랜잭션 수"
+              subValue={t.txSub}
               color="text-amber-400"
               info={INFO.txCount} locale={locale}
             />
@@ -452,7 +524,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           {/* MVRV 차트 */}
           <ChartCard
             title={`MVRV Ratio (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`}
-            subtitle="3.7 과열 · 2.4 주의 · 1.0 적정 · 0.6 저평가 기준선"
+            subtitle={t.mvrvChartSub}
             badge={isLoading ? "..." : currentMvrv.toFixed(3)}
             badgeBg={mvrvZone.bg + " " + mvrvZone.color}
             info={INFO.mvrvChart} locale={locale}
@@ -476,7 +548,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           {/* Hash Rate 차트 */}
           <ChartCard
             title={`Hash Rate (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`}
-            subtitle="네트워크 전체 채굴 해시파워 (EH/s)"
+            subtitle={t.hashChartSub}
             badge={isLoading ? "..." : (hashData.at(-1)?.value.toFixed(1) ?? "—") + " EH/s"}
             badgeBg="bg-purple-500/10 border-purple-500/20 text-purple-400"
             info={INFO.hashRate} locale={locale}
@@ -498,14 +570,14 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
           {/* 활성 주소 & 트랜잭션 */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <ChartCard title={`Active Addresses (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle="일일 활성 지갑 수" info={INFO.activeAddr} locale={locale}>
+            <ChartCard title={`Active Addresses (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.addrChartSub} info={INFO.activeAddr} locale={locale}>
               {isLoading ? (
                 <div className="skeleton w-full rounded-lg" style={{ height: 160 }} />
               ) : (
                 <TVChart data={addrData} height={160} type="area" color="#06b6d4" topColor="#06b6d440" bottomColor="#06b6d404" />
               )}
             </ChartCard>
-            <ChartCard title={`Transaction Count (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle="일일 온체인 트랜잭션 수" info={INFO.txCount} locale={locale}>
+            <ChartCard title={`Transaction Count (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.txChartSub} info={INFO.txCount} locale={locale}>
               {isLoading ? (
                 <div className="skeleton w-full rounded-lg" style={{ height: 160 }} />
               ) : (
@@ -540,7 +612,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             {/* 공탐지수 게이지 */}
             <div className="glass rounded-2xl p-5">
               <div className="flex items-center gap-1.5 mb-4">
-                <h3 className="text-sm font-semibold text-white">공포·탐욕 지수</h3>
+                <h3 className="text-sm font-semibold text-white">{t.fearGreedTitle}</h3>
                 <InfoTooltip text={INFO.fearGreed} locale={locale} />
               </div>
               {isLoading || !fng ? (
@@ -555,7 +627,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
             {/* 글로벌 지표 */}
             <div className="glass rounded-2xl p-5 lg:col-span-2">
-              <h3 className="text-sm font-semibold text-white mb-4">글로벌 시장 개요</h3>
+              <h3 className="text-sm font-semibold text-white mb-4">{t.globalTitle}</h3>
               {!global ? (
                 <div className="grid grid-cols-2 gap-3">
                   {Array.from({ length: 6 }).map((_, i) => <div key={i} className="skeleton h-16 rounded-xl" />)}
@@ -563,17 +635,17 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               ) : (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {[
-                    { label: "총 시가총액", value: formatBigUsd(global.totalMarketCap), icon: "💰" },
-                    { label: "24h 거래량", value: formatBigUsd(global.totalVolume24h), icon: "📊" },
-                    { label: "BTC 도미넌스", value: global.btcDominance.toFixed(1) + "%", icon: "₿", color: "text-orange-400" },
-                    { label: "ETH 도미넌스", value: global.ethDominance.toFixed(1) + "%", icon: "Ξ", color: "text-blue-400" },
+                    { label: t.globalStats[0], value: formatBigUsd(global.totalMarketCap), icon: "💰" },
+                    { label: t.globalStats[1], value: formatBigUsd(global.totalVolume24h), icon: "📊" },
+                    { label: t.globalStats[2], value: global.btcDominance.toFixed(1) + "%", icon: "₿", color: "text-orange-400" },
+                    { label: t.globalStats[3], value: global.ethDominance.toFixed(1) + "%", icon: "Ξ", color: "text-blue-400" },
                     {
-                      label: "시총 24h 변동",
+                      label: t.globalStats[4],
                       value: (global.marketCapChange24h > 0 ? "+" : "") + global.marketCapChange24h.toFixed(2) + "%",
                       icon: "📉",
                       color: global.marketCapChange24h >= 0 ? "text-emerald-400" : "text-rose-400",
                     },
-                    { label: "활성 코인 수", value: global.activeCryptocurrencies.toLocaleString(), icon: "🪙" },
+                    { label: t.globalStats[5], value: global.activeCryptocurrencies.toLocaleString(), icon: "🪙" },
                   ].map((s) => (
                     <div key={s.label} className="rounded-xl bg-white/3 border border-white/5 p-4">
                       <div className="flex items-center gap-1.5 mb-2">
@@ -591,7 +663,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           {/* 코인별 프리미엄 바 */}
           {allCoins.length > 0 && (
             <div className="glass rounded-2xl p-5">
-              <h3 className="text-sm font-semibold text-white mb-4">코인별 현재 김치 프리미엄</h3>
+              <h3 className="text-sm font-semibold text-white mb-4">{t.coinPremiumTitle}</h3>
               <div className="space-y-2.5">
                 {[...allCoins].filter((c) => c.premium !== null).sort((a, b) => (b.premium ?? 0) - (a.premium ?? 0)).map((coin) => {
                   const pct = Math.min(Math.max(coin.premium ?? 0, -5), 5);
@@ -642,9 +714,9 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           </ChartCard>
 
           {/* 김프 히스토리 */}
-          <ChartCard title="평균 김치 프리미엄 히스토리" subtitle="전체 코인 평균 · 5초 갱신" info={INFO.kimchiPremium} locale={locale}>
+          <ChartCard title={t.kimchiHistoryTitle} subtitle={t.kimchiHistorySub} info={INFO.kimchiPremium} locale={locale}>
             {premiumData.length < 3 ? (
-              <div className="flex h-40 items-center justify-center text-sm text-gray-500">실시간 데이터 수집 중...</div>
+              <div className="flex h-40 items-center justify-center text-sm text-gray-500">{t.collectingData}</div>
             ) : (
               <TVChart
                 data={premiumData}
@@ -667,30 +739,30 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           {/* 펀딩비 요약 */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <MetricCard
-              label="BTC 펀딩비 (현재)"
+              label={t.btcFundingLabel}
               value={isLoading ? "—" : `${latestBtcFunding > 0 ? "+" : ""}${latestBtcFunding.toFixed(4)}%`}
-              subValue="8시간 주기"
+              subValue={t.fundingPeriod}
               color={latestBtcFunding > 0 ? "text-emerald-400" : "text-rose-400"}
               info={INFO.fundingBtc} locale={locale}
             />
             <MetricCard
-              label="ETH 펀딩비 (현재)"
+              label={t.ethFundingLabel}
               value={isLoading ? "—" : `${latestEthFunding > 0 ? "+" : ""}${latestEthFunding.toFixed(4)}%`}
-              subValue="8시간 주기"
+              subValue={t.fundingPeriod}
               color={latestEthFunding > 0 ? "text-emerald-400" : "text-rose-400"}
               info={INFO.fundingEth} locale={locale}
             />
             <MetricCard
-              label="BTC 연환산 펀딩비"
+              label={t.annualFundingLabel}
               value={isLoading ? "—" : `${(latestBtcFunding * 3 * 365).toFixed(1)}%`}
               subValue="8h × 3 × 365"
               color="text-gray-300"
               info={INFO.fundingAnnual} locale={locale}
             />
             <MetricCard
-              label="시장 심리"
-              value={latestBtcFunding > 0.05 ? "롱 과열" : latestBtcFunding < -0.05 ? "숏 과열" : "중립"}
-              subValue="펀딩비 기준"
+              label={t.sentimentLabel}
+              value={latestBtcFunding > 0.05 ? t.longOverheat : latestBtcFunding < -0.05 ? t.shortOverheat : t.neutral}
+              subValue={t.sentimentBasis}
               color={latestBtcFunding > 0.05 ? "text-rose-400" : latestBtcFunding < -0.05 ? "text-emerald-400" : "text-gray-400"}
               info={INFO.fundingSentiment} locale={locale}
             />
@@ -698,8 +770,8 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
           {/* BTC 펀딩비 히스토그램 */}
           <ChartCard
-            title="BTC 펀딩비 히스토리"
-            subtitle="양수(+): 롱 우세 · 음수(-): 숏 우세 · 8시간마다 정산"
+            title={t.btcFundingTitle}
+            subtitle={t.btcFundingSub}
             info={INFO.fundingChart} locale={locale}
           >
             {isLoading || btcFundingData.length === 0 ? (
@@ -714,8 +786,8 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 type="histogram"
                 color="#6366f1"
                 bandLines={[
-                  { value: 0.05, color: "#ef444480", label: "롱 과열", style: "dashed" },
-                  { value: -0.05, color: "#10b98180", label: "숏 과열", style: "dashed" },
+                  { value: 0.05, color: "#ef444480", label: t.longOverheat, style: "dashed" },
+                  { value: -0.05, color: "#10b98180", label: t.shortOverheat, style: "dashed" },
                   { value: 0, color: "rgba(255,255,255,0.2)", style: "solid" },
                 ]}
                 priceFormat={{ type: "price", precision: 4, minMove: 0.0001 }}
@@ -724,7 +796,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           </ChartCard>
 
           {/* ETH 펀딩비 */}
-          <ChartCard title="ETH 펀딩비 히스토리" subtitle="8시간 주기 펀딩비">
+          <ChartCard title={t.ethFundingTitle} subtitle={t.ethFundingSub}>
             {isLoading || (data?.fundingRates?.eth?.length ?? 0) === 0 ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />
             ) : (
@@ -745,19 +817,23 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
           {/* 펀딩비 해석 가이드 */}
           <div className="glass rounded-2xl p-5">
-            <h3 className="text-sm font-semibold text-white mb-4">📖 펀딩비 해석 가이드</h3>
+            <h3 className="text-sm font-semibold text-white mb-4">{t.fundingGuideTitle}</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              {[
-                { range: "+0.05% 이상", label: "롱 과열", desc: "청산 위험↑, 매도 신호 가능성", color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20" },
-                { range: "-0.01% ~ +0.01%", label: "중립", desc: "시장 균형 상태, 추세 불명확", color: "text-gray-300", bg: "bg-white/5 border-white/10" },
-                { range: "-0.05% 이하", label: "숏 과열", desc: "청산 위험↑, 반등 가능성", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
-              ].map((g) => (
-                <div key={g.range} className={cn("rounded-xl border p-4", g.bg)}>
-                  <div className={cn("text-xs font-bold mb-1 font-number", g.color)}>{g.range}</div>
-                  <div className="text-sm font-semibold text-white">{g.label}</div>
-                  <div className="text-xs text-gray-500 mt-1">{g.desc}</div>
-                </div>
-              ))}
+              {t.fundingGuides.map((g, i) => {
+                const colors = [
+                  { color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20" },
+                  { color: "text-gray-300", bg: "bg-white/5 border-white/10" },
+                  { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
+                ];
+                const { color, bg } = colors[i];
+                return (
+                  <div key={g.range} className={cn("rounded-xl border p-4", bg)}>
+                    <div className={cn("text-xs font-bold mb-1 font-number", color)}>{g.range}</div>
+                    <div className="text-sm font-semibold text-white">{g.label}</div>
+                    <div className="text-xs text-gray-500 mt-1">{g.desc}</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
