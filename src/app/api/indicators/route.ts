@@ -75,14 +75,15 @@ async function fetchCoinMetrics(metrics: string, days = 90): Promise<Record<stri
 async function fetchFundingRates(symbol: string, limit = 24): Promise<FundingRatePoint[]> {
   try {
     const res = await fetch(
-      `https://fapi.binance.com/fapi/v1/fundingRate?symbol=${symbol}&limit=${limit}`,
+      `https://api.bybit.com/v5/market/funding/history?category=linear&symbol=${symbol}&limit=${limit}`,
       { next: { revalidate: 300 } }
     );
     if (!res.ok) return [];
-    const data = await res.json();
-    return data.map((r: { fundingRate: string; fundingTime: number }) => ({
-      time: r.fundingTime,
-      value: parseFloat(r.fundingRate) * 100, // percentage
+    const json = await res.json();
+    if (json.retCode !== 0) return [];
+    return json.result.list.map((r: { fundingRate: string; fundingRateTimestamp: string }) => ({
+      time: parseInt(r.fundingRateTimestamp),
+      value: parseFloat(r.fundingRate) * 100,
       symbol,
     }));
   } catch {

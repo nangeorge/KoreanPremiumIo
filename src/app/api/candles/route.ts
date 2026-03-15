@@ -20,11 +20,11 @@ const UPBIT_UNIT: Record<Interval, string> = {
   "1w":  "weeks",
 };
 
-const BINANCE_INTERVAL: Record<Interval, string> = {
-  "1h":  "1h",
-  "4h":  "4h",
-  "1d":  "1d",
-  "1w":  "1w",
+const BYBIT_INTERVAL: Record<Interval, string> = {
+  "1h":  "60",
+  "4h":  "240",
+  "1d":  "D",
+  "1w":  "W",
 };
 
 // Coinbase Exchange supports: 60, 300, 900, 3600, 21600, 86400 seconds
@@ -63,21 +63,24 @@ async function fetchUpbitOHLC(market: string, interval: Interval, count = 200): 
     .sort((a, b) => a.time - b.time);
 }
 
-async function fetchBinanceOHLC(symbol: string, interval: Interval, limit = 200): Promise<OHLCCandle[]> {
-  const iv = BINANCE_INTERVAL[interval];
-  const url = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${iv}&limit=${limit}`;
+async function fetchBybitOHLC(symbol: string, interval: Interval, limit = 200): Promise<OHLCCandle[]> {
+  const iv = BYBIT_INTERVAL[interval];
+  const url = `https://api.bybit.com/v5/market/kline?category=spot&symbol=${symbol}&interval=${iv}&limit=${limit}`;
   const res = await fetch(url, { next: { revalidate: 0 } });
   if (!res.ok) return [];
-  const data = await res.json();
-  if (!Array.isArray(data)) return [];
+  const json = await res.json();
+  if (json.retCode !== 0 || !Array.isArray(json.result?.list)) return [];
 
-  return data.map((k: unknown[]) => ({
-    time:  Math.floor((k[0] as number) / 1000),
-    open:  parseFloat(k[1] as string),
-    high:  parseFloat(k[2] as string),
-    low:   parseFloat(k[3] as string),
-    close: parseFloat(k[4] as string),
-  }));
+  // Bybit returns [startTime, open, high, low, close, volume, turnover] newest first
+  return json.result.list
+    .map((k: string[]) => ({
+      time:  Math.floor(parseInt(k[0]) / 1000),
+      open:  parseFloat(k[1]),
+      high:  parseFloat(k[2]),
+      low:   parseFloat(k[3]),
+      close: parseFloat(k[4]),
+    }))
+    .sort((a: OHLCCandle, b: OHLCCandle) => a.time - b.time);
 }
 
 async function fetchCoinbaseOHLC(product: string, interval: Interval, limit = 200): Promise<OHLCCandle[]> {
@@ -176,7 +179,7 @@ export async function GET(req: Request) {
     if (type === "btc") {
       let candles: OHLCCandle[] = [];
       if (exchange === "binance") {
-        candles = await fetchBinanceOHLC("BTCUSDT", interval);
+        candles = await fetchBybitOHLC("BTCUSDT", interval);
       } else if (exchange === "coinbase") {
         candles = await fetchCoinbaseOHLC("BTC-USD", interval);
       } else {
@@ -190,7 +193,7 @@ export async function GET(req: Request) {
     // premium OHLC — always needs upbit + reference exchange
     const [upbitBTC, binanceBTC, fxRes] = await Promise.all([
       fetchUpbitOHLC("KRW-BTC", interval),
-      fetchBinanceOHLC("BTCUSDT", interval),
+      fetchBybitOHLC("BTCUSDT", interval),
       fetch("https://api.exchangerate-api.com/v4/latest/USD", { next: { revalidate: 300 } }),
     ]);
     const fxData = fxRes.ok ? await fxRes.json() : null;

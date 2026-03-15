@@ -223,7 +223,7 @@ export async function GET() {
     const origin = process.env.NEXT_PUBLIC_BASE_URL || "https://kimchipremium.com";
     return NextResponse.json(response, {
       headers: {
-        "Cache-Control": "no-store, max-age=0",
+        "Cache-Control": "public, s-maxage=5, stale-while-revalidate=10",
         "Access-Control-Allow-Origin": origin,
         "Vary": "Origin",
       },

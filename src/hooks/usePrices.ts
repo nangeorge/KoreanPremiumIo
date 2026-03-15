@@ -15,8 +15,8 @@ export function usePrices() {
 
   const { data, error, isLoading } = useSWR<PriceResponse>("/api/prices", fetcher, {
     refreshInterval: 5000,
-    revalidateOnFocus: true,
-    dedupingInterval: 3000,
+    revalidateOnFocus: false,
+    dedupingInterval: 4000,
   });
 
   useEffect(() => {
