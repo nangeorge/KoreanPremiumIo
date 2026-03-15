@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "首页",
+    "markets": "市场",
+    "premium": "溢价",
+    "about": "关于"
+  },
+  "hero": {
+    "title": "泡菜溢价",
+    "subtitle": "实时韩国加密货币价格差异追踪器",
+    "description": "实时追踪Upbit（韩元）与Binance（美元）之间的溢价",
+    "liveUpdate": "实时更新 · 每5秒刷新"
+  },
+  "table": {
+    "coin": "币种",
+    "upbit": "Upbit (KRW)",
+    "binance": "Binance (USD)",
+    "binanceKrw": "Binance (KRW换算)",
+    "premium": "泡菜溢价",
+    "change24h": "24小时涨跌",
+    "volume": "交易量"
+  },
+  "stats": {
+    "avgPremium": "平均溢价",
+    "exchangeRate": "韩元/美元汇率",
+    "marketStatus": "市场状态",
+    "lastUpdate": "最后更新",
+    "bullish": "看涨",
+    "bearish": "看跌",
+    "neutral": "中性"
+  },
+  "chart": {
+    "title": "溢价历史",
+    "premium": "溢价 (%)",
+    "hour1": "1小时",
+    "hour4": "4小时",
+    "day1": "1天",
+    "week1": "1周"
+  },
+  "footer": {
+    "description": "实时加密货币泡菜溢价追踪器",
+    "disclaimer": "本站仅供参考。用户对其投资决策负全部责任。",
+    "rights": "版权所有。",
+    "dataSource": "数据来源：Upbit、Binance"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "数据获取失败",
+    "retry": "重试",
+    "positive": "溢价",
+    "negative": "折价",
+    "refreshing": "更新中",
+    "updated": "已更新"
+  },
+  "alert": {
+    "title": "提醒设置",
+    "description": "当溢价达到目标时获得通知",
+    "threshold": "提醒阈值 (%)",
+    "enable": "启用提醒",
+    "comingSoon": "Chrome扩展即将推出"
+  }
+}

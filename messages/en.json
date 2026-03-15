@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "home": "Home",
+    "markets": "Markets",
+    "premium": "Premium",
+    "about": "About"
+  },
+  "hero": {
+    "title": "Kimchi Premium",
+    "subtitle": "Real-time Korean crypto price difference tracker",
+    "description": "Track the premium between Upbit (KRW) and Binance (USD) in real-time",
+    "liveUpdate": "Live updates · Refreshes every 5s"
+  },
+  "table": {
+    "coin": "Coin",
+    "upbit": "Upbit (KRW)",
+    "binance": "Binance (USD)",
+    "binanceKrw": "Binance (KRW eq.)",
+    "premium": "Kimchi Premium",
+    "change24h": "24h Change",
+    "volume": "Volume"
+  },
+  "stats": {
+    "avgPremium": "Avg Premium",
+    "exchangeRate": "USD/KRW Rate",
+    "marketStatus": "Market Status",
+    "lastUpdate": "Last Update",
+    "bullish": "Bullish",
+    "bearish": "Bearish",
+    "neutral": "Neutral"
+  },
+  "chart": {
+    "title": "Premium History",
+    "premium": "Premium (%)",
+    "hour1": "1H",
+    "hour4": "4H",
+    "day1": "1D",
+    "week1": "1W"
+  },
+  "footer": {
+    "description": "Real-time cryptocurrency kimchi premium tracker",
+    "disclaimer": "This site is for informational purposes only. Users are solely responsible for their investment decisions.",
+    "rights": "All rights reserved.",
+    "dataSource": "Data: Upbit, Binance",
+    "exchangeLinks": "Exchange Links",
+    "community": "Community & Resources",
+    "comingSoon": "Coming Soon",
+    "chromeExtension": "Chrome Extension Alert",
+    "mobileApp": "Mobile App (PWA)",
+    "subscription": "Subscription Service"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Failed to fetch data",
+    "retry": "Retry",
+    "positive": "Premium",
+    "negative": "Discount",
+    "refreshing": "Updating",
+    "updated": "Updated"
+  },
+  "alert": {
+    "title": "Alert Settings",
+    "description": "Get notified when premium reaches your target",
+    "threshold": "Alert threshold (%)",
+    "enable": "Enable alerts",
+    "comingSoon": "Chrome extension coming soon"
+  }
+}

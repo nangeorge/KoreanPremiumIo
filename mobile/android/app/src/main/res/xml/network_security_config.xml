@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration
+  - Disables cleartext (HTTP) traffic for all domains
+  - Pins the TLS certificate for our production API domain
+  - Allows debug overrides only in debug builds (handled by Android build system)
+
+  To update pins after certificate renewal:
+    1. Run: openssl s_client -connect your-domain.com:443 | openssl x509 -pubkey -noout | openssl pkey -pubin -outform DER | openssl dgst -sha256 -binary | base64
+    2. Replace the <pin> values below with the new SHA-256 fingerprints.
+    3. Always include at least one backup pin for the CA or an intermediate cert.
+-->
+<network-security-config>
+
+  <!-- Global: no cleartext HTTP anywhere -->
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+
+  <!-- Production API domain: certificate pinning -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">your-domain.com</domain>
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+    <pin-set expiration="2027-01-01">
+      <!--
+        Primary pin: SHA-256 of the Subject Public Key Info (SPKI) of your leaf cert.
+        Replace with the real value obtained from:
+          openssl s_client -connect your-domain.com:443 </dev/null \
+            | openssl x509 -pubkey -noout \
+            | openssl pkey -pubin -outform DER \
+            | openssl dgst -sha256 -binary \
+            | base64
+      -->
+      <pin digest="SHA-256">REPLACE_WITH_YOUR_LEAF_CERT_SPKI_BASE64=</pin>
+
+      <!--
+        Backup pin: SHA-256 of the SPKI of the issuing CA or an intermediate cert.
+        This prevents lockout if your leaf cert rotates.
+        Obtain similarly using the CA certificate.
+      -->
+      <pin digest="SHA-256">REPLACE_WITH_YOUR_CA_CERT_SPKI_BASE64=</pin>
+    </pin-set>
+  </domain-config>
+
+  <!-- Allow localhost for Metro bundler in development builds only -->
+  <!-- This block is stripped in release builds via flavors/build types -->
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="false">localhost</domain>
+    <domain includeSubdomains="false">10.0.2.2</domain>
+  </domain-config>
+
+</network-security-config>

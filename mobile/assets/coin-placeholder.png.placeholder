@@ -1,0 +1,2 @@
+This file is a placeholder. Replace with a real 32x32 PNG coin icon.
+The CoinRow component uses this as a defaultSource fallback when a coin logo URL fails to load.

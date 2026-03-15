@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "home": "홈",
+    "markets": "시장",
+    "premium": "프리미엄",
+    "about": "소개"
+  },
+  "hero": {
+    "title": "김치 프리미엄",
+    "subtitle": "실시간 국내외 암호화폐 가격 차이",
+    "description": "업비트(KRW) vs 바이낸스(USD) 기준 실시간 프리미엄을 확인하세요",
+    "liveUpdate": "실시간 업데이트 · 5초마다 갱신"
+  },
+  "table": {
+    "coin": "코인",
+    "upbit": "업비트 (KRW)",
+    "binance": "바이낸스 (USD)",
+    "binanceKrw": "바이낸스 (KRW 환산)",
+    "premium": "김치 프리미엄",
+    "change24h": "24시간 변동",
+    "volume": "거래량"
+  },
+  "stats": {
+    "avgPremium": "평균 프리미엄",
+    "exchangeRate": "원/달러 환율",
+    "marketStatus": "시장 상태",
+    "lastUpdate": "마지막 업데이트",
+    "bullish": "강세",
+    "bearish": "약세",
+    "neutral": "중립"
+  },
+  "chart": {
+    "title": "프리미엄 추이",
+    "premium": "프리미엄 (%)",
+    "hour1": "1시간",
+    "hour4": "4시간",
+    "day1": "1일",
+    "week1": "1주"
+  },
+  "footer": {
+    "description": "실시간 암호화폐 김치 프리미엄 트래커",
+    "disclaimer": "본 사이트는 정보 제공 목적으로만 운영됩니다. 투자 결정에 대한 책임은 사용자 본인에게 있습니다.",
+    "rights": "All rights reserved.",
+    "dataSource": "데이터 출처: 업비트, 바이낸스",
+    "exchangeLinks": "거래소 링크",
+    "community": "커뮤니티 & 리소스",
+    "comingSoon": "출시 예정",
+    "chromeExtension": "크롬 익스텐션 알람",
+    "mobileApp": "모바일 앱 (PWA)",
+    "subscription": "구독 서비스"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "error": "데이터를 불러오지 못했습니다",
+    "retry": "다시 시도",
+    "positive": "프리미엄",
+    "negative": "역프리미엄",
+    "refreshing": "업데이트 중",
+    "updated": "업데이트됨"
+  },
+  "alert": {
+    "title": "알림 설정",
+    "description": "원하는 프리미엄 구간에서 알림을 받으세요",
+    "threshold": "알림 기준값 (%)",
+    "enable": "알림 활성화",
+    "comingSoon": "크롬 익스텐션 출시 예정"
+  }
+}

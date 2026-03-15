@@ -1,0 +1,101 @@
+{
+  "expo": {
+    "name": "Kimchi Premium",
+    "slug": "kimchi-premium",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "kimchipremium",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0f"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.kimchipremium.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSAllowsArbitraryLoads": false,
+        "NSExceptionDomains": {
+          "kimchi-premium.com": {
+            "NSExceptionAllowsInsecureHTTPLoads": false,
+            "NSExceptionMinimumTLSVersion": "TLSv1.2",
+            "NSIncludesSubdomains": true
+          }
+        },
+        "UIBackgroundModes": ["remote-notification"]
+      },
+      "entitlements": {
+        "aps-environment": "production"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a0a0f"
+      },
+      "package": "com.kimchipremium.app",
+      "versionCode": 1,
+      "usesCleartextTraffic": false,
+      "networkSecurityConfig": "./android/app/src/main/res/xml/network_security_config.xml",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#6366f1",
+          "sounds": [],
+          "androidMode": "default",
+          "androidCollapsedTitle": "Kimchi Premium"
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": "Allow Kimchi Premium to access stored credentials."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "minSdkVersion": 26
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
