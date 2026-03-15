@@ -94,9 +94,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href={BASE_URL} />
-        {/* Google AdSense — ID 발급 후 NEXT_PUBLIC_ADSENSE_ID 환경변수 설정 */}
         {ADSENSE_ID && (
-          <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
+          <>
+            <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${ADSENSE_ID}`}
+              crossOrigin="anonymous"
+            />
+          </>
         )}
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
