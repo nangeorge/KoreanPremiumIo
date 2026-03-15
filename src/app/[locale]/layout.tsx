@@ -9,7 +9,7 @@ import { DataProvider } from "@/components/coins/DataProvider";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://kimchipremium.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://koreanpremium.io";
 
 type Params = { locale: string };
 
