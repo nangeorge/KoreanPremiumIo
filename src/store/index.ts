@@ -40,7 +40,7 @@ export const useAppStore = create<AppState>((set) => ({
   sortField: "default",
   sortDirection: "asc",
   selectedSymbol: "BTC",
-  selectedExchange: "binance",
+  selectedExchange: "coinbase",
   isLoading: true,
   error: null,
   alerts: [],
