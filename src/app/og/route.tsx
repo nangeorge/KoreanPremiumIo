@@ -7,18 +7,18 @@ export const revalidate = 60;
 
 async function fetchBtcPremium(): Promise<{ premium: number | null; upbitPrice: number; binancePrice: number; rate: number }> {
   try {
-    const [upbitRes, binanceRes, rateRes] = await Promise.allSettled([
+    const [upbitRes, bybitRes, rateRes] = await Promise.allSettled([
       fetch("https://api.upbit.com/v1/ticker?markets=KRW-BTC", { next: { revalidate: 60 } }),
-      fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT", { next: { revalidate: 60 } }),
+      fetch("https://api.bybit.com/v5/market/tickers?category=spot&symbol=BTCUSDT", { next: { revalidate: 60 } }),
       fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json", { next: { revalidate: 3600 } }),
     ]);
 
     const upbitData = upbitRes.status === "fulfilled" && upbitRes.value.ok ? await upbitRes.value.json() : null;
-    const binanceData = binanceRes.status === "fulfilled" && binanceRes.value.ok ? await binanceRes.value.json() : null;
+    const bybitData = bybitRes.status === "fulfilled" && bybitRes.value.ok ? await bybitRes.value.json() : null;
     const rateData = rateRes.status === "fulfilled" && rateRes.value.ok ? await rateRes.value.json() : null;
 
     const upbitPrice: number = upbitData?.[0]?.trade_price ?? 0;
-    const binancePrice: number = parseFloat(binanceData?.price ?? "0");
+    const binancePrice: number = parseFloat(bybitData?.result?.list?.[0]?.lastPrice ?? "0");
     const rate: number = rateData?.usd?.krw ?? 1350;
     const binancePriceKrw = binancePrice * rate;
 
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
 
         {/* 하단 도메인 */}
         <div style={{ position: "absolute", bottom: 28, color: "#374151", fontSize: 14 }}>
-          kimchipremium.com
+          koreanpremium.io
         </div>
       </div>
     ),
