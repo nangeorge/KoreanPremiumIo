@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "김프",
+    title: "KP Index",
   },
   openGraph: {
     type: "website",

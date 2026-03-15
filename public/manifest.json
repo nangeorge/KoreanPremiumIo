@@ -1,7 +1,7 @@
 {
-  "name": "김치 프리미엄 | Kimchi Premium",
-  "short_name": "김프",
-  "description": "실시간 암호화폐 김치 프리미엄 트래커",
+  "name": "Korea Premium Index",
+  "short_name": "KP Index",
+  "description": "Real-time Korea crypto premium tracker — Upbit vs Binance",
   "start_url": "/ko",
   "display": "standalone",
   "background_color": "#0a0a0f",
