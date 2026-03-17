@@ -73,16 +73,20 @@ async function fetchCoinMetrics(metrics: string, days = 90): Promise<Record<stri
 }
 
 async function fetchFundingRates(symbol: string, limit = 24): Promise<FundingRatePoint[]> {
+  // symbol: BTCUSDT → BTC-USDT-SWAP (OKX perpetual)
+  const okxSymbol = symbol.endsWith("USDT")
+    ? symbol.slice(0, -4) + "-USDT-SWAP"
+    : symbol;
   try {
     const res = await fetch(
-      `https://api.bybit.com/v5/market/funding/history?category=linear&symbol=${symbol}&limit=${limit}`,
+      `https://www.okx.com/api/v5/public/funding-rate-history?instId=${okxSymbol}&limit=${limit}`,
       { next: { revalidate: 300 } }
     );
     if (!res.ok) return [];
     const json = await res.json();
-    if (json.retCode !== 0) return [];
-    return json.result.list.map((r: { fundingRate: string; fundingRateTimestamp: string }) => ({
-      time: parseInt(r.fundingRateTimestamp),
+    if (json.code !== "0") return [];
+    return json.data.map((r: { fundingRate: string; fundingTime: string }) => ({
+      time: parseInt(r.fundingTime),
       value: parseFloat(r.fundingRate) * 100,
       symbol,
     }));

@@ -1,5 +1,5 @@
-// Bybit API — Binance 대체 (Vercel에서 Binance IP 차단 대응)
-const BYBIT_API = "https://api.bybit.com/v5/market/tickers?category=spot";
+// OKX API — Binance/Bybit 대체 (Vercel에서 IP 차단 대응)
+const OKX_API = "https://www.okx.com/api/v5/market/tickers?instType=SPOT";
 
 export interface BinanceTicker {
   symbol: string;
@@ -8,21 +8,26 @@ export interface BinanceTicker {
   quoteVolume: string;
 }
 
-interface BybitTicker {
-  symbol: string;
-  lastPrice: string;
-  price24hPcnt: string;
-  volume24h: string;
-  turnover24h: string;
+interface OkxTicker {
+  instId: string;
+  last: string;
+  open24h: string;
+  volCcy24h: string;
 }
 
-interface BybitResponse {
-  retCode: number;
-  result: { list: BybitTicker[] };
+interface OkxResponse {
+  code: string;
+  data: OkxTicker[];
 }
 
-let cache: { data: BinanceTicker[]; ts: number } | null = null;
+let cache: { data: Map<string, BinanceTicker>; ts: number } | null = null;
 const CACHE_MS = 5000;
+
+// BTCUSDT → BTC-USDT 변환
+function toOkxSymbol(symbol: string): string {
+  if (symbol.endsWith("USDT")) return symbol.slice(0, -4) + "-USDT";
+  return symbol;
+}
 
 export async function fetchBinancePrices(symbols: string[]): Promise<BinanceTicker[]> {
   const valid = symbols.filter(Boolean);
@@ -30,25 +35,39 @@ export async function fetchBinancePrices(symbols: string[]): Promise<BinanceTick
 
   // 5초 캐시
   if (cache && Date.now() - cache.ts < CACHE_MS) {
-    return cache.data.filter((t) => valid.includes(t.symbol));
+    return valid.flatMap((s) => {
+      const t = cache!.data.get(s);
+      return t ? [t] : [];
+    });
   }
 
   try {
-    const res = await fetch(BYBIT_API, { next: { revalidate: 5 } });
+    const res = await fetch(OKX_API, { next: { revalidate: 5 } });
     if (!res.ok) return [];
 
-    const json: BybitResponse = await res.json();
-    if (json.retCode !== 0) return [];
+    const json: OkxResponse = await res.json();
+    if (json.code !== "0") return [];
 
-    const all: BinanceTicker[] = json.result.list.map((t) => ({
-      symbol: t.symbol,
-      lastPrice: t.lastPrice,
-      priceChangePercent: (parseFloat(t.price24hPcnt) * 100).toFixed(2),
-      quoteVolume: t.turnover24h,
-    }));
+    const map = new Map<string, BinanceTicker>();
+    for (const t of json.data) {
+      // BTC-USDT → BTCUSDT 역변환해서 map에 저장
+      const binanceSymbol = t.instId.replace("-", "");
+      const open = parseFloat(t.open24h);
+      const last = parseFloat(t.last);
+      const changePct = open > 0 ? ((last - open) / open) * 100 : 0;
+      map.set(binanceSymbol, {
+        symbol: binanceSymbol,
+        lastPrice: t.last,
+        priceChangePercent: changePct.toFixed(2),
+        quoteVolume: t.volCcy24h,
+      });
+    }
 
-    cache = { data: all, ts: Date.now() };
-    return all.filter((t) => valid.includes(t.symbol));
+    cache = { data: map, ts: Date.now() };
+    return valid.flatMap((s) => {
+      const t = map.get(s);
+      return t ? [t] : [];
+    });
   } catch {
     return [];
   }
