@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
+import { cn, formatPremium } from "@/lib/utils";
 import { useAppStore } from "@/store";
 
 const LOCALES = [
@@ -18,6 +18,8 @@ export function Header() {
   const router = useRouter();
   const exchangeRate = useAppStore((s) => s.exchangeRate);
   const updatedAt = useAppStore((s) => s.updatedAt);
+  const coins = useAppStore((s) => s.coins);
+  const btcPremium = coins.find((c) => c.symbol === "BTC")?.premium ?? null;
 
   function switchLocale(newLocale: string) {
     // Replace locale prefix in pathname
@@ -42,11 +44,24 @@ export function Header() {
           </Link>
 
           {/* Center: Live stats */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
               <span className="text-xs text-gray-400">LIVE</span>
             </div>
+            {btcPremium !== null && (
+              <div className={cn(
+                "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-number font-bold transition-all duration-500",
+                btcPremium >= 7  ? "border-red-500/40 bg-red-500/10 text-red-300" :
+                btcPremium >= 4  ? "border-orange-500/35 bg-orange-500/10 text-orange-300" :
+                btcPremium >= 2  ? "border-yellow-500/30 bg-yellow-500/8 text-yellow-300" :
+                btcPremium >= 0  ? "border-emerald-500/30 bg-emerald-500/8 text-emerald-300" :
+                                   "border-blue-500/25 bg-blue-500/8 text-blue-300"
+              )}>
+                <span className="text-gray-500 font-normal">BTC 김프</span>
+                {formatPremium(btcPremium)}
+              </div>
+            )}
             {exchangeRate > 0 && (
               <div className="flex items-center gap-1 text-xs font-number">
                 <span className="text-gray-500">$1</span>

@@ -83,12 +83,20 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
     prevPriceRef.current = coin.upbitPrice;
   }, [coin.upbitPrice]);
 
+  const rowGlow =
+    premium === null ? "" :
+    premium >= 7  ? "bg-red-500/5" :
+    premium >= 4  ? "bg-orange-500/4" :
+    premium >= 2  ? "bg-yellow-500/3" :
+    premium < -2  ? "bg-blue-500/4" :
+    "";
+
   return (
     <tr
       onClick={onClick}
       className={cn(
         "group cursor-pointer border-b border-white/4 transition-all duration-150",
-        isSelected ? "bg-indigo-600/8 border-indigo-500/20" : "hover:bg-white/2"
+        isSelected ? "bg-indigo-600/8 border-indigo-500/20" : cn(rowGlow, "hover:bg-white/2")
       )}
     >
       {/* 순위 — 정렬 무관 고정 */}
