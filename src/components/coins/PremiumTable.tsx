@@ -152,7 +152,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         </span>
       </td>
 
-      {/* 김치 프리미엄 */}
+      {/* 김치 프리미엄 — heatmap 강도 색상 */}
       <td className="px-3 py-4 text-right pr-4 sm:pr-6">
         {premium === null ? (
           <span className="inline-flex items-center rounded-full px-2.5 py-1 text-sm font-medium border bg-white/4 border-white/10 text-gray-600">
@@ -161,10 +161,13 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         ) : (
           <span
             className={cn(
-              "inline-flex items-center rounded-full px-3 py-1.5 text-base font-extrabold font-number border tracking-tight shadow-sm",
-              premium >= 0
-                ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300 shadow-emerald-500/10"
-                : "bg-rose-500/15 border-rose-500/30 text-rose-300 shadow-rose-500/10"
+              "inline-flex items-center rounded-full px-3 py-1.5 text-base font-extrabold font-number border tracking-tight",
+              premium >= 7  ? "bg-red-500/30 border-red-400/60 text-red-200 shadow-sm shadow-red-500/30" :
+              premium >= 4  ? "bg-orange-500/25 border-orange-400/50 text-orange-200 shadow-sm shadow-orange-500/20" :
+              premium >= 2  ? "bg-yellow-500/15 border-yellow-400/35 text-yellow-200" :
+              premium >= 0  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300" :
+              premium >= -2 ? "bg-white/5 border-white/10 text-gray-400" :
+                              "bg-blue-500/15 border-blue-400/30 text-blue-300"
             )}
           >
             {formatPremium(premium)}
