@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, memo } from "react";
+import { useState, useMemo, useRef, useEffect, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useAppStore } from "@/store";
 import {
@@ -17,12 +17,43 @@ import Image from "next/image";
 import Link from "next/link";
 
 const COIN_ORDER: string[] = SUPPORTED_COINS.map((c) => c.symbol);
+// 정렬과 무관한 고정 순위 (SUPPORTED_COINS 기준, BTC=1, ETH=2...)
+const COIN_RANK: Record<string, number> = Object.fromEntries(COIN_ORDER.map((s, i) => [s, i + 1]));
 
+// ── 카테고리 ──────────────────────────────────────────────────────────────────
+type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "korea";
+
+const CATEGORY_SYMBOLS: Record<Category, Set<string> | null> = {
+  all: null,
+  top: new Set(["BTC","ETH","XRP","SOL","ADA","DOGE","TRX","TON","AVAX","SHIB","LTC","BCH","LINK","ATOM","DOT","UNI","APT","SUI","ICP","NEAR"]),
+  meme: new Set(["DOGE","SHIB","PEPE","BONK","WIF","PENGU"]),
+  defi: new Set(["UNI","AAVE","COMP","1INCH","PENDLE","ONDO","RAY","GRT","STG","COW","ZRX","BLUR","ENA","ETHFI","PYTH"]),
+  layer2: new Set(["POL","OP","ARB","IMX","MNT","BLAST","ZK","STX","TAIKO","LAYER","ALT","ZETA","BERA","MOVE","SONIC"]),
+  ai: new Set(["RENDER","VIRTUAL","ARKM","AKT","MOCA","API3"]),
+  game: new Set(["SAND","MANA","AXS","GMT","YGG","BIGTIME","BEAM","CARV","ANIME"]),
+  korea: new Set(["BORA","MBL","MLK","HUNT","MED","ICX","VTHO","BTT","IOST","AERGO","POLYX","ARDR","RED","SNT"]),
+};
+
+const CATEGORY_LABELS: Record<Category, { ko: string; en: string; zh: string }> = {
+  all:    { ko: "전체",     en: "All",     zh: "全部"   },
+  top:    { ko: "시총 Top", en: "Top Cap", zh: "主流"   },
+  meme:   { ko: "밈코인",   en: "Meme",    zh: "Meme"   },
+  defi:   { ko: "DeFi",    en: "DeFi",    zh: "DeFi"   },
+  layer2: { ko: "Layer2",  en: "Layer2",  zh: "Layer2" },
+  ai:     { ko: "AI",      en: "AI",      zh: "AI"     },
+  game:   { ko: "게임",     en: "Game",    zh: "游戏"   },
+  korea:  { ko: "한국전용", en: "KR Only", zh: "韩国限定"},
+};
+
+const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
+
+// ── 정렬 아이콘 ────────────────────────────────────────────────────────────────
 function SortIcon({ field, current, dir }: { field: string; current: string; dir: string }) {
   if (current === "default" || field !== current) return <span className="text-gray-700">↕</span>;
   return <span className="text-indigo-400">{dir === "asc" ? "↑" : "↓"}</span>;
 }
 
+// ── 코인 행 ────────────────────────────────────────────────────────────────────
 const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
   coin: CoinPrice;
   isSelected: boolean;
@@ -38,6 +69,20 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
   const extPriceKrw = exchange === "coinbase" ? coin.coinbasePriceKrw : coin.binancePriceKrw;
   const premium = exchange === "coinbase" ? coin.coinbasePremium : coin.premium;
 
+  // 가격 변동 플래시
+  const prevPriceRef = useRef<number>(coin.upbitPrice);
+  const [flashClass, setFlashClass] = useState<string>("");
+  useEffect(() => {
+    if (prevPriceRef.current !== 0 && prevPriceRef.current !== coin.upbitPrice) {
+      const cls = coin.upbitPrice > prevPriceRef.current ? "flash-up" : "flash-down";
+      setFlashClass(cls);
+      const t = setTimeout(() => setFlashClass(""), 800);
+      prevPriceRef.current = coin.upbitPrice;
+      return () => clearTimeout(t);
+    }
+    prevPriceRef.current = coin.upbitPrice;
+  }, [coin.upbitPrice]);
+
   return (
     <tr
       onClick={onClick}
@@ -46,16 +91,21 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         isSelected ? "bg-indigo-600/8 border-indigo-500/20" : "hover:bg-white/2"
       )}
     >
-      {/* 코인명 */}
-      <td className="py-4 pl-4 pr-3 sm:pl-6">
-        <div className="flex items-center gap-3">
-          <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-white/5">
+      {/* 순위 — 정렬 무관 고정 */}
+      <td className="hidden w-8 py-4 pl-4 text-center text-xs text-gray-600 sm:table-cell">
+        {COIN_RANK[coin.symbol] ?? "—"}
+      </td>
+
+      {/* 코인명 — 모바일 sticky */}
+      <td className="sticky left-0 z-10 bg-[#0a0a0f] py-4 pl-3 pr-3 group-hover:bg-[#111118] sm:pl-4">
+        <div className="flex items-center gap-2.5">
+          <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-white/5">
             {coin.logoUrl && (
               <Image
                 src={coin.logoUrl}
                 alt={coin.symbol}
                 fill
-                sizes="36px"
+                sizes="32px"
                 className="object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
               />
@@ -67,13 +117,13 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
             className="hover:opacity-80 transition-opacity"
           >
             <div className="font-semibold text-white text-sm hover:text-indigo-300 transition-colors">{coin.symbol}</div>
-            <div className="text-xs text-gray-500">{name}</div>
+            <div className="text-xs text-gray-500 hidden xs:block">{name}</div>
           </Link>
         </div>
       </td>
 
       {/* 업비트 가격 (KRW) */}
-      <td className="px-3 py-4 text-right">
+      <td className={cn("px-3 py-4 text-right", flashClass)}>
         <div className="font-number text-sm font-medium text-white">
           ₩{formatKrw(coin.upbitPrice)}
         </div>
@@ -130,12 +180,14 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
   );
 });
 
+// ── 스켈레톤 ──────────────────────────────────────────────────────────────────
 function SkeletonRow() {
   return (
     <tr className="border-b border-white/4">
-      <td className="py-4 pl-4 pr-3 sm:pl-6">
-        <div className="flex items-center gap-3">
-          <div className="skeleton h-9 w-9 rounded-full" />
+      <td className="hidden w-8 py-4 pl-4 sm:table-cell"><div className="skeleton h-3 w-4 rounded mx-auto" /></td>
+      <td className="sticky left-0 z-10 bg-[#0a0a0f] py-4 pl-3 pr-3 sm:pl-4">
+        <div className="flex items-center gap-2.5">
+          <div className="skeleton h-8 w-8 rounded-full" />
           <div>
             <div className="skeleton h-4 w-12 rounded mb-1" />
             <div className="skeleton h-3 w-16 rounded" />
@@ -154,6 +206,7 @@ function SkeletonRow() {
   );
 }
 
+// ── 메인 컴포넌트 ──────────────────────────────────────────────────────────────
 export function PremiumTable() {
   const t = useTranslations("table");
   const locale = useLocale();
@@ -167,6 +220,8 @@ export function PremiumTable() {
   const setSortDirection = useAppStore((s) => s.setSortDirection);
   const setSelectedSymbol = useAppStore((s) => s.setSelectedSymbol);
   const setSelectedExchange = useAppStore((s) => s.setSelectedExchange);
+
+  const [activeCategory, setActiveCategory] = useState<Category>("all");
 
   function handleSort(field: SortField) {
     if (sortField === field) {
@@ -182,25 +237,30 @@ export function PremiumTable() {
     }
   }
 
-  const sorted = useMemo(() => [...coins].sort((a, b) => {
-    if (sortField === "default") {
-      return COIN_ORDER.indexOf(a.symbol) - COIN_ORDER.indexOf(b.symbol);
-    }
-    const val = sortDirection === "asc" ? 1 : -1;
-    if (sortField === "symbol") return val * a.symbol.localeCompare(b.symbol);
-    if (sortField === "upbitPrice") return val * (a.upbitPrice - b.upbitPrice);
-    if (sortField === "premium") {
-      const ap = selectedExchange === "coinbase" ? a.coinbasePremium : a.premium;
-      const bp = selectedExchange === "coinbase" ? b.coinbasePremium : b.premium;
-      if (ap === null && bp === null) return 0;
-      if (ap === null) return 1;  // null은 항상 맨 뒤
-      if (bp === null) return -1;
-      return val * (ap - bp);
-    }
-    if (sortField === "change24h") return val * (a.change24h - b.change24h);
-    if (sortField === "volume24h") return val * (a.volume24h - b.volume24h);
-    return 0;
-  }), [coins, sortField, sortDirection, selectedExchange]);
+  const sorted = useMemo(() => {
+    const symbolSet = CATEGORY_SYMBOLS[activeCategory];
+    const filtered = symbolSet ? coins.filter((c) => symbolSet.has(c.symbol)) : coins;
+
+    return [...filtered].sort((a, b) => {
+      if (sortField === "default") {
+        return COIN_ORDER.indexOf(a.symbol) - COIN_ORDER.indexOf(b.symbol);
+      }
+      const val = sortDirection === "asc" ? 1 : -1;
+      if (sortField === "symbol") return val * a.symbol.localeCompare(b.symbol);
+      if (sortField === "upbitPrice") return val * (a.upbitPrice - b.upbitPrice);
+      if (sortField === "premium") {
+        const ap = selectedExchange === "coinbase" ? a.coinbasePremium : a.premium;
+        const bp = selectedExchange === "coinbase" ? b.coinbasePremium : b.premium;
+        if (ap === null && bp === null) return 0;
+        if (ap === null) return 1;
+        if (bp === null) return -1;
+        return val * (ap - bp);
+      }
+      if (sortField === "change24h") return val * (a.change24h - b.change24h);
+      if (sortField === "volume24h") return val * (a.volume24h - b.volume24h);
+      return 0;
+    });
+  }, [coins, sortField, sortDirection, selectedExchange, activeCategory]);
 
   const headerClass =
     "cursor-pointer select-none py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-300 transition-colors";
@@ -210,10 +270,35 @@ export function PremiumTable() {
     ? (locale === "ko" ? "코인베이스 / 원화 환산" : "Coinbase / KRW equiv.")
     : (locale === "ko" ? `${t("binance")} / 원화 환산` : `${t("binance")} / KRW equiv.`);
 
+  const catLabel = (cat: Category) => {
+    const l = CATEGORY_LABELS[cat];
+    return locale === "ko" ? l.ko : locale === "zh" ? l.zh : l.en;
+  };
+
   return (
     <div className="glass rounded-2xl overflow-hidden">
+      {/* 카테고리 탭 */}
+      <div className="px-4 pt-4 sm:px-6">
+        <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={cn(
+                "flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                activeCategory === cat
+                  ? "bg-indigo-600 text-white"
+                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200"
+              )}
+            >
+              {catLabel(cat)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* 거래소 선택 */}
-      <div className="flex items-center gap-2 px-4 pt-4 sm:px-6">
+      <div className="flex items-center gap-2 px-4 pb-3 sm:px-6">
         <span className="text-xs text-gray-500">비교 거래소</span>
         <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
           {(["binance", "coinbase"] as const).map((ex) => (
@@ -237,14 +322,19 @@ export function PremiumTable() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/5 bg-white/2">
+              {/* 순위 헤더 */}
+              <th className="hidden w-8 py-3 pl-4 text-center text-xs text-gray-600 sm:table-cell">#</th>
+
+              {/* 코인 헤더 — sticky */}
               <th
-                className={cn(headerClass, "pl-4 pr-3 text-left sm:pl-6")}
+                className={cn(headerClass, "sticky left-0 z-10 bg-[#111118] pl-3 text-left sm:pl-4")}
                 onClick={() => handleSort("symbol")}
               >
                 <span className="flex items-center gap-1">
                   {t("coin")} <SortIcon field="symbol" current={sortField} dir={sortDirection} />
                 </span>
               </th>
+
               <th
                 className={cn(headerClass, "px-3 text-right")}
                 onClick={() => handleSort("upbitPrice")}
@@ -259,7 +349,7 @@ export function PremiumTable() {
                 onClick={() => handleSort("change24h")}
               >
                 <span className="flex items-center justify-end gap-1">
-                  {t("change24h")} <SortIcon field="change24h" current={sortField} dir={sortDirection} />
+                  {t("change24h")} <span className="text-gray-600 normal-case">(Upbit)</span> <SortIcon field="change24h" current={sortField} dir={sortDirection} />
                 </span>
               </th>
               <th
@@ -283,7 +373,7 @@ export function PremiumTable() {
           <tbody>
             {isLoading
               ? Array.from({ length: 8 }).map((_, i) => <SkeletonRow key={i} />)
-              : sorted.map((coin) => (
+              : sorted.map((coin, idx) => (
                   <CoinRow
                     key={coin.symbol}
                     coin={coin}

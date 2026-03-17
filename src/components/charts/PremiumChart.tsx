@@ -87,6 +87,7 @@ export function PremiumChart() {
           priceFormat={{ type: "price", precision: 3, minMove: 0.001 }}
         />
       )}
+      <div className="mt-2 text-right text-xs text-gray-700">Data: Upbit / OKX</div>
     </div>
   );
 }

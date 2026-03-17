@@ -20,11 +20,8 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "assets.coingecko.com" },
-    ],
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 3600,
+    minimumCacheTTL: 86400, // 24시간 캐시 (로고는 변경 거의 없음)
   },
   async headers() {
     return [
@@ -34,6 +31,12 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
+        ],
+      },
+      {
+        source: "/logos/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=604800, immutable" }, // 7일
         ],
       },
     ];

@@ -193,9 +193,9 @@ function MetricCard({
 
 // ── 차트 섹션 카드 ───────────────────────────────────────────────
 function ChartCard({
-  title, subtitle, badge, badgeBg, info, locale, children,
+  title, subtitle, badge, badgeBg, info, locale, source, children,
 }: {
-  title: string; subtitle?: string; badge?: string; badgeBg?: string; info?: InfoText; locale?: string; children: React.ReactNode;
+  title: string; subtitle?: string; badge?: string; badgeBg?: string; info?: InfoText; locale?: string; source?: string; children: React.ReactNode;
 }) {
   return (
     <div className="glass rounded-2xl p-5">
@@ -212,6 +212,7 @@ function ChartCard({
         )}
       </div>
       {children}
+      {source && <div className="mt-2 text-right text-xs text-gray-700">Data: {source}</div>}
     </div>
   );
 }
@@ -527,7 +528,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             subtitle={t.mvrvChartSub}
             badge={isLoading ? "..." : currentMvrv.toFixed(3)}
             badgeBg={mvrvZone.bg + " " + mvrvZone.color}
-            info={INFO.mvrvChart} locale={locale}
+            info={INFO.mvrvChart} locale={locale} source="Glassnode"
           >
             {isLoading ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 200 }} />
@@ -551,7 +552,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             subtitle={t.hashChartSub}
             badge={isLoading ? "..." : (hashData.at(-1)?.value.toFixed(1) ?? "—") + " EH/s"}
             badgeBg="bg-purple-500/10 border-purple-500/20 text-purple-400"
-            info={INFO.hashRate} locale={locale}
+            info={INFO.hashRate} locale={locale} source="blockchain.com"
           >
             {isLoading ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />
@@ -570,14 +571,14 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
           {/* 활성 주소 & 트랜잭션 */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <ChartCard title={`Active Addresses (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.addrChartSub} info={INFO.activeAddr} locale={locale}>
+            <ChartCard title={`Active Addresses (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.addrChartSub} info={INFO.activeAddr} locale={locale} source="Glassnode">
               {isLoading ? (
                 <div className="skeleton w-full rounded-lg" style={{ height: 160 }} />
               ) : (
                 <TVChart data={addrData} height={160} type="area" color="#06b6d4" topColor="#06b6d440" bottomColor="#06b6d404" />
               )}
             </ChartCard>
-            <ChartCard title={`Transaction Count (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.txChartSub} info={INFO.txCount} locale={locale}>
+            <ChartCard title={`Transaction Count (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`} subtitle={t.txChartSub} info={INFO.txCount} locale={locale} source="Glassnode">
               {isLoading ? (
                 <div className="skeleton w-full rounded-lg" style={{ height: 160 }} />
               ) : (
@@ -695,7 +696,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             subtitle={locale === "ko" ? "30↑ 공포 · 20~30 주의 · 20↓ 안정" : "30↑ Fear · 20–30 Caution · 20↓ Calm"}
             badge={vix ? vix.value.toFixed(1) : "—"}
             badgeBg={`border ${vix ? (vix.value >= 30 ? "bg-red-500/10 border-red-500/20 text-red-400" : vix.value >= 20 ? "bg-orange-500/10 border-orange-500/20 text-orange-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400") : "bg-white/5 border-white/10 text-gray-400"}`}
-            info={INFO.vix} locale={locale}
+            info={INFO.vix} locale={locale} source="Yahoo Finance (CBOE)"
           >
             {isLoading || vixData.length === 0 ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />
@@ -714,7 +715,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           </ChartCard>
 
           {/* 김프 히스토리 */}
-          <ChartCard title={t.kimchiHistoryTitle} subtitle={t.kimchiHistorySub} info={INFO.kimchiPremium} locale={locale}>
+          <ChartCard title={t.kimchiHistoryTitle} subtitle={t.kimchiHistorySub} info={INFO.kimchiPremium} locale={locale} source="Upbit / OKX">
             {premiumData.length < 3 ? (
               <div className="flex h-40 items-center justify-center text-sm text-gray-500">{t.collectingData}</div>
             ) : (
@@ -772,7 +773,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           <ChartCard
             title={t.btcFundingTitle}
             subtitle={t.btcFundingSub}
-            info={INFO.fundingChart} locale={locale}
+            info={INFO.fundingChart} locale={locale} source="OKX"
           >
             {isLoading || btcFundingData.length === 0 ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 200 }} />
@@ -796,7 +797,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           </ChartCard>
 
           {/* ETH 펀딩비 */}
-          <ChartCard title={t.ethFundingTitle} subtitle={t.ethFundingSub}>
+          <ChartCard title={t.ethFundingTitle} subtitle={t.ethFundingSub} source="OKX">
             {isLoading || (data?.fundingRates?.eth?.length ?? 0) === 0 ? (
               <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />
             ) : (

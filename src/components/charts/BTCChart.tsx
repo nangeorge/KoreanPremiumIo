@@ -155,6 +155,7 @@ export function BTCChart() {
           priceFormat={priceFormat}
         />
       )}
+      <div className="mt-2 text-right text-xs text-gray-700">Data: OKX · Upbit</div>
     </div>
   );
 }
