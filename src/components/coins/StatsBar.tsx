@@ -156,10 +156,31 @@ export function StatsBar() {
 
           {/* 오른쪽: 그라디언트 게이지 */}
           <div className="flex-1 min-w-0">
-            {/* 존 레이블 */}
-            <div className="flex justify-between mb-2 px-0.5">
-              {zoneLabels.map((l, i) => (
-                <span key={i} className="text-[10px] text-gray-600">{l}</span>
+            {/*
+              스케일: -5% ~ +10% (총 범위 15%)
+              각 프리미엄 값의 시각적 위치 = (p + 5) / 15 * 100
+                -5% → 0%,  0% → 33.3%,  +2% → 46.7%,  +5% → 66.7%,  +7% → 80%,  +10% → 100%
+              존 레이블: 각 구간 중앙
+                역프(−5~0): 16.7%  / 중립(0~+2): 40%  / 주의(+2~+4): 53.4%
+                고점(+4~+7): 70%   / 극과열(+7~+10): 90%
+            */}
+
+            {/* 존 레이블 (절대 위치) */}
+            <div className="relative h-4 mb-1">
+              {([
+                { label: zoneLabels[0], pct: 16.7 },
+                { label: zoneLabels[1], pct: 40.0 },
+                { label: zoneLabels[2], pct: 53.4 },
+                { label: zoneLabels[3], pct: 70.0 },
+                { label: zoneLabels[4], pct: 90.0 },
+              ] as { label: string; pct: number }[]).map(({ label, pct }) => (
+                <span
+                  key={label}
+                  className="absolute text-[10px] text-gray-600 -translate-x-1/2 leading-none"
+                  style={{ left: `${pct}%` }}
+                >
+                  {label}
+                </span>
               ))}
             </div>
 
@@ -167,11 +188,11 @@ export function StatsBar() {
             <div
               className="relative h-4 rounded-full overflow-visible"
               style={{
-                background: "linear-gradient(to right, #3b82f6 0%, #6b7280 33%, #22c55e 47%, #eab308 60%, #f97316 80%, #ef4444 100%)",
+                background: "linear-gradient(to right, #3b82f6 0%, #6b7280 33.3%, #22c55e 46.7%, #eab308 60%, #f97316 80%, #ef4444 100%)",
                 boxShadow: "inset 0 1px 3px rgba(0,0,0,0.4)",
               }}
             >
-              {/* 존 구분선 */}
+              {/* 존 구분선 (실제 프리미엄 값 기준) */}
               {dividers.map((d) => (
                 <div
                   key={d}
@@ -197,10 +218,25 @@ export function StatsBar() {
               )}
             </div>
 
-            {/* 스케일 레이블 */}
-            <div className="flex justify-between mt-1.5 px-0.5">
-              {scaleLabels.map((l, i) => (
-                <span key={i} className="text-[10px] text-gray-600 font-number">{l}</span>
+            {/* 스케일 레이블 (절대 위치 — 실제 프리미엄 값 기준) */}
+            <div className="relative h-4 mt-1">
+              {([
+                { label: "-5%",  pct: 0 },
+                { label: "0%",   pct: 33.3 },
+                { label: "+5%",  pct: 66.7 },
+                { label: "+10%", pct: 100 },
+              ] as { label: string; pct: number }[]).map(({ label, pct }) => (
+                <span
+                  key={label}
+                  className="absolute text-[10px] text-gray-600 font-number leading-none"
+                  style={{
+                    left: pct === 0 ? 0 : pct === 100 ? "auto" : `${pct}%`,
+                    right: pct === 100 ? 0 : "auto",
+                    transform: pct === 0 || pct === 100 ? "none" : "translateX(-50%)",
+                  }}
+                >
+                  {label}
+                </span>
               ))}
             </div>
           </div>
