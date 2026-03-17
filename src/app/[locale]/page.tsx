@@ -29,21 +29,10 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
         </div>
 
         <div className="relative">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/8 px-3 py-1 text-xs text-orange-300">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/8 px-3 py-1 text-xs text-orange-300">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-orange-400" />
             🌶️ {t("liveUpdate")}
           </div>
-
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
-            {t("title")}
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400">
-              {t("subtitle")}
-            </span>
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-base text-gray-400 sm:text-lg">
-            {t("description")}
-          </p>
 
           {/* Exchange comparison — 선택된 거래소 반영 */}
           <ExchangeCompare locale={locale} />
