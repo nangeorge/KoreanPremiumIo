@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { key: "home", href: "", labelKo: "프리미엄", labelEn: "Premium", labelZh: "溢价" },
+  { key: "home", href: "", labelKo: "김치 프리미엄", labelEn: "Kimchi Premium", labelZh: "泡菜溢价" },
   { key: "indicators", href: "/indicators", labelKo: "지표 분석", labelEn: "Indicators", labelZh: "指标" },
   { key: "news", href: "/news", labelKo: "뉴스", labelEn: "News", labelZh: "新闻" },
 ];
