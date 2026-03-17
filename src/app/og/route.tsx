@@ -2,8 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-// 60초 캐시 — SNS 크롤러가 자주 요청해도 API 과부하 없음
-export const revalidate = 60;
+export const revalidate = 0;
 
 async function fetchBtcPremium(): Promise<{ premium: number | null; upbitPrice: number; binancePrice: number; rate: number }> {
   try {
@@ -165,7 +164,7 @@ export async function GET(request: Request) {
       height: 630,
       fonts,
       headers: {
-        "Cache-Control": "public, max-age=60, s-maxage=60, stale-while-revalidate=120",
+        "Cache-Control": "no-store",
       },
     }
   );
