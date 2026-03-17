@@ -19,6 +19,7 @@ export default function CoinDetailPage() {
   const coinMeta = SUPPORTED_COINS.find((c) => c.symbol === symbol);
   const [coin, setCoin] = useState<CoinPrice | null>(null);
   const [exchangeRate, setExchangeRate] = useState(0);
+  const [activeTab, setActiveTab] = useState<"overview" | "analysis" | "sources">("overview");
 
   useEffect(() => {
     async function load() {
@@ -135,129 +136,162 @@ export default function CoinDetailPage() {
         ))}
       </div>
 
-      {/* 콘텐츠 */}
-      {content ? (
-        <div className="space-y-6">
-          {/* 요약 */}
-          <div className={cn(
-            "rounded-2xl p-6 border",
-            content.type === "opinion"
-              ? "bg-rose-500/5 border-rose-500/15"
-              : "glass"
-          )}>
-            <p className="text-gray-300 leading-relaxed">{isKo ? content.summary.ko : content.summary.en}</p>
-          </div>
+      {/* 코인 정보 탭 */}
+      <div className="glass rounded-2xl overflow-hidden">
+        {/* 탭 헤더 */}
+        <div className="flex border-b border-white/5">
+          {(
+            [
+              { key: "overview",  ko: "개요",    en: "Overview" },
+              { key: "analysis",  ko: "심층 분석", en: "Analysis" },
+              { key: "sources",   ko: "출처",    en: "Sources"  },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={cn(
+                "flex-1 py-3.5 text-sm font-medium transition-all duration-200 border-b-2",
+                activeTab === tab.key
+                  ? "border-indigo-500 text-white"
+                  : "border-transparent text-gray-500 hover:text-gray-300"
+              )}
+            >
+              {isKo ? tab.ko : tab.en}
+            </button>
+          ))}
+        </div>
 
-          {/* opinion: 섹션별 평가 */}
-          {content.type === "opinion" && content.opinionSections?.map((sec, i) => {
-            const ratingColor =
-              sec.rating === "good" ? "border-emerald-500/20 bg-emerald-500/5" :
-              sec.rating === "bad"  ? "border-rose-500/20 bg-rose-500/5" :
-              "border-white/8 bg-white/3";
-            const dotColor =
-              sec.rating === "good" ? "bg-emerald-500" :
-              sec.rating === "bad"  ? "bg-rose-500" :
-              "bg-gray-500";
-            return (
-              <div key={i} className={cn("rounded-2xl p-6 border", ratingColor)}>
-                <h2 className="text-base font-bold text-white mb-4">
-                  {isKo ? sec.title.ko : sec.title.en}
-                </h2>
-                <ul className="space-y-3">
-                  {sec.items.map((item, j) => (
-                    <li key={j} className="flex gap-3">
-                      <span className={cn("mt-1.5 h-1.5 w-1.5 rounded-full shrink-0", dotColor)} />
-                      <span className="text-sm text-gray-300 leading-relaxed">
-                        {isKo ? item.ko : item.en}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-
-          {/* opinion: 종합 결론 */}
-          {content.type === "opinion" && content.verdict && (
-            <div className="rounded-2xl p-5 border border-amber-500/20 bg-amber-500/5">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                {isKo ? "종합 의견" : "Verdict"}
-              </span>
-              <p className="mt-2 text-white font-semibold leading-relaxed">
-                {isKo ? content.verdict.ko : content.verdict.en}
+        {/* 탭 콘텐츠 */}
+        <div className="p-6">
+          {!content ? (
+            <div className="rounded-xl border border-dashed border-white/10 p-8 text-center">
+              <p className="text-sm text-gray-600">
+                {isKo ? "분석 내용이 곧 추가됩니다." : "Analysis coming soon."}
               </p>
             </div>
-          )}
+          ) : activeTab === "overview" ? (
+            <div className="space-y-6">
+              {/* 요약 */}
+              <p className="text-gray-300 leading-relaxed">
+                {isKo ? content.summary.ko : content.summary.en}
+              </p>
 
-          {/* facts: 핵심 정보 그리드 */}
-          {content.type === "facts" && content.facts && (
-            <div className="glass rounded-2xl p-6">
-              <h2 className="text-base font-bold text-white mb-4">
-                {isKo ? "핵심 정보" : "Key Facts"}
-              </h2>
-              <div className="grid grid-cols-1 gap-0 sm:grid-cols-2">
-                {content.facts.map((row, i) => {
-                  const item = isKo ? row[0] : row[1];
-                  return (
-                    <div key={i} className="flex items-start justify-between gap-4 py-2.5 border-b border-white/5 last:border-0 sm:[&:nth-last-child(2)]:border-0">
-                      <span className="text-sm text-gray-500 shrink-0">{item.label}</span>
-                      <span className="text-sm text-gray-200 text-right font-number">{item.value}</span>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* facts: 핵심 정보 그리드 */}
+              {content.type === "facts" && content.facts && (
+                <div>
+                  <h2 className="text-sm font-bold text-white mb-3">
+                    {isKo ? "핵심 정보" : "Key Facts"}
+                  </h2>
+                  <div className="grid grid-cols-1 gap-0 sm:grid-cols-2">
+                    {content.facts.map((row, i) => {
+                      const item = isKo ? row[0] : row[1];
+                      return (
+                        <div key={i} className="flex items-start justify-between gap-4 py-2.5 border-b border-white/5 last:border-0 sm:[&:nth-last-child(2)]:border-0">
+                          <span className="text-sm text-gray-500 shrink-0">{item.label}</span>
+                          <span className="text-sm text-gray-200 text-right font-number">{item.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          ) : activeTab === "analysis" ? (
+            <div className="space-y-5">
+              {/* opinion: 섹션별 평가 */}
+              {content.type === "opinion" && content.opinionSections?.map((sec, i) => {
+                const ratingColor =
+                  sec.rating === "good" ? "border-emerald-500/20 bg-emerald-500/5" :
+                  sec.rating === "bad"  ? "border-rose-500/20 bg-rose-500/5" :
+                  "border-white/8 bg-white/3";
+                const dotColor =
+                  sec.rating === "good" ? "bg-emerald-500" :
+                  sec.rating === "bad"  ? "bg-rose-500" :
+                  "bg-gray-500";
+                return (
+                  <div key={i} className={cn("rounded-xl p-5 border", ratingColor)}>
+                    <h2 className="text-sm font-bold text-white mb-3">
+                      {isKo ? sec.title.ko : sec.title.en}
+                    </h2>
+                    <ul className="space-y-2.5">
+                      {sec.items.map((item, j) => (
+                        <li key={j} className="flex gap-3">
+                          <span className={cn("mt-1.5 h-1.5 w-1.5 rounded-full shrink-0", dotColor)} />
+                          <span className="text-sm text-gray-300 leading-relaxed">
+                            {isKo ? item.ko : item.en}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
 
-          {/* facts: 섹션별 리스트 */}
-          {content.type === "facts" && content.sections?.map((sec, i) => (
-            <div key={i} className="glass rounded-2xl p-6">
-              <h2 className="text-base font-bold text-white mb-4">
-                {isKo ? sec.title.ko : sec.title.en}
-              </h2>
-              <ul className="space-y-3">
-                {sec.items.map((item, j) => (
-                  <li key={j} className="flex gap-3">
-                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
-                    <span className="text-sm text-gray-400 leading-relaxed">
-                      {isKo ? item.ko : item.en}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              {/* opinion: 종합 결론 */}
+              {content.type === "opinion" && content.verdict && (
+                <div className="rounded-xl p-5 border border-amber-500/20 bg-amber-500/5">
+                  <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                    {isKo ? "종합 의견" : "Verdict"}
+                  </span>
+                  <p className="mt-2 text-white font-semibold leading-relaxed">
+                    {isKo ? content.verdict.ko : content.verdict.en}
+                  </p>
+                </div>
+              )}
+
+              {/* facts: 섹션별 리스트 */}
+              {content.type === "facts" && content.sections?.map((sec, i) => (
+                <div key={i}>
+                  <h2 className="text-sm font-bold text-white mb-3">
+                    {isKo ? sec.title.ko : sec.title.en}
+                  </h2>
+                  <ul className="space-y-2.5">
+                    {sec.items.map((item, j) => (
+                      <li key={j} className="flex gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
+                        <span className="text-sm text-gray-400 leading-relaxed">
+                          {isKo ? item.ko : item.en}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+
+              {/* 분석 없음 */}
+              {content.type === "facts" && !content.sections?.length && (
+                <p className="text-sm text-gray-600 text-center py-6">
+                  {isKo ? "분석 내용이 곧 추가됩니다." : "Analysis coming soon."}
+                </p>
+              )}
             </div>
-          ))}
-          {/* 출처 */}
-          {content.sources && content.sources.length > 0 && (
-            <div className="glass rounded-2xl p-5">
-              <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                {isKo ? "참고 자료" : "Sources"}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {content.sources.map((src, i) => (
-                  <a
-                    key={i}
-                    href={src.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 bg-indigo-500/8 border border-indigo-500/15 rounded-full px-3 py-1 transition-colors"
-                  >
-                    {src.label} ↗
-                  </a>
-                ))}
-              </div>
+          ) : (
+            /* 출처 탭 */
+            <div>
+              {content.sources && content.sources.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {content.sources.map((src, i) => (
+                    <a
+                      key={i}
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 bg-indigo-500/8 border border-indigo-500/15 rounded-full px-3 py-1.5 transition-colors"
+                    >
+                      {src.label} ↗
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-600 text-center py-6">
+                  {isKo ? "참고 자료가 없습니다." : "No sources available."}
+                </p>
+              )}
             </div>
           )}
         </div>
-      ) : (
-        <div className="glass rounded-2xl p-6">
-          <div className="rounded-xl border border-dashed border-white/10 p-8 text-center">
-            <p className="text-sm text-gray-600">
-              {isKo ? "분석 내용이 곧 추가됩니다." : "Analysis coming soon."}
-            </p>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
