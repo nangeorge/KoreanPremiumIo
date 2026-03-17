@@ -2,7 +2,7 @@
 const FALLBACK_RATE = 1350; // fallback if all APIs fail
 
 let cachedRate: { rate: number; timestamp: number } | null = null;
-const CACHE_TTL = 60 * 1000; // 1 minute
+const CACHE_TTL = 300 * 1000; // 5 minutes
 
 export async function fetchUsdKrwRate(): Promise<number> {
   // Return cached rate if fresh
@@ -15,7 +15,7 @@ export async function fetchUsdKrwRate(): Promise<number> {
     // This is actually what we calculate in the API route itself
     // Here we use an open exchange rate API
     const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD", {
-      next: { revalidate: 60 },
+      next: { revalidate: 300 },
     });
 
     if (res.ok) {
@@ -33,7 +33,7 @@ export async function fetchUsdKrwRate(): Promise<number> {
   try {
     // Fallback: use free currency API
     const res = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json", {
-      next: { revalidate: 60 },
+      next: { revalidate: 300 },
     });
 
     if (res.ok) {

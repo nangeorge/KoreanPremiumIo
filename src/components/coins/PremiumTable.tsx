@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useAppStore } from "@/store";
 import {
@@ -23,7 +23,7 @@ function SortIcon({ field, current, dir }: { field: string; current: string; dir
   return <span className="text-indigo-400">{dir === "asc" ? "↑" : "↓"}</span>;
 }
 
-function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
+const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
   coin: CoinPrice;
   isSelected: boolean;
   onClick: () => void;
@@ -128,7 +128,7 @@ function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
       </td>
     </tr>
   );
-}
+});
 
 function SkeletonRow() {
   return (

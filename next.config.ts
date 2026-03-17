@@ -15,10 +15,16 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   devIndicators: false,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "assets.coingecko.com" },
     ],
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 3600,
   },
   async headers() {
     return [

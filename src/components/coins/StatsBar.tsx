@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import useSWR from "swr";
 import { useAppStore } from "@/store";
@@ -29,12 +30,13 @@ export function StatsBar() {
   const btcPremium = (selectedExchange === "coinbase" ? btc?.coinbasePremium : btc?.premium) ?? null;
 
   // Alt 평균 (BTC 제외)
-  const altPremiums = coins
-    .filter((c) => c.symbol !== "BTC")
-    .map((c) => selectedExchange === "coinbase" ? c.coinbasePremium : c.premium)
-    .filter((p): p is number => p !== null);
-  const altAvg = altPremiums.length > 0
-    ? altPremiums.reduce((s, p) => s + p, 0) / altPremiums.length : 0;
+  const altAvg = useMemo(() => {
+    const premiums = coins
+      .filter((c) => c.symbol !== "BTC")
+      .map((c) => selectedExchange === "coinbase" ? c.coinbasePremium : c.premium)
+      .filter((p): p is number => p !== null);
+    return premiums.length > 0 ? premiums.reduce((s, p) => s + p, 0) / premiums.length : 0;
+  }, [coins, selectedExchange]);
 
   // MVRV
   const mvrvValue = indicators?.mvrv?.at(-1)?.value ?? null;

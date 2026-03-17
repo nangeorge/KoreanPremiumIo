@@ -50,10 +50,8 @@ export const useAppStore = create<AppState>((set) => ({
 
   appendHistory: (points) =>
     set((state) => {
-      const combined = [...state.history, ...points];
-      // Keep last 200 data points
-      const trimmed = combined.slice(-200);
-      return { history: trimmed };
+      const next = state.history.concat(points);
+      return { history: next.length > 200 ? next.slice(next.length - 200) : next };
     }),
 
   setSortField: (sortField) => set({ sortField }),
