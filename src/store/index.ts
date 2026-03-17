@@ -45,8 +45,16 @@ export const useAppStore = create<AppState>((set) => ({
   error: null,
   alerts: [],
 
-  setCoins: (coins, exchangeRate, updatedAt) =>
-    set({ coins, exchangeRate, updatedAt, isLoading: false, error: null }),
+  setCoins: (newCoins, exchangeRate, updatedAt) =>
+    set((state) => {
+      // 기존 데이터 유지 + 새 데이터로 덮어쓰기 (API 누락 코인은 이전 값 유지)
+      if (state.coins.length === 0) {
+        return { coins: newCoins, exchangeRate, updatedAt, isLoading: false, error: null };
+      }
+      const newMap = new Map(newCoins.map((c) => [c.symbol, c]));
+      const merged = state.coins.map((c) => newMap.get(c.symbol) ?? c);
+      return { coins: merged, exchangeRate, updatedAt, isLoading: false, error: null };
+    }),
 
   appendHistory: (points) =>
     set((state) => {

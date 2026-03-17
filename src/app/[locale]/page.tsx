@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { StatsBar } from "@/components/coins/StatsBar";
+import { RSIBar } from "@/components/coins/RSIBar";
 import { PremiumTable } from "@/components/coins/PremiumTable";
 import { PremiumChart } from "@/components/charts/PremiumChart";
 import { BTCChart } from "@/components/charts/BTCChart";
@@ -51,6 +52,9 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
 
       {/* Stats */}
       <StatsBar />
+
+      {/* BTC RSI (일/주/월봉) */}
+      <RSIBar />
 
       {/* Chart + Table grid */}
       <div className="grid grid-cols-1 gap-4 md:gap-6 xl:grid-cols-5">
