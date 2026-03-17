@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const revalidate = 0;
+export const revalidate = 10;
 
 async function fetchBtcPremium(): Promise<{ premium: number | null; upbitPrice: number; binancePrice: number; rate: number }> {
   try {
@@ -164,7 +164,7 @@ export async function GET(request: Request) {
       height: 630,
       fonts,
       headers: {
-        "Cache-Control": "no-store",
+        "Cache-Control": "public, s-maxage=10, stale-while-revalidate=5",
       },
     }
   );
