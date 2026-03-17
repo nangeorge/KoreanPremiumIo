@@ -6,9 +6,9 @@
     "about": "About"
   },
   "hero": {
-    "title": "Kimchi Premium",
-    "subtitle": "Real-time Korean crypto price difference tracker",
-    "description": "Track the premium between Upbit (KRW) and Bybit (USD) in real-time",
+    "title": "Korea Premium Index",
+    "subtitle": "The ultimate Korea market sentiment signal",
+    "description": "Track the real-time price gap between Upbit (KRW) and Bybit·Coinbase (USD) — the most reliable indicator of Korean crypto market heat.",
     "liveUpdate": "Live updates · Refreshes every 5s"
   },
   "table": {

@@ -6,9 +6,9 @@
     "about": "关于"
   },
   "hero": {
-    "title": "泡菜溢价",
-    "subtitle": "实时韩国加密货币价格差异追踪器",
-    "description": "实时追踪Upbit（韩元）与Bybit（美元）之间的溢价",
+    "title": "韩国溢价指数",
+    "subtitle": "最权威的韩国加密市场情绪指标",
+    "description": "实时追踪Upbit（韩元）与Bybit·Coinbase（美元）的价格差异，洞察韩国加密货币市场的热度。",
     "liveUpdate": "实时更新 · 每5秒刷新"
   },
   "table": {
