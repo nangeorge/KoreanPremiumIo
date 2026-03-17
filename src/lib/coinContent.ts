@@ -5615,4 +5615,46 @@ export const COIN_CONTENT: Record<string, CoinContent> = {
     },
     sources: [{ label: "CoinGecko - TRUST", url: "https://www.coingecko.com/en/coins/trust-wallet-token" }],
   },
+
+  DRIFT: {
+    type: "opinion",
+    summary: {
+      ko: "Drift는 솔라나 기반의 탈중앙화 퍼페추얼 선물 거래소(DEX)입니다. 현물·선물·차입 거래를 원스톱으로 지원하며, 솔라나 DeFi 파생상품 시장에서 dYdX·GMX의 경쟁자로 자리잡고 있습니다. 업비트 상장 + Coinbase 상장으로 한국 접근성이 높습니다.",
+      en: "Drift is a Solana-based decentralized perpetual futures exchange (DEX). It supports spot, perpetuals, and borrowing in one platform, positioning itself as a competitor to dYdX and GMX in the Solana DeFi derivatives market. Listed on Upbit and Coinbase, giving it strong Korean accessibility.",
+    },
+    opinionSections: [
+      {
+        title: { ko: "① 토크노믹스 — 홀더 수익 구조", en: "① Tokenomics — Holder Revenue Structure" },
+        rating: "neutral",
+        items: [
+          { ko: "DRIFT 스테이킹 시 거래 수수료 일부를 보상으로 지급하지만, 수익 분배 비율이 프로토콜 성장에 비해 낮게 설계됐습니다.", en: "DRIFT staking provides a share of trading fees, but the revenue distribution ratio is designed to be low relative to protocol growth." },
+          { ko: "토큰 공급의 상당 부분이 팀·투자자 물량으로 잠금 해제(언락) 일정이 가격에 지속적 하방 압력을 줄 수 있습니다.", en: "A significant portion of token supply is allocated to team and investors, with unlock schedules that could apply continued downward price pressure." },
+        ],
+      },
+      {
+        title: { ko: "② 프로토콜 성공 가능성", en: "② Protocol Success Potential" },
+        rating: "good",
+        items: [
+          { ko: "솔라나의 고속·저비용 환경을 활용한 퍼페추얼 DEX로, 솔라나 DeFi 파생상품 시장에서 상위권 TVL을 유지합니다.", en: "As a perpetual DEX leveraging Solana's high-speed, low-cost environment, Drift maintains top-tier TVL in the Solana DeFi derivatives market." },
+          { ko: "현물·선물·차입 세 가지 기능을 통합한 원스톱 구조가 차별점이며, 기관 트레이더와 파워유저 유입이 지속되고 있습니다.", en: "The one-stop integration of spot, perpetuals, and borrowing is a differentiator, and institutional traders and power users continue to onboard." },
+        ],
+      },
+      {
+        title: { ko: "③ 성공 → 토큰가 연결 여부 ← 핵심 판단", en: "③ Success → Token Price Link ← The Key Question" },
+        rating: "neutral",
+        items: [
+          { ko: "거래량 증가 → 수수료 → 스테이커 환원의 고리가 있지만, 수익 분배 비율이 낮고 팀 물량 언락이 부담입니다. 솔라나 생태계 전반 성장 수혜는 기대 가능합니다.", en: "The loop of volume → fees → staker returns exists, but the distribution ratio is low and team unlock pressure remains. Upside from overall Solana ecosystem growth is plausible." },
+        ],
+      },
+    ],
+    verdict: {
+      ko: "솔라나 파생상품 DEX 시장에서 경쟁력 있는 프로토콜이지만, 팀·투자자 물량 언락과 낮은 수익 분배 비율이 중단기 토큰 가격의 걸림돌입니다. 솔라나 생태계 강세 구간에서 단기 트레이딩 관점으로 접근하는 게 합리적입니다.",
+      en: "A competitive protocol in the Solana derivatives DEX space, but team/investor unlock pressure and low revenue distribution are mid-term price headwinds. A short-term trading approach during Solana ecosystem bull runs is more rational.",
+    },
+    sources: [
+      { label: "Drift Official", url: "https://www.drift.trade" },
+      { label: "DeFiLlama: Drift", url: "https://defillama.com/protocol/drift" },
+      { label: "CoinGecko - DRIFT", url: "https://www.coingecko.com/en/coins/drift-protocol" },
+    ],
+  },
 };
