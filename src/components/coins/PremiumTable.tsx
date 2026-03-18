@@ -266,6 +266,7 @@ export function PremiumTable() {
   const setSelectedExchange = useAppStore((s) => s.setSelectedExchange);
 
   const [activeCategory, setActiveCategory] = useState<Category>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   function handleSort(field: SortField) {
     // 시총 순위는 오름차순이 자연스러운 방향 (1=BTC가 상단)
@@ -287,8 +288,17 @@ export function PremiumTable() {
   }
 
   const sorted = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     const symbolSet = CATEGORY_SYMBOLS[activeCategory];
-    const filtered = symbolSet ? coins.filter((c) => symbolSet.has(c.symbol)) : coins;
+    const filtered = coins.filter((c) => {
+      if (symbolSet && !symbolSet.has(c.symbol)) return false;
+      if (!q) return true;
+      return (
+        c.symbol.toLowerCase().includes(q) ||
+        c.name.toLowerCase().includes(q) ||
+        c.nameKo.includes(q)
+      );
+    });
 
     return [...filtered].sort((a, b) => {
       if (sortField === "default" || sortField === "marketCap") {
@@ -312,7 +322,7 @@ export function PremiumTable() {
       if (sortField === "volume24h") return val * (a.volume24h - b.volume24h);
       return 0;
     });
-  }, [coins, sortField, sortDirection, selectedExchange, activeCategory]);
+  }, [coins, sortField, sortDirection, selectedExchange, activeCategory, searchQuery]);
 
   const headerClass =
     "cursor-pointer select-none py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-300 transition-colors";
@@ -349,8 +359,30 @@ export function PremiumTable() {
         </div>
       </div>
 
-      {/* 거래소 선택 */}
-      <div className="flex items-center gap-2 px-4 pb-3 sm:px-6">
+      {/* 검색 + 거래소 선택 */}
+      <div className="flex items-center gap-2 px-4 pb-3 sm:px-6 flex-wrap">
+        {/* 검색창 */}
+        <div className="relative flex-1 min-w-[160px]">
+          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-600 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={locale === "ko" ? "코인 검색..." : locale === "zh" ? "搜索..." : "Search coin..."}
+            className="w-full rounded-lg border border-white/8 bg-white/4 pl-8 pr-8 py-1.5 text-xs text-gray-200 placeholder-gray-600 outline-none focus:border-indigo-500/50 focus:bg-white/6 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
         <span className="text-xs text-gray-500">비교 거래소</span>
         <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
           {(["binance", "coinbase"] as const).map((ex) => (
@@ -428,7 +460,15 @@ export function PremiumTable() {
           <tbody>
             {isLoading
               ? Array.from({ length: 8 }).map((_, i) => <SkeletonRow key={i} />)
-              : sorted.map((coin, idx) => (
+              : sorted.length === 0
+              ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-sm text-gray-600">
+                    {locale === "ko" ? `"${searchQuery}" 검색 결과가 없습니다` : `No results for "${searchQuery}"`}
+                  </td>
+                </tr>
+              )
+              : sorted.map((coin) => (
                   <CoinRow
                     key={coin.symbol}
                     coin={coin}
