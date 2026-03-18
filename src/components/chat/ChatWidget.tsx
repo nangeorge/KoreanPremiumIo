@@ -215,7 +215,7 @@ export function ChatWidget() {
       <div
         className={cn(
           "fixed z-50 flex flex-col overflow-hidden shadow-2xl border border-white/10 transition-all duration-300",
-          "bg-[#0a0a0a]",
+          "bg-[var(--bg-raised)]",
           // 모바일: 화면 전체폭 (좌우 16px 여백), 데스크탑: 고정 너비
           "bottom-0 left-0 right-0 rounded-t-2xl sm:bottom-24 sm:left-auto sm:right-6 sm:w-96 sm:rounded-2xl",
           isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-90 opacity-0 pointer-events-none"

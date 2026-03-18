@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+import { Sun, Moon } from "lucide-react";
 import { cn, formatPremium } from "@/lib/utils";
 import { useAppStore } from "@/store";
 
@@ -21,6 +23,20 @@ export function Header() {
   const coins = useAppStore((s) => s.coins);
   const btcPremium = coins.find((c) => c.symbol === "BTC")?.premium ?? null;
 
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const stored = (localStorage.getItem("theme") as "dark" | "light") ?? "dark";
+    setTheme(stored);
+  }, []);
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+  }
+
   function switchLocale(newLocale: string) {
     // Replace locale prefix in pathname
     const segments = pathname.split("/");
@@ -29,7 +45,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-black/85 backdrop-blur-xl" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 1px 0 rgba(99,102,241,0.1), 0 4px 24px rgba(0,0,0,0.45)" }}>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 85%, transparent)", borderBottom: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 1px 0 rgba(99,102,241,0.1), 0 4px 24px rgba(0,0,0,0.45)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -76,7 +92,7 @@ export function Header() {
             )}
           </div>
 
-          {/* Right: Locale switcher */}
+          {/* Right: Theme toggle + Locale switcher */}
           <div className="flex items-center gap-3">
             {/* Mobile: live dot + 환율 */}
             <div className="flex items-center gap-1.5 md:hidden">
@@ -87,6 +103,14 @@ export function Header() {
                 </span>
               )}
             </div>
+
+            <button
+              onClick={toggleTheme}
+              className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-white/8 hover:text-gray-300"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
 
             <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
               {LOCALES.map((loc) => (

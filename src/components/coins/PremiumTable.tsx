@@ -138,7 +138,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
       </td>
 
       {/* 코인명 — 모바일 sticky */}
-      <td className="sticky left-0 z-10 bg-black py-4 pl-3 pr-3 group-hover:bg-[#0e0e0e] sm:pl-4">
+      <td className="sticky left-0 z-10 bg-[var(--bg-base)] py-4 pl-3 pr-3 group-hover:bg-[var(--bg-raised)] sm:pl-4">
         <div className="flex items-center gap-2.5">
           <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-white/5">
             {coin.logoUrl && (
@@ -229,7 +229,7 @@ function SkeletonRow() {
   return (
     <tr className="border-b border-white/4">
       <td className="hidden w-8 py-4 pl-4 sm:table-cell"><div className="skeleton h-3 w-4 rounded mx-auto" /></td>
-      <td className="sticky left-0 z-10 bg-black py-4 pl-3 pr-3 sm:pl-4">
+      <td className="sticky left-0 z-10 bg-[var(--bg-base)] py-4 pl-3 pr-3 sm:pl-4">
         <div className="flex items-center gap-2.5">
           <div className="skeleton h-8 w-8 rounded-full" />
           <div>
@@ -422,7 +422,7 @@ export function PremiumTable() {
               </th>
 
               {/* 코인 헤더 — 정렬 없음 */}
-              <th className="sticky left-0 z-10 bg-[#0e0e0e] pl-3 text-left sm:pl-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="sticky left-0 z-10 bg-[var(--bg-raised)] pl-3 text-left sm:pl-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {t("coin")}
               </th>
 

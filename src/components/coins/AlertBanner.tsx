@@ -23,7 +23,7 @@ export function AlertBanner() {
     : null;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-br from-[#0e0e0e] to-[#080808] p-5">
+    <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-br from-[var(--bg-raised)] to-[var(--bg-base)] p-5">
       <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-indigo-600/8 blur-3xl pointer-events-none" />
       <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-orange-500/6 blur-3xl pointer-events-none" />
 
