@@ -268,17 +268,21 @@ export function PremiumTable() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
 
   function handleSort(field: SortField) {
+    // 시총 순위는 오름차순이 자연스러운 방향 (1=BTC가 상단)
+    const naturalDir = field === "marketCap" ? "asc" : "desc";
+    const oppositeDir = naturalDir === "asc" ? "desc" : "asc";
+
     if (sortField === field) {
-      if (sortDirection === "asc") {
-        // 한 번 더 클릭하면 시총 순위로 리셋
-        setSortField("marketCap");
-        setSortDirection("asc");
+      if (sortDirection === naturalDir) {
+        setSortDirection(oppositeDir);
       } else {
+        // 반대 방향에서 한 번 더 클릭 → 시총 순위로 리셋
+        setSortField("marketCap");
         setSortDirection("asc");
       }
     } else {
       setSortField(field);
-      setSortDirection("desc");
+      setSortDirection(naturalDir);
     }
   }
 
