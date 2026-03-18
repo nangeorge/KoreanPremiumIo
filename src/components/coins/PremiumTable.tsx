@@ -345,7 +345,11 @@ export function PremiumTable() {
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => {
+                setActiveCategory(cat);
+                setSortField("marketCap");
+                setSortDirection("asc");
+              }}
               className={cn(
                 "flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
                 activeCategory === cat
