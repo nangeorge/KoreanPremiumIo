@@ -15,13 +15,13 @@
   --color-premium-positive: #10b981;
   --color-premium-negative: #ef4444;
   --color-premium-neutral: #6b7280;
-  --color-surface: #111118;
-  --color-surface-2: #1a1a2e;
+  --color-surface: #0e0e0e;
+  --color-surface-2: #161616;
   --color-border: rgba(255, 255, 255, 0.08);
 }
 
 :root {
-  --background: #0a0a0f;
+  --background: #000000;
   --foreground: #e8e8f0;
   color-scheme: dark;
 }
@@ -43,7 +43,7 @@ html {
 body {
   background-color: var(--background);
   background-image:
-    radial-gradient(ellipse 90% 40% at 50% -2%, rgba(99, 102, 241, 0.09) 0%, transparent 60%);
+    radial-gradient(ellipse 90% 40% at 50% -2%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
   color: var(--foreground);
   font-family: var(--font-geist-sans, 'Pretendard', 'Noto Sans KR', system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;

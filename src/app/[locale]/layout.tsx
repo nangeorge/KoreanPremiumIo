@@ -201,7 +201,7 @@ export default async function LocaleLayout({
           <TabNav />
           <main className="flex-1">{children}</main>
           {/* 투자 비조언 고지 */}
-          <div className="border-t border-white/5 bg-[#080810] px-4 py-3">
+          <div className="border-t border-white/5 bg-black px-4 py-3">
             <p className="mx-auto max-w-7xl text-center text-xs text-gray-600 leading-relaxed">
               ⚠️ {disclaimer}
             </p>
