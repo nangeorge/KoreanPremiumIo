@@ -133,8 +133,11 @@ export function StatsBar() {
               </span>
               <InfoTooltip text={btcTooltip} locale={locale} />
             </div>
-            <div className={cn("font-number font-black leading-none transition-colors duration-500",
+            <div className={cn("font-number font-black leading-none transition-all duration-500",
               isLoading ? "skeleton rounded w-28 h-10" : "text-4xl sm:text-5xl",
+              !isLoading && btcPremium !== null && btcPremium >= 4  ? "text-gradient-danger" :
+              !isLoading && btcPremium !== null && btcPremium >= 0  ? "text-gradient-premium" :
+              !isLoading && btcPremium !== null                     ? "text-gradient-brand" :
               zone.color
             )}>
               {!isLoading && (btcPremium !== null ? formatPremium(btcPremium) : "—")}
@@ -247,7 +250,7 @@ export function StatsBar() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
 
         {/* Alt 평균 프리미엄 */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="text-xs text-gray-500 mb-1.5">
             {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
           </div>
@@ -270,7 +273,7 @@ export function StatsBar() {
         </div>
 
         {/* MVRV */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="flex items-center gap-1 mb-1.5">
             <span className="text-xs text-gray-500">MVRV Ratio</span>
             <InfoTooltip text={{
@@ -297,7 +300,7 @@ export function StatsBar() {
         </div>
 
         {/* Fear & Greed */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="flex items-center gap-1 mb-1.5">
             <span className="text-xs text-gray-500">
               {isKo ? "공포탐욕지수" : isZh ? "恐慌贪婪指数" : "Fear & Greed"}
@@ -327,7 +330,7 @@ export function StatsBar() {
         </div>
 
         {/* VIX */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="flex items-center gap-1 mb-1.5">
             <a
               href="https://www.tradingview.com/chart/?symbol=CBOE:VIX"
@@ -360,7 +363,7 @@ export function StatsBar() {
         </div>
 
         {/* 환율 */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="text-xs text-gray-500 mb-1.5">{t("exchangeRate")}</div>
           <div className="font-number text-lg font-bold leading-none text-indigo-300">
             {isLoading
@@ -384,7 +387,7 @@ export function StatsBar() {
         </div>
 
         {/* 시장 상태 */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass glass-hover rounded-xl p-4">
           <div className="text-xs text-gray-500 mb-1.5">{t("marketStatus")}</div>
           <div className={cn("font-number text-lg font-bold leading-none", statusColor)}>
             {isLoading

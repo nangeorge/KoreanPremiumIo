@@ -29,7 +29,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full bg-[#0a0a0f]/85 backdrop-blur-xl" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 1px 0 rgba(99,102,241,0.1), 0 4px 24px rgba(0,0,0,0.45)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}

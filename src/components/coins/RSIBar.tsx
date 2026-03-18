@@ -29,7 +29,7 @@ function RSICard({
 
   return (
     <div className={cn(
-      "glass rounded-xl p-4 transition-all duration-500",
+      "glass glass-hover rounded-xl p-4 transition-all duration-500",
       isOverbought && "border-red-500/20",
       isOversold   && "border-blue-500/20",
     )}>

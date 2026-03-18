@@ -30,7 +30,7 @@ export function TabNav() {
   }
 
   return (
-    <div className="sticky top-16 z-40 w-full border-b border-white/5 bg-[#0a0a0f]/90 backdrop-blur-xl">
+    <div className="sticky top-16 z-40 w-full bg-[#0a0a0f]/90 backdrop-blur-xl" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex gap-1">
           {TABS.map((tab) => (
