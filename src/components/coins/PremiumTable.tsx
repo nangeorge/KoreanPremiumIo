@@ -276,9 +276,9 @@ export function PremiumTable() {
       if (sortDirection === naturalDir) {
         setSortDirection(oppositeDir);
       } else {
-        // 반대 방향에서 한 번 더 클릭 → 시총 순위로 리셋
-        setSortField("marketCap");
-        setSortDirection("asc");
+        // 반대 방향에서 한 번 더 클릭 → 거래량 기본으로 리셋
+        setSortField("volume24h");
+        setSortDirection("desc");
       }
     } else {
       setSortField(field);
@@ -296,6 +296,7 @@ export function PremiumTable() {
         const rb = MARKET_CAP_RANK[b.symbol] ?? 999;
         return (sortDirection === "asc" ? 1 : -1) * (ra - rb);
       }
+      // symbol 정렬은 제거됨 (헤더 클릭 불가)
       const val = sortDirection === "asc" ? 1 : -1;
       if (sortField === "symbol") return val * a.symbol.localeCompare(b.symbol);
       if (sortField === "upbitPrice") return val * (a.upbitPrice - b.upbitPrice);
@@ -384,14 +385,9 @@ export function PremiumTable() {
                 </span>
               </th>
 
-              {/* 코인 헤더 — sticky */}
-              <th
-                className={cn(headerClass, "sticky left-0 z-10 bg-[#111118] pl-3 text-left sm:pl-4")}
-                onClick={() => handleSort("symbol")}
-              >
-                <span className="flex items-center gap-1">
-                  {t("coin")} <SortIcon field="symbol" current={sortField} dir={sortDirection} />
-                </span>
+              {/* 코인 헤더 — 정렬 없음 */}
+              <th className="sticky left-0 z-10 bg-[#111118] pl-3 text-left sm:pl-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {t("coin")}
               </th>
 
               <th
