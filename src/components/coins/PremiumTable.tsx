@@ -277,9 +277,9 @@ export function PremiumTable() {
       if (sortDirection === naturalDir) {
         setSortDirection(oppositeDir);
       } else {
-        // 반대 방향에서 한 번 더 클릭 → 거래량 기본으로 리셋
-        setSortField("volume24h");
-        setSortDirection("desc");
+        // 반대 방향에서 한 번 더 클릭 → 시총 순위로 리셋
+        setSortField("marketCap");
+        setSortDirection("asc");
       }
     } else {
       setSortField(field);
