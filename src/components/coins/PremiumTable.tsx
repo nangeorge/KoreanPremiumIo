@@ -338,7 +338,7 @@ export function PremiumTable() {
   };
 
   return (
-    <div className="glass rounded-2xl overflow-hidden">
+    <div className="glass rounded-2xl min-w-0">
       {/* 카테고리 탭 */}
       <div className="px-4 pt-4 sm:px-6">
         <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -407,7 +407,7 @@ export function PremiumTable() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className="border-b border-white/5 bg-white/2">
               {/* 시총 순위 헤더 — 클릭으로 정렬 */}

@@ -94,9 +94,6 @@ export function StatsBar() {
     : vixValue >= 20 ? { label: `${vixValue.toFixed(1)} ${isKo ? "주의" : isZh ? "注意" : "Caution"}`,  color: "text-orange-400" }
     :                  { label: `${vixValue.toFixed(1)} ${isKo ? "안정" : isZh ? "稳定" : "Calm"}`,     color: "text-emerald-400" };
 
-  const refPremium = btcPremium ?? altAvg;
-  const marketStatus = refPremium > 2 ? t("bullish") : refPremium < -1 ? t("bearish") : t("neutral");
-  const statusColor = refPremium > 2 ? "text-emerald-400" : refPremium < -1 ? "text-rose-400" : "text-yellow-400";
 
   const zone = getPremiumZone(btcPremium, locale);
   const gaugePct = btcPremium !== null ? toGaugePct(btcPremium) : null;
@@ -247,7 +244,7 @@ export function StatsBar() {
       </div>
 
       {/* ── 보조 지표 카드 6개 ── */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
 
         {/* Alt 평균 프리미엄 */}
         <div className="glass glass-hover rounded-xl p-4">
@@ -364,54 +361,24 @@ export function StatsBar() {
 
         {/* 환율 */}
         <div className="glass glass-hover rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1.5">{t("exchangeRate")}</div>
+          <div className="mb-1.5">
+            <a
+              href="https://www.tradingview.com/chart/?symbol=FX_IDC:USDKRW"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-0.5 text-xs text-gray-500 hover:text-gray-300 transition-colors w-fit"
+            >
+              {t("exchangeRate")} <ExternalLink size={10} className="shrink-0" />
+            </a>
+          </div>
           <div className="font-number text-lg font-bold leading-none text-indigo-300">
             {isLoading
               ? <span className="skeleton rounded block h-6 w-20" />
               : `$1 = ₩${exchangeRate.toLocaleString("ko-KR")}`
             }
           </div>
-          {/* 환율 추이 표시 (1300~1500 기준 위치) */}
-          {!isLoading && exchangeRate > 0 && (
-            <MiniSegmentBar
-              value={Math.min(200, Math.max(0, exchangeRate - 1300))}
-              max={200}
-              segments={[
-                { to: 50,  color: "#22c55e" },
-                { to: 100, color: "#eab308" },
-                { to: 150, color: "#f97316" },
-                { to: 200, color: "#ef4444" },
-              ]}
-            />
-          )}
         </div>
 
-        {/* 시장 상태 */}
-        <div className="glass glass-hover rounded-xl p-4">
-          <div className="text-xs text-gray-500 mb-1.5">{t("marketStatus")}</div>
-          <div className={cn("font-number text-lg font-bold leading-none", statusColor)}>
-            {isLoading
-              ? <span className="skeleton rounded block h-6 w-16" />
-              : marketStatus
-            }
-          </div>
-          {/* 프리미엄 기준 신호 강도 표시 */}
-          {!isLoading && (
-            <div className="flex items-center gap-1 mt-2">
-              {[-2, 0, 2, 4, 6].map((threshold) => (
-                <div
-                  key={threshold}
-                  className="flex-1 h-1.5 rounded-full transition-all duration-500"
-                  style={{
-                    background: refPremium > threshold
-                      ? (refPremium > 4 ? "#ef4444" : refPremium > 2 ? "#f97316" : "#22c55e")
-                      : "rgba(255,255,255,0.08)",
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
 
       </div>
     </div>
