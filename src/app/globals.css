@@ -246,8 +246,4 @@ body {
   & .text-indigo-300,
   & .text-indigo-400   { color: #4338ca !important; }
 
-  /* 테이블 행 hover */
-  & .group-hover\:bg-\[#0e0e0e\]:is(:hover, .group:hover *) {
-    background-color: rgba(0, 0, 0, 0.03) !important;
-  }
 }
