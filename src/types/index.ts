@@ -34,7 +34,7 @@ export interface PremiumHistoryPoint {
   symbol: string;
 }
 
-export type SortField = "default" | "symbol" | "upbitPrice" | "premium" | "change24h" | "volume24h";
+export type SortField = "default" | "marketCap" | "symbol" | "upbitPrice" | "premium" | "change24h" | "volume24h";
 export type SortDirection = "asc" | "desc";
 
 export type Locale = "ko" | "en" | "zh";

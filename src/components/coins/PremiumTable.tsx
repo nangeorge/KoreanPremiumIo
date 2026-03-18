@@ -17,8 +17,41 @@ import Image from "next/image";
 import Link from "next/link";
 
 const COIN_ORDER: string[] = SUPPORTED_COINS.map((c) => c.symbol);
-// 정렬과 무관한 고정 순위 (SUPPORTED_COINS 기준, BTC=1, ETH=2...)
-const COIN_RANK: Record<string, number> = Object.fromEntries(COIN_ORDER.map((s, i) => [s, i + 1]));
+
+// CoinGecko 기준 시총 순위 (2025년 기준, 주기적 업데이트 필요)
+// 스테이블코인 및 업비트 미상장(BNB 등) 제외 순위
+const MARKET_CAP_RANK: Record<string, number> = {
+  BTC:1,ETH:2,XRP:3,SOL:4,DOGE:5,
+  ADA:6,TRX:7,TON:8,AVAX:9,SHIB:10,
+  LINK:11,XLM:12,HBAR:13,SUI:14,DOT:15,
+  NEAR:16,UNI:17,APT:18,ICP:19,PEPE:20,
+  ETC:21,POL:22,ATOM:23,FIL:24,OP:25,
+  ARB:26,BCH:27,LTC:28,RENDER:29,GRT:30,
+  SEI:31,IMX:32,ALGO:33,EOS:34,STX:35,
+  BONK:36,WIF:37,ENA:38,MNT:39,AAVE:40,
+  JUP:41,TIA:42,BERA:43,ZRO:44,ZK:45,
+  JTO:46,PENDLE:47,ONDO:48,VIRTUAL:49,MANTRA:50,
+  SAND:51,MANA:52,AXS:53,WLD:54,PENGU:55,
+  MOVE:56,BEAM:57,SONIC:58,BLUR:59,CRO:60,
+  NEO:61,FLOW:62,EGLD:63,MINA:64,XTZ:65,
+  THETA:66,COMP:67,ENS:68,ZIL:69,KAVA:70,
+  CHZ:71,PYTH:72,IOTA:73,RAY:74,GMT:75,
+  QTUM:76,ZRX:77,"1INCH":78,CELO:79,ALT:80,
+  ASTR:81,BLAST:82,ZETA:83,ARKM:84,STG:85,
+  LAYER:86,BIGTIME:87,MOCA:88,API3:89,AGLD:90,
+  TAIKO:91,ETHFI:92,MASK:93,XEC:94,RVN:95,
+  IOST:96,BTT:97,VTHO:98,ICX:99,STORJ:100,
+  WAVES:101,POWR:102,CHR:103,ELF:104,HOLO:105,
+  ONT:106,SUN:107,JST:108,TFUEL:109,RED:110,
+  YGG:111,SNT:112,AUDIO:113,GAS:114,PUNDIX:115,
+  LSK:116,QKC:117,ARDR:118,ONG:119,CKB:120,
+  AKT:121,AXL:122,COW:123,ORCA:124,WAXP:125,
+  CARV:126,STEEM:127,VANA:128,AERGO:129,ANIME:130,
+  TRUST:131,POLYX:132,DRIFT:133,
+  BORA:134,MBL:135,MLK:136,HUNT:137,MED:138,
+};
+// 표시용 순위 = 시총 순위 (없으면 999)
+const COIN_RANK: Record<string, number> = MARKET_CAP_RANK;
 
 // ── 카테고리 ──────────────────────────────────────────────────────────────────
 type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "korea";
@@ -237,7 +270,8 @@ export function PremiumTable() {
   function handleSort(field: SortField) {
     if (sortField === field) {
       if (sortDirection === "asc") {
-        setSortField("default");
+        // 한 번 더 클릭하면 시총 순위로 리셋
+        setSortField("marketCap");
         setSortDirection("asc");
       } else {
         setSortDirection("asc");
@@ -253,8 +287,10 @@ export function PremiumTable() {
     const filtered = symbolSet ? coins.filter((c) => symbolSet.has(c.symbol)) : coins;
 
     return [...filtered].sort((a, b) => {
-      if (sortField === "default") {
-        return COIN_ORDER.indexOf(a.symbol) - COIN_ORDER.indexOf(b.symbol);
+      if (sortField === "default" || sortField === "marketCap") {
+        const ra = MARKET_CAP_RANK[a.symbol] ?? 999;
+        const rb = MARKET_CAP_RANK[b.symbol] ?? 999;
+        return (sortDirection === "asc" ? 1 : -1) * (ra - rb);
       }
       const val = sortDirection === "asc" ? 1 : -1;
       if (sortField === "symbol") return val * a.symbol.localeCompare(b.symbol);
@@ -323,7 +359,7 @@ export function PremiumTable() {
                   : "text-gray-500 hover:text-gray-300"
               )}
             >
-              {ex === "binance" ? "🌏 Bybit" : "🇺🇸 Coinbase"}
+              {ex === "binance" ? "🌏 Binance" : "🇺🇸 Coinbase"}
             </button>
           ))}
         </div>
@@ -333,8 +369,16 @@ export function PremiumTable() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/5 bg-white/2">
-              {/* 순위 헤더 */}
-              <th className="hidden w-8 py-3 pl-4 text-center text-xs text-gray-600 sm:table-cell">#</th>
+              {/* 시총 순위 헤더 — 클릭으로 정렬 */}
+              <th
+                className={cn(headerClass, "hidden w-12 py-3 pl-4 text-center sm:table-cell")}
+                onClick={() => handleSort("marketCap")}
+                title={locale === "ko" ? "시가총액 순위 기준 정렬" : "Sort by market cap rank"}
+              >
+                <span className="flex items-center justify-center gap-1">
+                  # <SortIcon field="marketCap" current={sortField} dir={sortDirection} />
+                </span>
+              </th>
 
               {/* 코인 헤더 — sticky */}
               <th
@@ -376,7 +420,7 @@ export function PremiumTable() {
                 onClick={() => handleSort("volume24h")}
               >
                 <span className="flex items-center justify-end gap-1">
-                  {t("volume")} <SortIcon field="volume24h" current={sortField} dir={sortDirection} />
+                  {t("volume")} <span className="text-gray-700 normal-case">(Upbit)</span> <SortIcon field="volume24h" current={sortField} dir={sortDirection} />
                 </span>
               </th>
             </tr>
