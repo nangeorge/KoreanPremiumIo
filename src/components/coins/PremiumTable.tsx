@@ -128,8 +128,8 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
     <tr
       onClick={onClick}
       className={cn(
-        "group cursor-pointer border-b border-white/4 transition-all duration-150",
-        isSelected ? "bg-indigo-600/8 border-indigo-500/20" : cn(rowGlow, "hover:bg-white/2")
+        "group cursor-pointer border-b border-[var(--divider)] transition-all duration-150",
+        isSelected ? "bg-indigo-500/10 border-indigo-500/25" : cn(rowGlow, "hover:bg-[var(--bg-hover)]")
       )}
     >
       {/* 순위 — 정렬 무관 고정 */}
@@ -138,7 +138,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
       </td>
 
       {/* 코인명 — 모바일 sticky */}
-      <td className="sticky left-0 z-10 bg-[var(--bg-base)] py-4 pl-3 pr-3 group-hover:bg-[var(--bg-raised)] sm:pl-4">
+      <td className="sticky left-0 z-10 bg-[var(--bg-raised)] py-4 pl-3 pr-3 group-hover:bg-[var(--bg-hover)] sm:pl-4">
         <div className="flex items-center gap-2.5">
           <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full bg-white/5">
             {coin.logoUrl && (
@@ -157,19 +157,19 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
             onClick={(e) => e.stopPropagation()}
             className="hover:opacity-80 transition-opacity"
           >
-            <div className="font-semibold text-white text-sm hover:text-indigo-300 transition-colors">{coin.symbol}</div>
-            <div className="text-xs text-gray-500 hidden xs:block">{name}</div>
+            <div className="font-semibold text-[var(--fg)] text-sm hover:text-indigo-300 transition-colors">{coin.symbol}</div>
+            <div className="text-xs text-[var(--fg-muted)] hidden xs:block">{name}</div>
           </Link>
         </div>
       </td>
 
       {/* 업비트 가격 (KRW) */}
       <td className={cn("px-3 py-4 text-right", flashClass)}>
-        <div className="font-number text-sm font-medium text-white">
+        <div className="font-number text-sm font-medium text-[var(--fg)]">
           ₩{formatKrw(coin.upbitPrice)}
         </div>
         {!isKo && (
-          <div className="font-number text-xs text-gray-600 mt-0.5">
+          <div className="font-number text-xs text-[var(--fg-muted)] mt-0.5">
             ≈ {formatUsd(extPriceKrw > 0 ? coin.upbitPrice / (extPriceKrw / extPrice) : 0)}
           </div>
         )}
@@ -177,10 +177,10 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
 
       {/* 외부 거래소 가격 */}
       <td className="hidden px-3 py-4 text-right sm:table-cell">
-        <div className="font-number text-sm text-gray-200 font-medium">
+        <div className="font-number text-sm text-[var(--fg)] font-medium">
           {formatUsd(extPrice)}
         </div>
-        <div className="font-number text-xs text-gray-500 mt-0.5">
+        <div className="font-number text-xs text-[var(--fg-secondary)] mt-0.5">
           ≈ ₩{formatKrw(extPriceKrw)}
         </div>
       </td>
@@ -202,13 +202,13 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         ) : (
           <span
             className={cn(
-              "inline-flex items-center rounded-full px-3 py-1.5 text-base font-extrabold font-number border tracking-tight",
-              premium >= 7  ? "bg-red-500/30 border-red-400/60 text-red-200 shadow-sm shadow-red-500/30" :
-              premium >= 4  ? "bg-orange-500/25 border-orange-400/50 text-orange-200 shadow-sm shadow-orange-500/20" :
-              premium >= 2  ? "bg-yellow-500/15 border-yellow-400/35 text-yellow-200" :
-              premium >= 0  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300" :
-              premium >= -2 ? "bg-white/5 border-white/10 text-gray-400" :
-                              "bg-blue-500/15 border-blue-400/30 text-blue-300"
+              "inline-flex items-center rounded-md px-3 py-1.5 text-base font-semibold font-number border tracking-tight",
+              premium >= 7  ? "bg-[#f85149]/15 border-[#f85149]/30 text-[#f85149]" :
+              premium >= 4  ? "bg-orange-500/12 border-orange-500/25 text-orange-400" :
+              premium >= 2  ? "bg-yellow-500/10 border-yellow-500/20 text-yellow-400" :
+              premium >= 0  ? "bg-[#3fb950]/12 border-[#3fb950]/25 text-[#3fb950]" :
+              premium >= -3 ? "bg-white/5 border-white/10 text-[var(--fg-muted)]" :
+                              "bg-blue-500/12 border-blue-500/25 text-blue-400"
             )}
           >
             {formatPremium(premium)}
@@ -218,7 +218,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
 
       {/* 거래량 */}
       <td className="hidden px-3 py-4 text-right lg:table-cell">
-        <div className="font-number text-xs text-gray-500">{formatVolume(coin.volume24h, locale)}</div>
+        <div className="font-number text-xs text-[var(--fg-secondary)]">{formatVolume(coin.volume24h, locale)}</div>
       </td>
     </tr>
   );
@@ -227,9 +227,9 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
 // ── 스켈레톤 ──────────────────────────────────────────────────────────────────
 function SkeletonRow() {
   return (
-    <tr className="border-b border-white/4">
+    <tr className="border-b border-[var(--divider)]">
       <td className="hidden w-8 py-4 pl-4 sm:table-cell"><div className="skeleton h-3 w-4 rounded mx-auto" /></td>
-      <td className="sticky left-0 z-10 bg-[var(--bg-base)] py-4 pl-3 pr-3 sm:pl-4">
+      <td className="sticky left-0 z-10 bg-[var(--bg-raised)] py-4 pl-3 pr-3 sm:pl-4">
         <div className="flex items-center gap-2.5">
           <div className="skeleton h-8 w-8 rounded-full" />
           <div>
@@ -325,7 +325,7 @@ export function PremiumTable() {
   }, [coins, sortField, sortDirection, selectedExchange, activeCategory, searchQuery]);
 
   const headerClass =
-    "cursor-pointer select-none py-3 text-xs font-medium text-gray-500 uppercase tracking-wider hover:text-gray-300 transition-colors";
+    "cursor-pointer select-none py-3 text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider hover:text-gray-300 transition-colors";
 
   const upbitLabel = locale === "ko" ? t("upbit") : `${t("upbit")} (KRW)`;
   const extLabel = selectedExchange === "coinbase"
@@ -338,7 +338,7 @@ export function PremiumTable() {
   };
 
   return (
-    <div className="glass rounded-2xl min-w-0">
+    <div className="glass rounded-xl min-w-0">
       {/* 카테고리 탭 */}
       <div className="px-4 pt-4 sm:px-6">
         <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -353,8 +353,8 @@ export function PremiumTable() {
               className={cn(
                 "flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
                 activeCategory === cat
-                  ? "bg-indigo-600 text-white"
-                  : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200"
+                  ? "bg-indigo-600/90 text-white"
+                  : "bg-white/5 text-[var(--fg-muted)] hover:bg-white/8 hover:text-[var(--fg-secondary)]"
               )}
             >
               {catLabel(cat)}
@@ -375,7 +375,7 @@ export function PremiumTable() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={locale === "ko" ? "코인 검색..." : locale === "zh" ? "搜索..." : "Search coin..."}
-            className="w-full rounded-lg border border-white/8 bg-white/4 pl-8 pr-8 py-1.5 text-xs text-gray-200 placeholder-gray-600 outline-none focus:border-indigo-500/50 focus:bg-white/6 transition-all"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-base)] pl-8 pr-8 py-1.5 text-xs text-[var(--fg)] placeholder-[var(--fg-muted)] outline-none focus:border-indigo-500/60 focus:bg-[var(--bg-raised)] transition-all"
           />
           {searchQuery && (
             <button
@@ -388,7 +388,7 @@ export function PremiumTable() {
         </div>
 
         <span className="text-xs text-gray-500">비교 거래소</span>
-        <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
+        <div className="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-base)] p-0.5">
           {(["binance", "coinbase"] as const).map((ex) => (
             <button
               key={ex}
@@ -409,7 +409,7 @@ export function PremiumTable() {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px]">
           <thead>
-            <tr className="border-b border-white/5 bg-white/2">
+            <tr className="border-b border-[var(--border-color)] bg-[var(--bg-base)]">
               {/* 시총 순위 헤더 — 클릭으로 정렬 */}
               <th
                 className={cn(headerClass, "hidden w-12 py-3 pl-4 text-center sm:table-cell")}
@@ -422,7 +422,7 @@ export function PremiumTable() {
               </th>
 
               {/* 코인 헤더 — 정렬 없음 */}
-              <th className="sticky left-0 z-10 bg-[var(--bg-raised)] pl-3 text-left sm:pl-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="sticky left-0 z-10 bg-[var(--bg-raised)] pl-3 text-left sm:pl-4 py-3 text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider">
                 {t("coin")}
               </th>
 
@@ -467,7 +467,7 @@ export function PremiumTable() {
               : sorted.length === 0
               ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-sm text-gray-600">
+                  <td colSpan={7} className="py-12 text-center text-sm text-[var(--fg-muted)]">
                     {locale === "ko" ? `"${searchQuery}" 검색 결과가 없습니다` : `No results for "${searchQuery}"`}
                   </td>
                 </tr>
