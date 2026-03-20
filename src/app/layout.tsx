@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -7,8 +7,17 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://koreanpremium.io";
 // Google AdSense 발급 후 아래 ID 교체
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID || "8327952774757997";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#6366f1",
@@ -103,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
         {children}
 
         {/* Google AdSense Script */}
