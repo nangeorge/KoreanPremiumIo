@@ -17,19 +17,23 @@ const TVChart = dynamic(() => import("@/components/charts/TVChart").then((m) => 
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-// ── MVRV 존 정의 ─────────────────────────────────────────────────
-const MVRV_BANDS: TVBandLine[] = [
-  { value: 3.7, color: "#ef4444", label: "과열", style: "dashed" },
-  { value: 2.4, color: "#f97316", label: "주의", style: "dashed" },
-  { value: 1.0, color: "#10b981", label: "적정", style: "dashed" },
-  { value: 0.6, color: "#6366f1", label: "저평가", style: "dashed" },
-];
+// ── MVRV 존 정의 (locale-aware) ──────────────────────────────────
+function getMvrvBands(locale: string): TVBandLine[] {
+  const ko = locale === "ko", zh = locale === "zh";
+  return [
+    { value: 3.7, color: "#ef4444", label: ko ? "과열" : zh ? "过热" : "Overheated", style: "dashed" },
+    { value: 2.4, color: "#f97316", label: ko ? "주의" : zh ? "警惕" : "Caution", style: "dashed" },
+    { value: 1.0, color: "#10b981", label: ko ? "적정" : zh ? "合理" : "Fair", style: "dashed" },
+    { value: 0.6, color: "#6366f1", label: ko ? "저평가" : zh ? "低估" : "Undervalued", style: "dashed" },
+  ];
+}
 
-function getMvrvZone(v: number): { label: string; color: string; bg: string } {
-  if (v > 3.7) return { label: "과열 🔴", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" };
-  if (v > 2.4) return { label: "주의 🟠", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20" };
-  if (v > 1.0) return { label: "적정 🟢", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" };
-  return { label: "저평가 🔵", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20" };
+function getMvrvZone(v: number, locale = "ko"): { label: string; color: string; bg: string } {
+  const ko = locale === "ko", zh = locale === "zh";
+  if (v > 3.7) return { label: ko ? "과열 🔴" : zh ? "过热 🔴" : "Overheated 🔴", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" };
+  if (v > 2.4) return { label: ko ? "주의 🟠" : zh ? "警惕 🟠" : "Caution 🟠", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20" };
+  if (v > 1.0) return { label: ko ? "적정 🟢" : zh ? "合理 🟢" : "Fair 🟢", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" };
+  return { label: ko ? "저평가 🔵" : zh ? "低估 🔵" : "Undervalued 🔵", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20" };
 }
 
 // ── 공탐지수 색상 ────────────────────────────────────────────────
@@ -114,8 +118,8 @@ function FearGreedGauge({ value, prevValue, locale }: { value: number; prevValue
   const clr = lerpColor(value / 100);
   const zone = getFngZone(value);
   const prevZone = getFngZone(prevValue);
-  const zoneLabel = locale === "en" ? zone.en : zone.label;
-  const prevLabel = locale === "en" ? prevZone.en : prevZone.label;
+  const zoneLabel = locale === "en" ? zone.en : locale === "zh" ? zone.zh : zone.label;
+  const prevLabel = locale === "en" ? prevZone.en : locale === "zh" ? prevZone.zh : prevZone.label;
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -161,7 +165,7 @@ function FearGreedGauge({ value, prevValue, locale }: { value: number; prevValue
       <div className="text-5xl font-black font-number -mt-2" style={{ color: clr }}>{value}</div>
       <div className="text-base font-bold mt-0.5" style={{ color: clr }}>{zoneLabel}</div>
       <div className="text-xs text-gray-500 mt-1">
-        {locale === "ko" ? "어제" : "Yesterday"}: {prevValue} · {prevLabel}
+        {locale === "ko" ? "어제" : locale === "zh" ? "昨天" : "Yesterday"}: {prevValue} · {prevLabel}
       </div>
     </div>
   );
@@ -342,9 +346,9 @@ const INFO: Record<string, InfoText> = {
     zh: "0~100的市场情绪指数。0~25极度恐慌（买入机会），75~100极度贪婪（过热警告）。综合波动性、交易量、社交媒体等计算。来源：Alternative.me",
   },
   kimchiPremium: {
-    ko: "국내 거래소(업비트) 가격이 해외 거래소(바이낸스) 대비 얼마나 높은지 나타내는 수치. 양수면 한국 시장 과열, 음수면 할인 상태. 강세장에서 역사적 최고 50% 이상 기록.",
-    en: "Percentage difference between Korean exchange (Upbit) and overseas exchange (Bybit) prices. Positive = Korean market premium, negative = discount. Historically peaked above 50% in bull markets.",
-    zh: "韩国交易所（Upbit）与海外交易所（Binance）价格差的百分比。正数=韩国溢价，负数=折价。牛市历史最高曾超过50%。",
+    ko: "국내 거래소(업비트) 가격이 해외 거래소(OKX) 대비 얼마나 높은지 나타내는 수치. 양수면 한국 시장 과열, 음수면 할인 상태. 강세장에서 역사적 최고 50% 이상 기록.",
+    en: "Percentage difference between Korean exchange (Upbit) and overseas exchange (OKX) prices. Positive = Korean market premium, negative = discount. Historically peaked above 50% in bull markets.",
+    zh: "韩国交易所（Upbit）与海外交易所（OKX）价格差的百分比。正数=韩国溢价，负数=折价。牛市历史最高曾超过50%。",
   },
   vix: {
     ko: "시카고옵션거래소(CBOE) 변동성 지수. S&P500 옵션의 내재 변동성을 나타냄. 20 이하=시장 안정, 20~30=주의, 30↑=공포(리스크 오프). 암호화폐 시장과 역상관 관계 경향.",
@@ -353,8 +357,8 @@ const INFO: Record<string, InfoText> = {
   },
   fundingBtc: {
     ko: "무기한 선물에서 8시간마다 롱/숏 간 정산 비용. 양수(+)=롱 과열, 음수(-)=숏 과열. 바이낸스 선물 기준.",
-    en: "8-hourly fee between long/short futures positions. Positive = longs pay shorts (long overheated). Negative = shorts pay longs (short overheated). Source: Bybit.",
-    zh: "永续合约中每8小时多空之间结算的资金费率。正数=多头过热，负数=空头过热。数据来源：Bybit。",
+    en: "8-hourly fee between long/short futures positions. Positive = longs pay shorts (long overheated). Negative = shorts pay longs (short overheated). Source: OKX.",
+    zh: "永续合约中每8小时多空之间结算的资金费率。正数=多头过热，负数=空头过热。数据来源：OKX。",
   },
   fundingEth: {
     ko: "이더리움 무기한 선물 펀딩비. BTC와 함께 전체 시장의 레버리지 과열 여부를 판단하는 데 활용됩니다.",
@@ -430,7 +434,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
   }));
 
   const currentMvrv = mvrvData.at(-1)?.value ?? 0;
-  const mvrvZone = getMvrvZone(currentMvrv);
+  const mvrvZone = getMvrvZone(currentMvrv, locale);
   const fng = data?.fearGreed;
   const fngColor = fng ? getFngColor(fng.value) : "#6b7280";
   const fngZone = fng ? getFngZone(fng.value) : null;
@@ -441,8 +445,8 @@ export function IndicatorsClient({ locale }: { locale: string }) {
   const vixData = toTV(vix?.history ?? []);
   const vixColor = vix ? (vix.value >= 30 ? "#ef4444" : vix.value >= 20 ? "#f97316" : "#10b981") : "#6b7280";
   const VIX_BANDS = [
-    { value: 30, color: "#ef444480", label: "공포", style: "dashed" as const },
-    { value: 20, color: "#f9731680", label: "주의", style: "dashed" as const },
+    { value: 30, color: "#ef444480", label: locale === "ko" ? "공포" : locale === "zh" ? "恐慌" : "Fear", style: "dashed" as const },
+    { value: 20, color: "#f9731680", label: locale === "ko" ? "주의" : locale === "zh" ? "注意" : "Caution", style: "dashed" as const },
   ];
 
   return (
@@ -540,7 +544,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 color="#6366f1"
                 topColor="#6366f140"
                 bottomColor="#6366f104"
-                bandLines={MVRV_BANDS}
+                bandLines={getMvrvBands(locale)}
                 priceFormat={{ type: "price", precision: 3, minMove: 0.001 }}
               />
             )}

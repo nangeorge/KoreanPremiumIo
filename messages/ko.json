@@ -8,17 +8,18 @@
   "hero": {
     "title": "김치 프리미엄",
     "subtitle": "세계 최고의 인간 심리 지표",
-    "description": "한국의 관심이 곧 고점의 신호다. 업비트(KRW) vs Bybit·Coinbase(USD) 실시간 가격 차이로 한국 시장의 온도를 확인하세요.",
+    "description": "한국의 관심이 곧 고점의 신호다. 업비트(KRW) vs OKX·Coinbase(USD) 실시간 가격 차이로 한국 시장의 온도를 확인하세요.",
     "liveUpdate": "실시간 업데이트 · 5초마다 갱신"
   },
   "table": {
     "coin": "코인",
     "upbit": "업비트 (KRW)",
-    "binance": "Bybit (USD)",
-    "binanceKrw": "Bybit (KRW 환산)",
+    "binance": "OKX (USD)",
+    "binanceKrw": "OKX (KRW 환산)",
     "premium": "김치 프리미엄",
     "change24h": "24시간 변동",
-    "volume": "거래량"
+    "volume": "거래량",
+    "compareExchange": "비교 거래소"
   },
   "stats": {
     "avgPremium": "평균 프리미엄",
@@ -41,7 +42,7 @@
     "description": "실시간 암호화폐 김치 프리미엄 트래커",
     "disclaimer": "본 사이트는 정보 제공 목적으로만 운영됩니다. 투자 결정에 대한 책임은 사용자 본인에게 있습니다.",
     "rights": "All rights reserved.",
-    "dataSource": "데이터 출처: 업비트, 바이낸스",
+    "dataSource": "데이터 출처: 업비트, OKX, Coinbase",
     "exchangeLinks": "거래소 링크",
     "community": "커뮤니티 & 리소스",
     "comingSoon": "출시 예정",

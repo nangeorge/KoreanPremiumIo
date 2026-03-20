@@ -61,8 +61,18 @@ export function getChangeColor(change: number): string {
   return "text-gray-400";
 }
 
-export function formatTimeAgo(timestamp: number): string {
+export function formatTimeAgo(timestamp: number, locale = "ko"): string {
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (locale === "zh") {
+    if (seconds < 5) return "刚刚";
+    if (seconds < 60) return `${seconds}秒前`;
+    return `${Math.floor(seconds / 60)}分钟前`;
+  }
+  if (locale === "en") {
+    if (seconds < 5) return "just now";
+    if (seconds < 60) return `${seconds}s ago`;
+    return `${Math.floor(seconds / 60)}m ago`;
+  }
   if (seconds < 5) return "방금";
   if (seconds < 60) return `${seconds}초 전`;
   return `${Math.floor(seconds / 60)}분 전`;

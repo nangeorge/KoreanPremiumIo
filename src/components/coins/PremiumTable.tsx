@@ -387,20 +387,31 @@ export function PremiumTable() {
           )}
         </div>
 
-        <span className="text-xs text-gray-500">비교 거래소</span>
+        <span className="text-xs text-gray-500">{t("compareExchange")}</span>
         <div className="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-base)] p-0.5">
           {(["binance", "coinbase"] as const).map((ex) => (
             <button
               key={ex}
               onClick={() => setSelectedExchange(ex)}
+              title={ex === "binance" ? "OKX" : "Coinbase"}
               className={cn(
-                "rounded-md px-3 py-1 text-xs font-medium transition-all duration-200",
+                "rounded-md px-2.5 py-1.5 transition-all duration-200 flex items-center justify-center",
                 selectedExchange === ex
-                  ? "bg-indigo-600 text-white"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "bg-indigo-600"
+                  : "hover:bg-white/5"
               )}
             >
-              {ex === "binance" ? "🌏 Binance" : "🇺🇸 Coinbase"}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={ex === "binance"
+                  ? "https://www.google.com/s2/favicons?domain=okx.com&sz=32"
+                  : "https://www.google.com/s2/favicons?domain=coinbase.com&sz=32"
+                }
+                width={16}
+                height={16}
+                alt={ex === "binance" ? "OKX" : "Coinbase"}
+                className="rounded-sm"
+              />
             </button>
           ))}
         </div>

@@ -1,5 +1,5 @@
 // Use multiple fallback sources for exchange rate
-const FALLBACK_RATE = 1350; // fallback if all APIs fail
+const FALLBACK_RATE = 1270; // fallback if all APIs fail
 
 let cachedRate: { rate: number; timestamp: number } | null = null;
 const CACHE_TTL = 300 * 1000; // 5 minutes

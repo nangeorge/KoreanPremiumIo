@@ -8,17 +8,18 @@
   "hero": {
     "title": "Korea Premium Index",
     "subtitle": "The world's most human crypto indicator",
-    "description": "Korean FOMO is the ultimate top signal. Track the real-time price gap between Upbit (KRW) and Bybit·Coinbase (USD) to gauge Korean market heat.",
+    "description": "Korean FOMO is the ultimate top signal. Track the real-time price gap between Upbit (KRW) and OKX·Coinbase (USD) to gauge Korean market heat.",
     "liveUpdate": "Live updates · Refreshes every 5s"
   },
   "table": {
     "coin": "Coin",
     "upbit": "Upbit (KRW)",
-    "binance": "Bybit (USD)",
-    "binanceKrw": "Bybit (KRW eq.)",
+    "binance": "OKX (USD)",
+    "binanceKrw": "OKX (KRW eq.)",
     "premium": "Kimchi Premium",
     "change24h": "24h Change",
-    "volume": "Volume"
+    "volume": "Volume",
+    "compareExchange": "Compare Exchange"
   },
   "stats": {
     "avgPremium": "Avg Premium",
@@ -41,7 +42,7 @@
     "description": "Real-time cryptocurrency kimchi premium tracker",
     "disclaimer": "This site is for informational purposes only. Users are solely responsible for their investment decisions.",
     "rights": "All rights reserved.",
-    "dataSource": "Data: Upbit, Bybit",
+    "dataSource": "Data: Upbit, OKX, Coinbase",
     "exchangeLinks": "Exchange Links",
     "community": "Community & Resources",
     "comingSoon": "Coming Soon",

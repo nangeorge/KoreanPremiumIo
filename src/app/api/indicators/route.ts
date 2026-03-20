@@ -100,15 +100,22 @@ export async function GET(request: Request) {
   const days = Math.min(Math.max(1, parseInt(searchParams.get("days") ?? "90") || 90), 365);
 
   try {
-    const [fngRes, globalRes, onChainData, btcFunding, ethFunding, vixRes] = await Promise.allSettled([
+    const vixRange = days <= 30 ? "1mo" : days <= 90 ? "3mo" : days <= 180 ? "6mo" : "1y";
+    const [fngRes, globalRes, onChainData, btcFunding, ethFunding, vixHistRes, vixQuoteRes] = await Promise.allSettled([
       fetch("https://api.alternative.me/fng/?limit=2", { next: { revalidate: 600 } }),
       fetch("https://api.coingecko.com/api/v3/global", { next: { revalidate: 300 } }),
       fetchCoinMetrics("CapMVRVCur,HashRate,AdrActCnt,TxCnt", days),
       fetchFundingRates("BTCUSDT", 24),
       fetchFundingRates("ETHUSDT", 24),
-      fetch(`https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=${days <= 30 ? "1mo" : days <= 90 ? "3mo" : days <= 180 ? "6mo" : "1y"}`, {
+      // 히스토리용 (일봉)
+      fetch(`https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=${vixRange}`, {
         headers: { "User-Agent": "Mozilla/5.0" },
         next: { revalidate: 1800 },
+      }),
+      // 실시간 현재값용 (quote API)
+      fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EVIX", {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        next: { revalidate: 60 },
       }),
     ]);
 
@@ -156,30 +163,45 @@ export async function GET(request: Request) {
 
     // VIX
     let vix: VixData | null = null;
-    if (vixRes.status === "fulfilled" && vixRes.value.ok) {
-      try {
-        const vixData = await vixRes.value.json();
+    try {
+      // 히스토리 파싱
+      let history: OnChainPoint[] = [];
+      if (vixHistRes.status === "fulfilled" && vixHistRes.value.ok) {
+        const vixData = await vixHistRes.value.json();
         const result = vixData.chart?.result?.[0];
         const timestamps: number[] = result?.timestamp ?? [];
         const closes: number[] = result?.indicators?.quote?.[0]?.close ?? [];
-        const validPairs = timestamps
+        history = timestamps
           .map((t: number, i: number) => ({ t, v: closes[i] }))
-          .filter((p) => p.v != null);
-        const history: OnChainPoint[] = validPairs.map((p) => ({
-          time: new Date(p.t * 1000).toISOString().slice(0, 10),
-          value: parseFloat(p.v.toFixed(2)),
-        }));
-        if (history.length >= 2) {
-          vix = {
-            value: history[history.length - 1].value,
-            change: history[history.length - 1].value - history[history.length - 2].value,
-            history,
-          };
-        } else if (history.length === 1) {
-          vix = { value: history[0].value, change: 0, history };
+          .filter((p) => p.v != null)
+          .map((p) => ({
+            time: new Date(p.t * 1000).toISOString().slice(0, 10),
+            value: parseFloat(p.v.toFixed(2)),
+          }));
+      }
+
+      // 실시간 현재값 파싱 (quote API)
+      let currentValue: number | null = null;
+      if (vixQuoteRes.status === "fulfilled" && vixQuoteRes.value.ok) {
+        const quoteData = await vixQuoteRes.value.json();
+        const q = quoteData.quoteResponse?.result?.[0];
+        if (q?.regularMarketPrice != null) {
+          currentValue = parseFloat(q.regularMarketPrice.toFixed(2));
         }
-      } catch { /* ignore */ }
-    }
+      }
+
+      // 현재값이 있으면 실시간값 우선, 없으면 히스토리 마지막값
+      const latestValue = currentValue ?? history[history.length - 1]?.value ?? null;
+      const prevValue = history[history.length - 2]?.value ?? history[history.length - 1]?.value ?? null;
+
+      if (latestValue !== null) {
+        vix = {
+          value: latestValue,
+          change: prevValue !== null ? parseFloat((latestValue - prevValue).toFixed(2)) : 0,
+          history,
+        };
+      }
+    } catch { /* ignore */ }
 
     // Funding rates
     const btcFundingData = btcFunding.status === "fulfilled" ? btcFunding.value : [];

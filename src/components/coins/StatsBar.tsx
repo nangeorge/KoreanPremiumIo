@@ -19,7 +19,7 @@ function toGaugePct(p: number) {
 // 프리미엄 존 정보
 function getPremiumZone(p: number | null, locale: string) {
   const ko = locale === "ko", zh = locale === "zh";
-  if (p === null) return { label: "—", sub: "", color: "text-[var(--fg-muted)]", dot: "#6b7280", card: "glass" };
+  if (p === null) return { label: "—", sub: "", color: "text-gray-400", dot: "#6b7280", card: "glass" };
   if (p >= 7)  return { label: ko ? "🔴 극과열" : zh ? "🔴 极度过热" : "🔴 Extreme",  sub: ko ? "역대급 고점 수준" : zh ? "历史顶部" : "Historic peak zone",    color: "text-red-400",     dot: "#ef4444", card: "bg-red-500/10 border border-red-500/25" };
   if (p >= 4)  return { label: ko ? "🟠 고점"   : zh ? "🟠 高点"     : "🟠 Peak",      sub: ko ? "단기 조정 주의"   : zh ? "短期调整风险" : "Correction risk",       color: "text-orange-400",  dot: "#f97316", card: "bg-orange-500/8 border border-orange-500/20" };
   if (p >= 2)  return { label: ko ? "🟡 주의"   : zh ? "🟡 注意"     : "🟡 Caution",   sub: ko ? "과열 가능성 주시" : zh ? "注意过热"   : "Watch overheating",     color: "text-yellow-400",  dot: "#eab308", card: "bg-yellow-500/6 border border-yellow-500/15" };
@@ -125,7 +125,7 @@ export function StatsBar() {
           {/* 왼쪽: 수치 + 시그널 */}
           <div className="flex-shrink-0 min-w-[140px]">
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-xs font-medium text-[var(--fg-muted)]">
+              <span className="text-xs font-medium text-gray-400">
                 {isKo ? "BTC 김치 프리미엄" : isZh ? "BTC 泡菜溢价" : "BTC Kimchi Premium"}
               </span>
               <InfoTooltip text={btcTooltip} locale={locale} />
@@ -176,7 +176,7 @@ export function StatsBar() {
               ] as { label: string; pct: number }[]).map(({ label, pct }) => (
                 <span
                   key={label}
-                  className="absolute text-[10px] text-[var(--fg-muted)] -translate-x-1/2 leading-none"
+                  className="absolute text-[10px] text-gray-400 -translate-x-1/2 leading-none"
                   style={{ left: `${pct}%` }}
                 >
                   {label}
@@ -228,7 +228,7 @@ export function StatsBar() {
               ] as { label: string; pct: number }[]).map(({ label, pct }) => (
                 <span
                   key={label}
-                  className="absolute text-[10px] text-[var(--fg-muted)] font-number leading-none"
+                  className="absolute text-[10px] text-gray-400 font-number leading-none"
                   style={{
                     left: pct === 0 ? 0 : pct === 100 ? "auto" : `${pct}%`,
                     right: pct === 100 ? 0 : "auto",
@@ -248,7 +248,7 @@ export function StatsBar() {
 
         {/* Alt 평균 프리미엄 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-[var(--fg-muted)] mb-1.5">
+          <div className="text-xs text-gray-400 mb-1.5">
             {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", altAvg >= 0 ? "text-emerald-400" : "text-rose-400")}>
@@ -272,7 +272,7 @@ export function StatsBar() {
         {/* MVRV */}
         <div className="glass glass-hover rounded-lg p-4">
           <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-xs text-[var(--fg-muted)]">MVRV Ratio</span>
+            <span className="text-xs text-gray-400">MVRV Ratio</span>
             <InfoTooltip text={{
               ko: "시장 가치 ÷ 실현 가치. 3.7↑ 과열, 1.0↓ 저평가.",
               en: "Market Cap ÷ Realized Cap. Above 3.7 = overheated, below 1.0 = undervalued.",
@@ -299,7 +299,7 @@ export function StatsBar() {
         {/* Fear & Greed */}
         <div className="glass glass-hover rounded-lg p-4">
           <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-xs text-[var(--fg-muted)]">
+            <span className="text-xs text-gray-400">
               {isKo ? "공포탐욕지수" : isZh ? "恐慌贪婪指数" : "Fear & Greed"}
             </span>
             <InfoTooltip text={{
@@ -333,7 +333,7 @@ export function StatsBar() {
               href="https://www.tradingview.com/chart/?symbol=CBOE:VIX"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-xs text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] transition-colors"
+              className="flex items-center gap-0.5 text-xs text-gray-400 hover:text-[var(--fg-secondary)] transition-colors"
             >
               VIX <ExternalLink size={10} className="shrink-0" />
             </a>
@@ -366,7 +366,7 @@ export function StatsBar() {
               href="https://www.tradingview.com/chart/?symbol=FX_IDC:USDKRW"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-xs text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] transition-colors w-fit"
+              className="flex items-center gap-0.5 text-xs text-gray-400 hover:text-[var(--fg-secondary)] transition-colors w-fit"
             >
               {t("exchangeRate")} <ExternalLink size={10} className="shrink-0" />
             </a>

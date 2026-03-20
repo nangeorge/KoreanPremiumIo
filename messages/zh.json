@@ -8,17 +8,18 @@
   "hero": {
     "title": "韩国溢价指数",
     "subtitle": "全球最真实的人类情绪加密指标",
-    "description": "韩国的热情，就是市场的顶部信号。实时追踪Upbit（韩元）与Bybit·Coinbase（美元）的价格差异，洞察韩国市场热度。",
+    "description": "韩国的热情，就是市场的顶部信号。实时追踪Upbit（韩元）与OKX·Coinbase（美元）的价格差异，洞察韩国市场热度。",
     "liveUpdate": "实时更新 · 每5秒刷新"
   },
   "table": {
     "coin": "币种",
     "upbit": "Upbit (KRW)",
-    "binance": "Bybit (USD)",
-    "binanceKrw": "Bybit (KRW换算)",
+    "binance": "OKX (USD)",
+    "binanceKrw": "OKX (KRW换算)",
     "premium": "泡菜溢价",
     "change24h": "24小时涨跌",
-    "volume": "交易量"
+    "volume": "交易量",
+    "compareExchange": "对比交易所"
   },
   "stats": {
     "avgPremium": "平均溢价",
@@ -41,7 +42,13 @@
     "description": "实时加密货币泡菜溢价追踪器",
     "disclaimer": "本站仅供参考。用户对其投资决策负全部责任。",
     "rights": "版权所有。",
-    "dataSource": "数据来源：Upbit、Bybit"
+    "dataSource": "数据来源：Upbit、OKX、Coinbase",
+    "exchangeLinks": "交易所链接",
+    "community": "社区与资源",
+    "comingSoon": "即将推出",
+    "chromeExtension": "Chrome扩展提醒",
+    "mobileApp": "手机应用 (PWA)",
+    "subscription": "订阅服务"
   },
   "common": {
     "loading": "加载中...",
