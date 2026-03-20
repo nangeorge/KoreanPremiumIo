@@ -70,13 +70,13 @@ export function MarketPulse() {
     : null;
 
   return (
-    <div className={cn("rounded-2xl border p-4 transition-all duration-500", bg)}>
+    <div className={cn("rounded-xl border p-4 transition-all duration-500", bg)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
         {/* 왼쪽: 라이브 배지 + 시장 상태 */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* 라이브 도트 */}
-          <div className="flex items-center gap-1.5 rounded-full bg-black/20 px-2.5 py-1">
+          <div className="flex items-center gap-1.5 rounded-md bg-black/20 px-2.5 py-1">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-orange-400" />
             <span className="text-[10px] font-medium text-orange-400 uppercase tracking-wider">Live</span>
           </div>
@@ -98,7 +98,7 @@ export function MarketPulse() {
 
           {/* 서사 (중간 사이즈 이상) */}
           {story && !isLoading && (
-            <span className="hidden sm:block text-xs text-gray-500 max-w-xs leading-snug">
+            <span className="hidden sm:block text-xs text-[var(--fg-secondary)] max-w-xs leading-snug">
               {story}
             </span>
           )}
@@ -106,7 +106,7 @@ export function MarketPulse() {
 
         {/* 오른쪽: 공유 버튼 + 코인 수 */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-xs text-gray-600">
+          <span className="text-xs text-[var(--fg-muted)]">
             {isLoading ? "—" : `${coins.length}${isKo ? "개 코인 추적 중" : isZh ? "种加密货币" : " coins tracked"}`}
           </span>
 
@@ -115,7 +115,7 @@ export function MarketPulse() {
               href={`https://twitter.com/intent/tweet?text=${shareText}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white hover:border-white/20"
+              className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-[var(--fg-secondary)] transition-all hover:bg-white/10 hover:text-[var(--fg)] hover:border-white/20"
             >
               <svg className="h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
@@ -128,7 +128,7 @@ export function MarketPulse() {
 
       {/* 모바일: 서사 텍스트 */}
       {story && !isLoading && (
-        <p className="sm:hidden mt-2 text-xs text-gray-500 leading-snug">{story}</p>
+        <p className="sm:hidden mt-2 text-xs text-[var(--fg-secondary)] leading-snug">{story}</p>
       )}
     </div>
   );

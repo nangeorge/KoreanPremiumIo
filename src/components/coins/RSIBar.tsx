@@ -9,7 +9,7 @@ import type { RSIResponse } from "@/app/api/rsi/route";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 function rsiStatus(v: number | null, locale: string) {
-  if (v === null) return { label: "—", color: "text-gray-500", fillColor: "#6b7280" };
+  if (v === null) return { label: "—", color: "text-[var(--fg-muted)]", fillColor: "#6b7280" };
   const ko = locale === "ko", zh = locale === "zh";
   if (v >= 70) return { label: ko ? "과매수" : zh ? "超买" : "Overbought", color: "text-red-400",    fillColor: "#ef4444" };
   if (v <= 30) return { label: ko ? "과매도" : zh ? "超卖" : "Oversold",   color: "text-blue-400",   fillColor: "#3b82f6" };
@@ -29,19 +29,19 @@ function RSICard({
 
   return (
     <div className={cn(
-      "glass glass-hover rounded-xl p-4 transition-all duration-500",
+      "glass glass-hover rounded-lg p-4 transition-all duration-500",
       isOverbought && "border-red-500/20",
       isOversold   && "border-blue-500/20",
     )}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-500">{label}</span>
+          <span className="text-xs text-[var(--fg-muted)]">{label}</span>
           <InfoTooltip text={tooltip} locale={locale} />
         </div>
         {value !== null && (
           <span className={cn(
-            "text-xs font-semibold px-2 py-0.5 rounded-full border",
+            "text-xs font-semibold px-2 py-0.5 rounded-md border",
             status.color,
             isOverbought ? "bg-red-500/10 border-red-500/20" :
             isOversold   ? "bg-blue-500/10 border-blue-500/20" :
@@ -53,7 +53,7 @@ function RSICard({
       </div>
 
       {/* 큰 숫자 */}
-      <div className={cn("font-number text-3xl font-black leading-none mb-4", status.color)}>
+      <div className={cn("font-number text-2xl font-bold leading-none mb-4", status.color)}>
         {value !== null ? value.toFixed(1) : "—"}
       </div>
 
@@ -108,10 +108,10 @@ function RSICard({
       </div>
 
       {/* 존 레이블 */}
-      <div className="flex justify-between mt-2 text-[9px]">
-        <span className="text-blue-600">{locale === "ko" ? "과매도" : locale === "zh" ? "超卖" : "Oversold"}</span>
-        <span className="text-gray-600">{sublabel}</span>
-        <span className="text-red-600">{locale === "ko" ? "과매수" : locale === "zh" ? "超买" : "Overbought"}</span>
+      <div className="flex justify-between mt-2 text-[10px]">
+        <span className="text-blue-500">{locale === "ko" ? "과매도" : locale === "zh" ? "超卖" : "Oversold"}</span>
+        <span className="text-[var(--fg-muted)]">{sublabel}</span>
+        <span className="text-red-500">{locale === "ko" ? "과매수" : locale === "zh" ? "超买" : "Overbought"}</span>
       </div>
     </div>
   );
