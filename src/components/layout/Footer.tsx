@@ -11,19 +11,19 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-20 border-t border-white/5 bg-[var(--bg-base)]">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <footer className="mt-20 border-t border-[var(--border-color)] bg-[var(--bg-base)]">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {/* Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">{t("exchangeLinks")}</h3>
+            <h3 className="text-sm font-semibold text-[var(--fg-secondary)] mb-3">{t("exchangeLinks")}</h3>
             <ul className="space-y-2">
               <li>
                 <a
                   href="https://upbit.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-500 hover:text-indigo-400 transition-colors"
+                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
                 >
                   Upbit ↗
                 </a>
@@ -33,7 +33,7 @@ export function Footer() {
                   href="https://bybit.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-500 hover:text-indigo-400 transition-colors"
+                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
                 >
                   Bybit ↗
                 </a>
@@ -43,7 +43,7 @@ export function Footer() {
                   href="https://coinbase.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-500 hover:text-indigo-400 transition-colors"
+                  className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
                 >
                   Coinbase ↗
                 </a>
@@ -53,30 +53,30 @@ export function Footer() {
 
           {/* Community & Resources */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">{t("community")}</h3>
+            <h3 className="text-sm font-semibold text-[var(--fg-secondary)] mb-3">{t("community")}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="https://www.reddit.com/r/CryptoCurrency/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                <a href="https://www.reddit.com/r/CryptoCurrency/" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                   r/CryptoCurrency ↗
                 </a>
               </li>
               <li>
-                <a href="https://www.reddit.com/r/Bitcoin/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                <a href="https://www.reddit.com/r/Bitcoin/" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                   r/Bitcoin ↗
                 </a>
               </li>
               <li>
-                <a href="https://www.coinglass.com" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                <a href="https://www.coinglass.com" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                   CoinGlass ↗
                 </a>
               </li>
               <li>
-                <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                   Fear & Greed Index ↗
                 </a>
               </li>
               <li>
-                <a href="https://coinmetrics.io" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                <a href="https://coinmetrics.io" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                   CoinMetrics ↗
                 </a>
               </li>
@@ -85,7 +85,7 @@ export function Footer() {
 
           {/* Data sources */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">
+            <h3 className="text-sm font-semibold text-[var(--fg-secondary)] mb-3">
               {locale === "ko" ? "데이터 출처" : locale === "zh" ? "数据来源" : "Data Sources"}
             </h3>
             <ul className="space-y-2">
@@ -97,7 +97,7 @@ export function Footer() {
                 { name: "CoinMetrics", href: "https://coinmetrics.io" },
               ].map(({ name, href }) => (
                 <li key={name}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-indigo-400 transition-colors">
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
                     {name} ↗
                   </a>
                 </li>
@@ -106,26 +106,26 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-white/5 pt-6 flex flex-col gap-3">
+        <div className="mt-8 border-t border-[var(--border-color)] pt-6 flex flex-col gap-3">
           <div className="flex flex-wrap gap-4">
-            <Link href={`/${locale}/about`} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+            <Link href={`/${locale}/about`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
               {locale === "ko" ? "소개" : locale === "zh" ? "关于" : "About"}
             </Link>
-            <Link href={`/${locale}/privacy`} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+            <Link href={`/${locale}/privacy`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
               {locale === "ko" ? "개인정보 처리방침" : locale === "zh" ? "隐私政策" : "Privacy Policy"}
             </Link>
-            <Link href={`/${locale}/terms`} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+            <Link href={`/${locale}/terms`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
               {locale === "ko" ? "이용약관" : locale === "zh" ? "服务条款" : "Terms of Service"}
             </Link>
-            <a href="mailto:contact@koreanpremium.io" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+            <a href="mailto:contact@koreanpremium.io" className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
               contact@koreanpremium.io
             </a>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-[var(--fg-muted)]">
               © {year} KimchiPremium. {t("rights")}
             </p>
-            <p className="text-xs text-gray-600 sm:text-right max-w-md">
+            <p className="text-xs text-[var(--fg-muted)] sm:text-right max-w-md">
               {t("disclaimer")}
             </p>
           </div>

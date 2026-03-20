@@ -45,17 +45,17 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 85%, transparent)", borderBottom: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 1px 0 rgba(99,102,241,0.1), 0 4px 24px rgba(0,0,0,0.45)" }}>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 85%, transparent)", borderBottom: "1px solid var(--border-color)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center gap-2 group">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-red-500/80 to-orange-500/80 shadow-lg shadow-red-500/20 text-xl">
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-red-500/80 to-orange-500/80 text-xl">
               🌶️
             </div>
             <div className="hidden sm:block">
-              <div className="text-sm font-bold text-white leading-none">김치 프리미엄 <span className="text-xs">🥬</span></div>
-              <div className="text-[10px] text-orange-400 leading-none mt-0.5">Kimchi Premium Tracker</div>
+              <span className="font-bold text-sm tracking-tight text-[var(--fg)]">KimchiPremium</span>
+              <span className="text-xs text-[var(--fg-secondary)] ml-1">Index</span>
             </div>
           </Link>
 
@@ -67,26 +67,20 @@ export function Header() {
             </div>
             {btcPremium !== null && (
               <div className={cn(
-                "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-number font-bold transition-all duration-500",
-                btcPremium >= 7  ? "border-red-500/40 bg-red-500/10 text-red-300" :
-                btcPremium >= 4  ? "border-orange-500/35 bg-orange-500/10 text-orange-300" :
-                btcPremium >= 2  ? "border-yellow-500/30 bg-yellow-500/8 text-yellow-300" :
-                btcPremium >= 0  ? "border-emerald-500/30 bg-emerald-500/8 text-emerald-300" :
-                                   "border-blue-500/25 bg-blue-500/8 text-blue-300"
+                "flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-number font-bold transition-all duration-500 bg-white/5",
+                btcPremium >= 0 ? "text-[#3fb950]" : "text-[#f85149]"
               )}>
-                <span className="text-gray-500 font-normal">BTC 김프</span>
+                <span className="text-[var(--fg-secondary)] font-normal">BTC 김프</span>
                 {formatPremium(btcPremium)}
               </div>
             )}
             {exchangeRate > 0 && (
-              <div className="flex items-center gap-1 text-xs font-number">
-                <span className="text-gray-500">$1</span>
-                <span className="text-gray-600">=</span>
-                <span className="text-gray-200 font-medium">₩{exchangeRate.toLocaleString("ko-KR")}</span>
+              <div className="flex items-center gap-1 font-number text-xs text-[var(--fg-secondary)]">
+                <span>$1 = ₩{exchangeRate.toLocaleString("ko-KR")}</span>
               </div>
             )}
             {updatedAt && (
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-[var(--fg-muted)]">
                 {new Date(updatedAt).toLocaleTimeString("ko-KR")}
               </div>
             )}
@@ -98,7 +92,7 @@ export function Header() {
             <div className="flex items-center gap-1.5 md:hidden">
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
               {exchangeRate > 0 && (
-                <span className="font-number text-xs text-gray-300 font-medium">
+                <span className="font-number text-xs text-[var(--fg-secondary)] font-medium">
                   $1 = ₩{exchangeRate.toLocaleString("ko-KR")}
                 </span>
               )}
@@ -106,13 +100,13 @@ export function Header() {
 
             <button
               onClick={toggleTheme}
-              className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-white/8 hover:text-gray-300"
+              className="rounded-lg p-2 text-[var(--fg-secondary)] transition-colors hover:bg-white/8 hover:text-[var(--fg)]"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            <div className="flex items-center rounded-lg border border-white/8 bg-white/3 p-0.5">
+            <div className="flex items-center rounded-lg border border-[var(--border-color)] bg-white/3 p-0.5">
               {LOCALES.map((loc) => (
                 <button
                   key={loc.code}
@@ -120,8 +114,8 @@ export function Header() {
                   className={cn(
                     "flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-200",
                     locale === loc.code
-                      ? "bg-indigo-600 text-white shadow-sm"
-                      : "text-gray-400 hover:text-gray-200"
+                      ? "bg-indigo-600 text-white"
+                      : "text-[var(--fg-secondary)] hover:text-[var(--fg)]"
                   )}
                 >
                   <span>{loc.flag}</span>

@@ -30,7 +30,7 @@ export function TabNav() {
   }
 
   return (
-    <div className="sticky top-16 z-40 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 90%, transparent)", borderBottom: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
+    <div className="sticky top-16 z-40 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 90%, transparent)", borderBottom: "1px solid var(--border-color)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex gap-1">
           {TABS.map((tab) => (
@@ -38,10 +38,10 @@ export function TabNav() {
               key={tab.key}
               href={`/${locale}${tab.href}`}
               className={cn(
-                "flex items-center gap-1.5 border-b-2 px-3 py-3.5 sm:px-4 text-sm font-medium transition-all duration-200",
+                "flex items-center gap-1.5 border-b-2 px-3 py-3 sm:px-4 text-sm font-medium transition-all duration-200",
                 isActive(tab)
-                  ? "border-indigo-500 text-white"
-                  : "border-transparent text-gray-500 hover:text-gray-300 hover:border-white/20"
+                  ? "border-[#6366f1] text-[var(--fg)]"
+                  : "border-transparent text-[var(--fg-secondary)] hover:text-[var(--fg)]"
               )}
             >
               <span>{getLabel(tab)}</span>
