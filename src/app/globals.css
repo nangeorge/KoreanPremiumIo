@@ -18,17 +18,17 @@
 
 /* ── CSS Custom Properties ── */
 :root {
-  /* Pure Black */
-  --bg-base:    #000000;
-  --bg-raised:  #0a0a0a;
-  --bg-overlay: #111111;
-  --bg-hover:   #0f0f0f;
-  --fg:         #f0f0f0;
-  --fg-secondary: #888888;
-  --fg-muted:   #555555;
-  --border-color: rgba(255, 255, 255, 0.07);
-  --divider:    rgba(255, 255, 255, 0.05);
-  --glass-bg:   #0a0a0a;
+  /* Notion Dark */
+  --bg-base:    #191919;
+  --bg-raised:  #202020;
+  --bg-overlay: #262626;
+  --bg-hover:   #232323;
+  --fg:         #ffffff;
+  --fg-secondary: #cccccc;
+  --fg-muted:   #999999;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --divider:    rgba(255, 255, 255, 0.04);
+  --glass-bg:   #202020;
   --card-shadow: none;
   --card-shadow-hover: none;
   --glow-brand: rgba(255, 255, 255, 0);
@@ -36,23 +36,27 @@
 }
 
 [data-theme="light"] {
-  --bg-base:    #f6f8fa;
-  --bg-raised:  #ffffff;
-  --bg-overlay: #eaeef2;
-  --bg-hover:   #f3f4f6;
-  --fg:         #1f2328;
-  --fg-secondary: #636c76;
-  --fg-muted:   #9198a1;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --divider:    rgba(0, 0, 0, 0.06);
+  /* Notion Light */
+  --bg-base:    #ffffff;
+  --bg-raised:  #f7f7f5;
+  --bg-overlay: #ebebea;
+  --bg-hover:   #f1f1ef;
+  --fg:         #0d0d0d;
+  --fg-secondary: #333333;
+  --fg-muted:   #777777;
+  --border-color: rgba(55, 53, 47, 0.09);
+  --divider:    rgba(55, 53, 47, 0.06);
   --glass-bg:   #ffffff;
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
-  --card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.07);
+  --card-shadow: none;
+  --card-shadow-hover: none;
   --glow-brand: rgba(0, 0, 0, 0);
   color-scheme: light;
 }
 
 * { box-sizing: border-box; }
+
+/* ── text-white → CSS 변수 기반으로 변환 (다크=흰색, 라이트=검정) ── */
+.text-white { color: var(--fg) !important; }
 
 html {
   scroll-behavior: smooth;
@@ -66,23 +70,22 @@ html {
 /* ── 배경 ── */
 body {
   background-color: var(--bg-base);
-  background-image: radial-gradient(ellipse 80% 35% at 50% -5%, var(--glow-brand) 0%, transparent 55%);
   color: var(--fg);
   font-family: var(--font-inter, 'Inter', system-ui, -apple-system, sans-serif);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 2px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 
 /* ── Skeleton shimmer ── */
 @keyframes shimmer {
@@ -154,12 +157,12 @@ body {
 }
 .glass-hover:hover {
   background: var(--bg-hover);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.08);
   box-shadow: var(--card-shadow-hover);
 }
 
 [data-theme="light"] .glass-hover:hover {
-  border-color: rgba(0, 0, 0, 0.15);
+  border-color: rgba(55, 53, 47, 0.12);
 }
 
 /* ── Number font — JetBrains Mono ── */
@@ -203,49 +206,59 @@ body {
 .gauge-glow-blue   { box-shadow: 0 0 10px 1px rgba( 59, 130, 246, 0.3); }
 
 /* ═══════════════════════════════════════════════════════
-   LIGHT MODE OVERRIDES
+   GLOBAL — text-gray-* 기본값을 읽기 좋은 밝은 회색으로
+   (라이트 모드에서는 아래 LIGHT MODE OVERRIDES 가 덮어씀)
+   ═══════════════════════════════════════════════════════ */
+.text-gray-300 { color: #e0e0e0 !important; }
+.text-gray-400 { color: #cccccc !important; }
+.text-gray-500 { color: #b8b8b8 !important; }
+.text-gray-600 { color: #aaaaaa !important; }
+.text-gray-700 { color: #999999 !important; }
+
+/* ═══════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES  (Notion Light)
    ═══════════════════════════════════════════════════════ */
 [data-theme="light"] {
   /* 구조적 배경 */
   & .bg-black { background-color: var(--bg-base) !important; }
   & .bg-\[var\(--bg-base\)\] { background-color: var(--bg-base); }
 
-  /* white/opacity → black/opacity 반전 */
-  & .bg-white\/2  { background-color: rgba(0, 0, 0, 0.02) !important; }
-  & .bg-white\/3  { background-color: rgba(0, 0, 0, 0.02) !important; }
-  & .bg-white\/4  { background-color: rgba(0, 0, 0, 0.03) !important; }
-  & .bg-white\/5  { background-color: rgba(0, 0, 0, 0.04) !important; }
-  & .bg-white\/6  { background-color: rgba(0, 0, 0, 0.05) !important; }
-  & .bg-white\/8  { background-color: rgba(0, 0, 0, 0.06) !important; }
-  & .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
-  & .hover\:bg-white\/10:hover { background-color: rgba(0, 0, 0, 0.07) !important; }
+  /* white/opacity → notion-brown/opacity 반전 */
+  & .bg-white\/2  { background-color: rgba(55, 53, 47, 0.02) !important; }
+  & .bg-white\/3  { background-color: rgba(55, 53, 47, 0.02) !important; }
+  & .bg-white\/4  { background-color: rgba(55, 53, 47, 0.03) !important; }
+  & .bg-white\/5  { background-color: rgba(55, 53, 47, 0.04) !important; }
+  & .bg-white\/6  { background-color: rgba(55, 53, 47, 0.05) !important; }
+  & .bg-white\/8  { background-color: rgba(55, 53, 47, 0.06) !important; }
+  & .bg-white\/10 { background-color: rgba(55, 53, 47, 0.08) !important; }
+  & .hover\:bg-white\/10:hover { background-color: rgba(55, 53, 47, 0.06) !important; }
 
   /* 보더 */
-  & .border-white\/5  { border-color: rgba(0, 0, 0, 0.05) !important; }
-  & .border-white\/6  { border-color: rgba(0, 0, 0, 0.06) !important; }
-  & .border-white\/8  { border-color: rgba(0, 0, 0, 0.07) !important; }
-  & .border-white\/10 { border-color: rgba(0, 0, 0, 0.09) !important; }
+  & .border-white\/5  { border-color: rgba(55, 53, 47, 0.07) !important; }
+  & .border-white\/6  { border-color: rgba(55, 53, 47, 0.08) !important; }
+  & .border-white\/8  { border-color: rgba(55, 53, 47, 0.09) !important; }
+  & .border-white\/10 { border-color: rgba(55, 53, 47, 0.11) !important; }
 
-  /* 밝은 gray 텍스트 → 어두운 gray로 */
-  & .text-white       { color: #1f2328 !important; }
+  /* 밝은 gray 텍스트 → 검정 계열로 */
+  & .text-white       { color: #111111 !important; }
   & .text-gray-100,
   & .text-gray-200,
-  & .text-gray-300    { color: #1f2328 !important; }
-  & .text-gray-400    { color: #4b5563 !important; }
-  & .text-gray-500    { color: #636c76 !important; }
-  & .text-gray-600    { color: #9198a1 !important; }
-  & .text-gray-700    { color: #d1d5db !important; }
+  & .text-gray-300    { color: #111111 !important; }
+  & .text-gray-400    { color: #555555 !important; }
+  & .text-gray-500    { color: #777777 !important; }
+  & .text-gray-600    { color: #909090 !important; }
+  & .text-gray-700    { color: #b0b0b0 !important; }
 
-  /* 시맨틱 컬러 강화 */
-  & .text-emerald-400  { color: #1a7f37 !important; }
-  & .text-green-400    { color: #1a7f37 !important; }
-  & .text-rose-400     { color: #cf222e !important; }
-  & .text-orange-400   { color: #bc4c00 !important; }
-  & .text-yellow-400   { color: #9a6700 !important; }
-  & .text-blue-400     { color: #0969da !important; }
+  /* 시맨틱 컬러 — Notion이 쓰는 채도 낮은 색 */
+  & .text-emerald-400  { color: #0f7b55 !important; }
+  & .text-green-400    { color: #0f7b55 !important; }
+  & .text-rose-400     { color: #c9312a !important; }
+  & .text-orange-400   { color: #ad4b00 !important; }
+  & .text-yellow-400   { color: #906b00 !important; }
+  & .text-blue-400     { color: #0b64c0 !important; }
   & .text-blue-600     { color: #0550ae !important; }
-  & .text-red-400      { color: #cf222e !important; }
-  & .text-red-600      { color: #a40e26 !important; }
+  & .text-red-400      { color: #c9312a !important; }
+  & .text-red-600      { color: #9b1c1c !important; }
   & .text-indigo-300,
-  & .text-indigo-400   { color: #374151 !important; }
+  & .text-indigo-400   { color: #4f4f4f !important; }
 }

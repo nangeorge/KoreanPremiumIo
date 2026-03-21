@@ -14,6 +14,7 @@ export interface CoinPrice {
   coinbasePremium: number | null; // vs coinbase, percentage
   change24h: number; // percentage
   volume24h: number; // KRW
+  marketCap: number | null; // USD
   logoUrl: string;
 }
 

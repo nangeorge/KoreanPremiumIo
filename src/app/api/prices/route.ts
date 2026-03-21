@@ -8,6 +8,25 @@ import type { CoinPrice, PriceResponse } from "@/types";
 
 export const revalidate = 5;
 
+// CoinGecko symbol → market cap (USD), 5분 캐시
+async function fetchMarketCaps(): Promise<Map<string, number>> {
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false",
+      { next: { revalidate: 300 } }
+    );
+    if (!res.ok) return new Map();
+    const data: Array<{ symbol: string; market_cap: number }> = await res.json();
+    const map = new Map<string, number>();
+    for (const coin of data) {
+      map.set(coin.symbol.toUpperCase(), coin.market_cap ?? 0);
+    }
+    return map;
+  } catch {
+    return new Map();
+  }
+}
+
 const COIN_LOGOS: Record<string, string> = {
   // locally cached logos
   BTC:     "/logos/BTC.png",
@@ -159,11 +178,12 @@ export async function GET() {
       .filter((c) => c.coinbasePair)
       .map((c) => ({ symbol: c.symbol, pair: c.coinbasePair }));
 
-    const [upbitResult, binanceResult, coinbaseResult, exchangeRate] = await Promise.all([
+    const [upbitResult, binanceResult, coinbaseResult, exchangeRate, marketCapMap] = await Promise.all([
       fetchUpbitPrices(upbitMarkets).catch(() => []),
       fetchBinancePrices(binanceSymbols).catch(() => []),
       fetchCoinbasePrices(coinbasePairs).catch(() => []),
       fetchUsdKrwRate(),
+      fetchMarketCaps().catch(() => new Map<string, number>()),
     ]);
 
     const upbitData = upbitResult;
@@ -200,6 +220,8 @@ export async function GET() {
       const change24h = upbit.signed_change_rate * 100;
       const volume24h = upbit.acc_trade_price_24h;
 
+      const marketCap = marketCapMap.get(coin.symbol) ?? null;
+
       return [{
         symbol: coin.symbol,
         name: coin.name,
@@ -214,6 +236,7 @@ export async function GET() {
         coinbasePremium: coinbasePremium !== null ? parseFloat(coinbasePremium.toFixed(2)) : null,
         change24h: parseFloat(change24h.toFixed(2)),
         volume24h,
+        marketCap: marketCap && marketCap > 0 ? marketCap : null,
         logoUrl: COIN_LOGOS[coin.symbol] ?? "",
       }];
     });

@@ -49,13 +49,12 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-2 group">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-red-500/80 to-orange-500/80 text-xl">
+          <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-white/6 text-lg leading-none">
               🌶️
             </div>
             <div className="hidden sm:block">
-              <span className="font-bold text-sm tracking-tight text-[var(--fg)]">KimchiPremium</span>
-              <span className="text-xs text-[var(--fg-secondary)] ml-1">Index</span>
+              <span className="font-semibold text-sm tracking-tight text-[var(--fg)]">KimchiPremium</span>
             </div>
           </Link>
 
@@ -63,14 +62,14 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="text-xs text-gray-400">LIVE</span>
+              <span className="text-xs text-[var(--fg-secondary)]">LIVE</span>
             </div>
             {btcPremium !== null && (
               <div className={cn(
-                "flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-number font-bold transition-all duration-500 bg-white/5",
+                "flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-number bg-white/4",
                 btcPremium >= 0 ? "text-[#3fb950]" : "text-[#f85149]"
               )}>
-                <span className="text-[var(--fg-secondary)] font-normal">BTC 김프</span>
+                <span className="text-[var(--fg-muted)] font-normal">BTC</span>
                 {formatPremium(btcPremium)}
               </div>
             )}
@@ -100,22 +99,22 @@ export function Header() {
 
             <button
               onClick={toggleTheme}
-              className="rounded-lg p-2 text-[var(--fg-secondary)] transition-colors hover:bg-white/8 hover:text-[var(--fg)]"
+              className="rounded p-1.5 text-[var(--fg-muted)] transition-colors hover:bg-white/5 hover:text-[var(--fg-secondary)]"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            <div className="flex items-center rounded-lg border border-[var(--border-color)] bg-white/3 p-0.5">
+            <div className="flex items-center rounded border border-[var(--border-color)] bg-white/3 p-0.5">
               {LOCALES.map((loc) => (
                 <button
                   key={loc.code}
                   onClick={() => switchLocale(loc.code)}
                   className={cn(
-                    "flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-200",
+                    "flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition-all duration-150",
                     locale === loc.code
-                      ? "bg-white text-black"
-                      : "text-[var(--fg-secondary)] hover:text-[var(--fg)]"
+                      ? "bg-white/10 text-[var(--fg)]"
+                      : "text-[var(--fg-muted)] hover:text-[var(--fg-secondary)]"
                   )}
                 >
                   <span>{loc.flag}</span>

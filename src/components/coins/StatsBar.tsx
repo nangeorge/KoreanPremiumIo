@@ -176,7 +176,7 @@ export function StatsBar() {
               ] as { label: string; pct: number }[]).map(({ label, pct }) => (
                 <span
                   key={label}
-                  className="absolute text-[10px] text-gray-400 -translate-x-1/2 leading-none"
+                  className="absolute text-[10px] text-[var(--fg-secondary)] -translate-x-1/2 leading-none"
                   style={{ left: `${pct}%` }}
                 >
                   {label}
@@ -228,7 +228,7 @@ export function StatsBar() {
               ] as { label: string; pct: number }[]).map(({ label, pct }) => (
                 <span
                   key={label}
-                  className="absolute text-[10px] text-gray-400 font-number leading-none"
+                  className="absolute text-[10px] text-[var(--fg-secondary)] font-number leading-none"
                   style={{
                     left: pct === 0 ? 0 : pct === 100 ? "auto" : `${pct}%`,
                     right: pct === 100 ? 0 : "auto",
@@ -248,7 +248,7 @@ export function StatsBar() {
 
         {/* Alt 평균 프리미엄 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-gray-400 mb-1.5">
+          <div className="text-xs text-[var(--fg-secondary)] mb-1.5">
             {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", altAvg >= 0 ? "text-emerald-400" : "text-rose-400")}>
@@ -272,7 +272,14 @@ export function StatsBar() {
         {/* MVRV */}
         <div className="glass glass-hover rounded-lg p-4">
           <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-xs text-gray-400">MVRV Ratio</span>
+            <a
+              href="https://www.lookintobitcoin.com/charts/mvrv-zscore/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-0.5 text-xs text-[var(--fg-secondary)] hover:text-[var(--fg)] transition-colors"
+            >
+              MVRV Ratio <ExternalLink size={10} className="shrink-0" />
+            </a>
             <InfoTooltip text={{
               ko: "시장 가치 ÷ 실현 가치. 3.7↑ 과열, 1.0↓ 저평가.",
               en: "Market Cap ÷ Realized Cap. Above 3.7 = overheated, below 1.0 = undervalued.",
@@ -299,13 +306,19 @@ export function StatsBar() {
         {/* Fear & Greed */}
         <div className="glass glass-hover rounded-lg p-4">
           <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-xs text-gray-400">
+            <a
+              href="https://alternative.me/crypto/fear-and-greed-index/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-0.5 text-xs text-[var(--fg-secondary)] hover:text-[var(--fg)] transition-colors"
+            >
               {isKo ? "공포탐욕지수" : isZh ? "恐慌贪婪指数" : "Fear & Greed"}
-            </span>
+              <ExternalLink size={10} className="shrink-0" />
+            </a>
             <InfoTooltip text={{
-              ko: "시장 심리 지수 (0=극공포, 100=극탐욕). 80↑ 과열 경고, 20↓ 매수 기회.",
-              en: "Market sentiment (0=Extreme Fear, 100=Extreme Greed). Above 80 = overheated, below 20 = potential buy.",
-              zh: "市场情绪指数（0=极度恐惧，100=极度贪婪）。高于80=过热，低于20=潜在买入机会。",
+              ko: "왜 공포탐욕지수를 볼까?\n\n크립토 시장은 감정에 크게 좌우됩니다. 상승장에선 FOMO(놓칠까봐 두려움)로 과도하게 매수하고, 하락장에선 공포에 이성을 잃고 매도하는 경향이 있습니다.\n\n• 극도의 공포 → 투자자들이 지나치게 비관적. 매수 기회일 수 있음\n• 극도의 탐욕 → 시장 과열, 조정 가능성 높음\n\n0 = 극공포 / 100 = 극탐욕",
+              en: "Why measure Fear & Greed?\n\nCrypto markets are highly emotional. People get greedy during rallies (FOMO) and panic-sell during downturns.\n\n• Extreme fear → investors too worried. Could be a buying opportunity.\n• Extreme greed → market overheated, correction likely.\n\n0 = Extreme Fear / 100 = Extreme Greed",
+              zh: "为什么要关注恐慌贪婪指数？\n\n加密市场受情绪驱动。上涨时贪婪（FOMO），下跌时恐慌抛售。\n\n• 极度恐慌 → 投资者过度悲观，可能是买入机会\n• 极度贪婪 → 市场过热，可能面临回调\n\n0 = 极度恐慌 / 100 = 极度贪婪",
             }} locale={locale} />
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", fngInfo.color)}>
@@ -333,7 +346,7 @@ export function StatsBar() {
               href="https://www.tradingview.com/chart/?symbol=CBOE:VIX"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-xs text-gray-400 hover:text-[var(--fg-secondary)] transition-colors"
+              className="flex items-center gap-0.5 text-xs text-[var(--fg-secondary)] hover:text-[var(--fg)] transition-colors"
             >
               VIX <ExternalLink size={10} className="shrink-0" />
             </a>
@@ -366,7 +379,7 @@ export function StatsBar() {
               href="https://www.tradingview.com/chart/?symbol=FX_IDC:USDKRW"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-0.5 text-xs text-gray-400 hover:text-[var(--fg-secondary)] transition-colors w-fit"
+              className="flex items-center gap-0.5 text-xs text-[var(--fg-secondary)] hover:text-[var(--fg)] transition-colors w-fit"
             >
               {t("exchangeRate")} <ExternalLink size={10} className="shrink-0" />
             </a>

@@ -41,6 +41,15 @@ export function formatVolume(value: number, locale = "ko"): string {
   return "₩" + value.toLocaleString("en-US");
 }
 
+/** 시가총액 — $T/$B/$M 포맷 */
+export function formatMarketCap(value: number | null): string {
+  if (value === null || value === 0) return "—";
+  if (value >= 1_000_000_000_000) return "$" + (value / 1_000_000_000_000).toFixed(2) + "T";
+  if (value >= 1_000_000_000)     return "$" + (value / 1_000_000_000).toFixed(2) + "B";
+  if (value >= 1_000_000)         return "$" + (value / 1_000_000).toFixed(1) + "M";
+  return "$" + value.toLocaleString("en-US");
+}
+
 export function getPremiumColor(premium: number): string {
   if (premium >= 3) return "text-emerald-400";
   if (premium >= 1) return "text-emerald-500";
