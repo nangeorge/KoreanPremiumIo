@@ -15,6 +15,16 @@ const TVChart = dynamic(() => import("@/components/charts/TVChart").then((m) => 
   loading: () => <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />,
 });
 
+const PiCycleChart = dynamic(
+  () => import("@/components/charts/PiCycleChart").then((m) => m.PiCycleChart),
+  { ssr: false, loading: () => <div className="skeleton w-full rounded-lg" style={{ height: 260 }} /> }
+);
+
+const TVHeatmap = dynamic(
+  () => import("@/components/charts/TVHeatmap").then((m) => m.TVHeatmap),
+  { ssr: false, loading: () => <div className="skeleton w-full rounded-lg" style={{ height: 500 }} /> }
+);
+
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 // ── MVRV 존 정의 (locale-aware) ──────────────────────────────────
@@ -714,6 +724,21 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               />
             )}
           </ChartCard>
+
+          {/* Pi Cycle Top 차트 */}
+          <ChartCard
+            title="Pi Cycle Top"
+            subtitle={locale === "ko" ? "111DMA vs 2×350DMA 교차 = 사이클 탑 신호" : locale === "zh" ? "111DMA与2×350DMA交叉=周期顶部信号" : "111DMA vs 2×350DMA crossover = cycle top signal"}
+            info={{
+              ko: "비트코인 사이클 정점 예측 지표. 111일 이동평균이 350일 이동평균의 2배를 상향 돌파하면 역사적으로 사이클 탑과 일치했습니다. 2021년 4월 정확히 예측. 단순 참고용으로만 활용하세요.",
+              en: "Bitcoin cycle top predictor. When 111DMA crosses above 2×350DMA, it has historically coincided with market tops. Accurately signaled the April 2021 top. Use as one reference only.",
+              zh: "比特币周期顶部预测指标。当111日均线上穿350日均线的2倍时，历史上往往与市场顶部重合。2021年4月曾准确预测。仅作参考。",
+            }}
+            locale={locale}
+            source="Binance (BTC daily)"
+          >
+            <PiCycleChart locale={locale} />
+          </ChartCard>
         </div>
       )}
 
@@ -928,6 +953,17 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             )}
           </ChartCard>
 
+          {/* 크립토 히트맵 */}
+          <div className="glass rounded-2xl p-5">
+            <h3 className="text-sm font-semibold text-white mb-4">
+              {locale === "ko" ? "크립토 히트맵" : locale === "zh" ? "加密货币热力图" : "Crypto Heatmap"}
+            </h3>
+            <p className="text-xs text-[var(--fg-muted)] mb-3">
+              {locale === "ko" ? "시가총액 기준 크기 · 24h 변동 기준 색상" : locale === "zh" ? "市值大小 · 24h变动颜色" : "Size by market cap · Color by 24h change"}
+            </p>
+            <TVHeatmap locale={locale} />
+          </div>
+
           {/* 김프 히스토리 */}
           <ChartCard title={t.kimchiHistoryTitle} subtitle={t.kimchiHistorySub} info={INFO.kimchiPremium} locale={locale} source="Upbit / OKX">
             {premiumData.length < 3 ? (
@@ -956,14 +992,14 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             <MetricCard
               label={t.btcOiLabel}
               value={isLoading || !btcOI ? "—" : `${btcOI.oiCcy.toLocaleString("en-US", { maximumFractionDigits: 0 })} BTC`}
-              subValue={btcOI ? formatBigUsd(btcOI.oiUsd) : undefined}
+              subValue={btcOI ? `${formatBigUsd(btcOI.oiUsd)}${btcOI.change24h !== undefined && btcOI.change24h !== null ? `  ${btcOI.change24h >= 0 ? "+" : ""}${btcOI.change24h.toFixed(2)}% 24h` : ""}` : undefined}
               color="text-orange-400"
               info={INFO.openInterest} locale={locale}
             />
             <MetricCard
               label={t.ethOiLabel}
               value={isLoading || !ethOI ? "—" : `${(ethOI.oiCcy / 1000).toFixed(1)}K ETH`}
-              subValue={ethOI ? formatBigUsd(ethOI.oiUsd) : undefined}
+              subValue={ethOI ? `${formatBigUsd(ethOI.oiUsd)}${ethOI.change24h !== undefined && ethOI.change24h !== null ? `  ${ethOI.change24h >= 0 ? "+" : ""}${ethOI.change24h.toFixed(2)}% 24h` : ""}` : undefined}
               color="text-blue-400"
               info={INFO.openInterest} locale={locale}
             />

@@ -43,8 +43,9 @@ export interface RSIData {
 }
 
 export interface OpenInterestData {
-  oiCcy: number;  // base currency (BTC or ETH)
-  oiUsd: number;  // USD value
+  oiCcy: number;         // base currency (BTC or ETH)
+  oiUsd: number;         // USD value
+  change24h?: number | null; // 24h OI change %
 }
 
 export interface LongShortData {
@@ -159,20 +160,29 @@ async function fetchRsiCloses(bar: string, limit = 100): Promise<number[]> {
   } catch { return []; }
 }
 
-// ── Open Interest ─────────────────────────────────────────────────
-async function fetchOpenInterest(instId: string): Promise<OpenInterestData | null> {
+// ── Open Interest (Binance Futures) ───────────────────────────────
+async function fetchOpenInterest(symbol: "BTCUSDT" | "ETHUSDT"): Promise<OpenInterestData | null> {
   try {
-    const [oiRes, priceRes] = await Promise.all([
-      fetch(`https://www.okx.com/api/v5/public/open-interest?instType=SWAP&instId=${instId}`, { next: { revalidate: 60 } }),
-      fetch(`https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=${instId}`, { next: { revalidate: 60 } }),
+    const [oiRes, histRes, priceRes] = await Promise.all([
+      fetch(`https://fapi.binance.com/fapi/v1/openInterest?symbol=${symbol}`, { next: { revalidate: 60 } }),
+      fetch(`https://fapi.binance.com/futures/data/openInterestHist?symbol=${symbol}&period=1h&limit=25`, { next: { revalidate: 3600 } }),
+      fetch(`https://fapi.binance.com/fapi/v1/ticker/price?symbol=${symbol}`, { next: { revalidate: 60 } }),
     ]);
     if (!oiRes.ok || !priceRes.ok) return null;
-    const [oiJson, priceJson] = await Promise.all([oiRes.json(), priceRes.json()]);
-    if (oiJson.code !== "0" || priceJson.code !== "0") return null;
-    const oiCcy = parseFloat(oiJson.data?.[0]?.oiCcy ?? "0");
-    const markPx = parseFloat(priceJson.data?.[0]?.markPx ?? "0");
-    if (!oiCcy || !markPx) return null;
-    return { oiCcy, oiUsd: oiCcy * markPx };
+    const [oiJson, histJson, priceJson] = await Promise.all([oiRes.json(), histRes.ok ? histRes.json() : [], priceRes.json()]);
+
+    const oiCcy = parseFloat(oiJson.openInterest ?? "0");
+    const price = parseFloat(priceJson.price ?? "0");
+    if (!oiCcy || !price) return null;
+
+    let change24h: number | null = null;
+    if (Array.isArray(histJson) && histJson.length >= 2) {
+      const recent = parseFloat(histJson[histJson.length - 1].sumOpenInterest);
+      const prev = parseFloat(histJson[0].sumOpenInterest);
+      if (prev > 0) change24h = parseFloat(((recent - prev) / prev * 100).toFixed(2));
+    }
+
+    return { oiCcy, oiUsd: oiCcy * price, change24h };
   } catch { return null; }
 }
 
@@ -352,8 +362,8 @@ export async function GET(request: Request) {
       fetchRsiCloses("1D", 100),
       fetchRsiCloses("1W", 100),
       fetchRsiCloses("1M", 50),
-      fetchOpenInterest("BTC-USDT-SWAP"),
-      fetchOpenInterest("ETH-USDT-SWAP"),
+      fetchOpenInterest("BTCUSDT"),
+      fetchOpenInterest("ETHUSDT"),
       fetchLongShort("BTC-USDT-SWAP"),
       fetchLongShort("ETH-USDT-SWAP"),
       fetchStablecoinSupply(),

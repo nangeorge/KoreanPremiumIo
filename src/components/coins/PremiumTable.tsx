@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect, memo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useAppStore } from "@/store";
+import { Star } from "lucide-react";
 import {
   formatKrw,
   formatUsd,
@@ -54,9 +55,9 @@ const MARKET_CAP_RANK: Record<string, number> = {
 const COIN_RANK: Record<string, number> = MARKET_CAP_RANK;
 
 // ── 카테고리 ──────────────────────────────────────────────────────────────────
-type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "korea";
+type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "korea" | "watch";
 
-const CATEGORY_SYMBOLS: Record<Category, Set<string> | null> = {
+const CATEGORY_SYMBOLS: Record<Exclude<Category, "watch">, Set<string> | null> = {
   all: null,
   top: new Set(["BTC","ETH","XRP","SOL","ADA","DOGE","TRX","TON","AVAX","SHIB","LTC","BCH","LINK","ATOM","DOT","UNI","APT","SUI","ICP","NEAR"]),
   meme: new Set(["DOGE","SHIB","PEPE","BONK","WIF","PENGU"]),
@@ -76,6 +77,7 @@ const CATEGORY_LABELS: Record<Category, { ko: string; en: string; zh: string }> 
   ai:     { ko: "AI",      en: "AI",      zh: "AI"     },
   game:   { ko: "게임",     en: "Game",    zh: "游戏"   },
   korea:  { ko: "한국전용", en: "KR Only", zh: "韩国限定"},
+  watch:  { ko: "⭐ 관심", en: "⭐ Watch", zh: "⭐ 自选" },
 };
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
@@ -87,12 +89,14 @@ function SortIcon({ field, current, dir }: { field: string; current: string; dir
 }
 
 // ── 코인 행 (Coinbase 스타일) ──────────────────────────────────────────────────
-const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, exchange }: {
+const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, exchange, isFavorite, onToggleFavorite }: {
   coin: CoinPrice;
   isSelected: boolean;
   onClick: () => void;
   locale: string;
   exchange: Exchange;
+  isFavorite: boolean;
+  onToggleFavorite: (e: React.MouseEvent) => void;
 }) {
   const name = locale === "ko" ? coin.nameKo : locale === "zh" ? coin.nameZh : coin.name;
   const changeColor = getChangeColor(coin.change24h);
@@ -135,8 +139,25 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         isSelected ? "bg-white/5" : cn(rowGlow, "hover:bg-[var(--bg-hover)]")
       )}
     >
+      {/* 관심 */}
+      <td className="w-7 pl-2 py-3.5 text-center">
+        <button
+          onClick={onToggleFavorite}
+          className="inline-flex items-center justify-center transition-colors"
+          title={isFavorite ? "Remove from watchlist" : "Add to watchlist"}
+        >
+          <Star
+            size={13}
+            className={cn(
+              "transition-colors",
+              isFavorite ? "fill-yellow-400 text-yellow-400" : "text-[var(--fg-muted)] hover:text-yellow-400"
+            )}
+          />
+        </button>
+      </td>
+
       {/* 순위 */}
-      <td className="hidden w-8 py-3.5 pl-4 text-center text-xs text-[var(--fg-muted)] sm:table-cell">
+      <td className="hidden w-8 py-3.5 pl-2 text-center text-xs text-[var(--fg-muted)] sm:table-cell">
         {COIN_RANK[coin.symbol] ?? "—"}
       </td>
 
@@ -231,7 +252,8 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
 function SkeletonRow() {
   return (
     <tr className="border-b border-[var(--divider)]">
-      <td className="hidden w-8 py-4 pl-4 sm:table-cell"><div className="skeleton h-3 w-4 rounded mx-auto" /></td>
+      <td className="w-7 pl-2 py-4"><div className="skeleton h-3 w-3 rounded mx-auto" /></td>
+      <td className="hidden w-8 py-4 pl-2 sm:table-cell"><div className="skeleton h-3 w-4 rounded mx-auto" /></td>
       <td className="sticky left-0 z-10 bg-[var(--bg-raised)] py-4 pl-3 pr-3 sm:pl-4">
         <div className="flex items-center gap-2.5">
           <div className="skeleton h-8 w-8 rounded-full" />
@@ -264,6 +286,12 @@ export function PremiumTable() {
   const setSortDirection = useAppStore((s) => s.setSortDirection);
   const setSelectedSymbol = useAppStore((s) => s.setSelectedSymbol);
   const setSelectedExchange = useAppStore((s) => s.setSelectedExchange);
+  const favorites = useAppStore((s) => s.favorites);
+  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
+  const initFavorites = useAppStore((s) => s.initFavorites);
+
+  // localStorage에서 favorites 초기화 (클라이언트 전용)
+  useEffect(() => { initFavorites(); }, [initFavorites]);
 
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -283,7 +311,9 @@ export function PremiumTable() {
 
   const sorted = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    const symbolSet = CATEGORY_SYMBOLS[activeCategory];
+    const symbolSet = activeCategory === "watch"
+      ? new Set(favorites)
+      : CATEGORY_SYMBOLS[activeCategory as Exclude<Category, "watch">];
     const filtered = coins.filter((c) => {
       if (symbolSet && !symbolSet.has(c.symbol)) return false;
       if (!q) return true;
@@ -416,8 +446,12 @@ export function PremiumTable() {
         <table className="w-full min-w-[320px]">
           <thead>
             <tr className="border-b border-[var(--border-color)] bg-[var(--bg-base)]">
+              {/* ★ */}
+              <th className="w-7 pl-2 py-3 text-center">
+                <Star size={11} className="inline text-[var(--fg-muted)]" />
+              </th>
               {/* # */}
-              <th className="hidden w-12 py-3 pl-4 text-center sm:table-cell text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider">
+              <th className="hidden w-12 py-3 pl-2 text-center sm:table-cell text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider">
                 #
               </th>
 
@@ -491,8 +525,10 @@ export function PremiumTable() {
               : sorted.length === 0
               ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-sm text-[var(--fg-muted)]">
-                    {locale === "ko" ? `"${searchQuery}" 검색 결과가 없습니다` : `No results for "${searchQuery}"`}
+                  <td colSpan={9} className="py-12 text-center text-sm text-[var(--fg-muted)]">
+                    {activeCategory === "watch" && favorites.length === 0
+                      ? (locale === "ko" ? "⭐ 별표를 눌러 관심 코인을 추가하세요" : locale === "zh" ? "⭐ 点击星标添加自选" : "⭐ Click the star to add coins to your watchlist")
+                      : locale === "ko" ? `"${searchQuery}" 검색 결과가 없습니다` : `No results for "${searchQuery}"`}
                   </td>
                 </tr>
               )
@@ -506,6 +542,8 @@ export function PremiumTable() {
                     onClick={() =>
                       setSelectedSymbol(selectedSymbol === coin.symbol ? null : coin.symbol)
                     }
+                    isFavorite={favorites.includes(coin.symbol)}
+                    onToggleFavorite={(e) => { e.stopPropagation(); toggleFavorite(coin.symbol); }}
                   />
                 ))}
           </tbody>

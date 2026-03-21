@@ -7,6 +7,7 @@ import { AlertBanner } from "@/components/coins/AlertBanner";
 import { MarketPulse } from "@/components/coins/MarketPulse";
 import { TrendingBanner } from "@/components/coins/TrendingBanner";
 import { TVTickerTape } from "@/components/layout/TVTickerTape";
+import { LiquidationFeed } from "@/components/coins/LiquidationFeed";
 
 type Params = { locale: string };
 
@@ -40,6 +41,7 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
         <div className="xl:col-span-2 flex flex-col gap-6">
           <BTCChart />
           <PremiumChart />
+          <LiquidationFeed />
           <AlertBanner />
         </div>
       </div>

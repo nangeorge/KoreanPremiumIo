@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { CoinPrice, PremiumHistoryPoint, SortField, SortDirection, AlertConfig, Exchange } from "@/types";
 
+const FAVORITES_KEY = "kp_favorites";
+
 interface AppState {
   // Data
   coins: CoinPrice[];
@@ -19,6 +21,9 @@ interface AppState {
   // Alerts
   alerts: AlertConfig[];
 
+  // Favorites (watchlist)
+  favorites: string[];
+
   // Actions
   setCoins: (coins: CoinPrice[], exchangeRate: number, updatedAt: number) => void;
   appendHistory: (points: PremiumHistoryPoint[]) => void;
@@ -30,6 +35,8 @@ interface AppState {
   setError: (error: string | null) => void;
   addAlert: (alert: AlertConfig) => void;
   removeAlert: (symbol: string) => void;
+  toggleFavorite: (symbol: string) => void;
+  initFavorites: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -44,6 +51,7 @@ export const useAppStore = create<AppState>((set) => ({
   isLoading: true,
   error: null,
   alerts: [],
+  favorites: [],
 
   setCoins: (newCoins, exchangeRate, updatedAt) =>
     set((state) => {
@@ -74,4 +82,20 @@ export const useAppStore = create<AppState>((set) => ({
     })),
   removeAlert: (symbol) =>
     set((state) => ({ alerts: state.alerts.filter((a) => a.symbol !== symbol) })),
+
+  toggleFavorite: (symbol) =>
+    set((state) => {
+      const next = state.favorites.includes(symbol)
+        ? state.favorites.filter((s) => s !== symbol)
+        : [...state.favorites, symbol];
+      try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return { favorites: next };
+    }),
+
+  initFavorites: () => {
+    try {
+      const raw = localStorage.getItem(FAVORITES_KEY);
+      if (raw) set({ favorites: JSON.parse(raw) });
+    } catch { /* ignore */ }
+  },
 }));
