@@ -20,7 +20,7 @@ export function ExchangeCompare({ locale }: { locale: string }) {
           {locale === "ko" ? "업비트 (KRW)" : "Upbit (KRW)"}
         </span>
       </div>
-      <div className="flex items-center gap-1 text-gray-600 text-sm font-mono">
+      <div className="flex items-center gap-1 text-[var(--fg-muted)] text-sm font-mono">
         <span>vs</span>
         <span className="text-base">🌶️</span>
       </div>

@@ -91,7 +91,7 @@ export function BTCChart() {
         <div>
           <h2 className="text-base font-semibold text-white flex items-center gap-2">
             <span className="text-orange-400">₿</span> {isKo ? "비트코인" : "Bitcoin"}
-            <span className="text-xs text-gray-500 font-normal">({currency})</span>
+            <span className="text-xs text-[var(--fg-muted)] font-normal">({currency})</span>
           </h2>
           {last && (
             <div className="flex items-baseline gap-2 mt-0.5">
@@ -113,7 +113,7 @@ export function BTCChart() {
               onClick={() => setInterval(iv)}
               className={cn(
                 "rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-200 min-w-[2.5rem]",
-                interval === iv ? "bg-orange-500 text-white" : "text-gray-500 hover:text-gray-300"
+                interval === iv ? "bg-orange-500 text-white" : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
               )}
             >
               {getIntervalLabel(iv, exchange)}
@@ -132,7 +132,7 @@ export function BTCChart() {
               "rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 border",
               exchange === id
                 ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
-                : "border-white/8 bg-white/3 text-gray-500 hover:text-gray-300 hover:border-white/15"
+                : "border-white/8 bg-white/3 text-[var(--fg-muted)] hover:text-[var(--fg)] hover:border-white/15"
             )}
           >
             {isKo ? EXCHANGE_LABELS[id].ko : EXCHANGE_LABELS[id].en} · {EXCHANGE_CURRENCY[id]}
@@ -145,7 +145,7 @@ export function BTCChart() {
       ) : candleData.length < 2 ? (
         <div className="flex h-48 flex-col items-center justify-center gap-2">
           <div className="text-2xl">📊</div>
-          <div className="text-sm text-gray-500">{isKo ? "데이터 없음" : "No data"}</div>
+          <div className="text-sm text-[var(--fg-muted)]">{isKo ? "데이터 없음" : "No data"}</div>
         </div>
       ) : (
         <TVChart
@@ -155,7 +155,7 @@ export function BTCChart() {
           priceFormat={priceFormat}
         />
       )}
-      <div className="mt-2 text-right text-xs text-gray-700">Data: OKX · Upbit</div>
+      <div className="mt-2 text-right text-xs text-[var(--fg-muted)]">Data: OKX · Upbit</div>
     </div>
   );
 }

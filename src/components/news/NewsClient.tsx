@@ -88,11 +88,11 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-gray-300 transition-colors">
+          <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-[var(--fg)] transition-colors">
             {item.title}
           </h3>
           {item.body && (
-            <p className="mt-1.5 text-xs text-gray-500 line-clamp-2 leading-relaxed">
+            <p className="mt-1.5 text-xs text-[var(--fg-muted)] line-clamp-2 leading-relaxed">
               {item.body}
             </p>
           )}
@@ -101,15 +101,15 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-gray-400">{item.source}</span>
-          <span className="text-gray-700">·</span>
-          <span className="text-xs text-gray-600">{t.timeAgo(ago)}</span>
+          <span className="text-xs font-medium text-[var(--fg-secondary)]">{item.source}</span>
+          <span className="text-[var(--fg-muted)]">·</span>
+          <span className="text-xs text-[var(--fg-muted)]">{t.timeAgo(ago)}</span>
         </div>
         <div className="flex gap-1 flex-wrap justify-end">
           {item.tags.slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] text-gray-500"
+              className="rounded-full border border-white/8 bg-white/4 px-2 py-0.5 text-[10px] text-[var(--fg-muted)]"
             >
               {tag}
             </span>
@@ -160,7 +160,7 @@ export function NewsClient({ locale }: { locale: string }) {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">{t.title}</h1>
-        <p className="text-sm text-gray-500 mt-1">{t.subtitle}</p>
+        <p className="text-sm text-[var(--fg-muted)] mt-1">{t.subtitle}</p>
       </div>
 
       {/* 필터 바 */}
@@ -173,14 +173,14 @@ export function NewsClient({ locale }: { locale: string }) {
               "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
               activeFilter === f
                 ? "bg-[var(--fg)] text-[var(--bg-base)]"
-                : "border border-white/8 bg-white/3 text-gray-400 hover:text-gray-300 hover:border-white/15"
+                : "border border-white/8 bg-white/3 text-[var(--fg-secondary)] hover:text-[var(--fg)] hover:border-white/15"
             )}
           >
             {f}
           </button>
         ))}
         {!isLoading && (
-          <span className="ml-auto text-xs text-gray-600">{t.count(filtered.length)}</span>
+          <span className="ml-auto text-xs text-[var(--fg-muted)]">{t.count(filtered.length)}</span>
         )}
       </div>
 
@@ -189,7 +189,7 @@ export function NewsClient({ locale }: { locale: string }) {
           {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex h-48 items-center justify-center text-gray-500">{t.noNews}</div>
+        <div className="flex h-48 items-center justify-center text-[var(--fg-muted)]">{t.noNews}</div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((item) => (

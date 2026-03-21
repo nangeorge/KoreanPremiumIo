@@ -174,7 +174,7 @@ export default async function PrivacyPage({ params }: { params: Promise<Params> 
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 space-y-6">
       <Link
         href={`/${locale}`}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
       >
         <ArrowLeft size={14} />
         {c.back}
@@ -182,13 +182,13 @@ export default async function PrivacyPage({ params }: { params: Promise<Params> 
 
       <div className="glass rounded-2xl p-8">
         <h1 className="text-2xl font-bold text-white mb-2">{c.title}</h1>
-        <p className="text-xs text-gray-500 mb-8">{c.lastUpdated}</p>
+        <p className="text-xs text-[var(--fg-muted)] mb-8">{c.lastUpdated}</p>
 
         <div className="space-y-8">
           {c.sections.map((sec, i) => (
             <div key={i}>
-              <h2 className="text-base font-semibold text-gray-200 mb-2">{sec.heading}</h2>
-              <p className="text-sm text-gray-400 leading-relaxed whitespace-pre-line">{sec.body}</p>
+              <h2 className="text-base font-semibold text-[var(--fg)] mb-2">{sec.heading}</h2>
+              <p className="text-sm text-[var(--fg-secondary)] leading-relaxed whitespace-pre-line">{sec.body}</p>
             </div>
           ))}
         </div>

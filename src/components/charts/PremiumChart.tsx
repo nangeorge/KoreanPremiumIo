@@ -62,7 +62,7 @@ export function PremiumChart() {
               onClick={() => setInterval(iv)}
               className={cn(
                 "rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-200 min-w-[2.5rem]",
-                interval === iv ? "bg-[var(--fg)] text-[var(--bg-base)]" : "text-gray-500 hover:text-gray-300"
+                interval === iv ? "bg-[var(--fg)] text-[var(--bg-base)]" : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
               )}
             >
               {iv.toUpperCase()}
@@ -76,7 +76,7 @@ export function PremiumChart() {
       ) : candleData.length < 2 ? (
         <div className="flex h-48 flex-col items-center justify-center gap-2">
           <div className="text-2xl">📊</div>
-          <div className="text-sm text-gray-500">{isKo ? "데이터 없음" : "No data"}</div>
+          <div className="text-sm text-[var(--fg-muted)]">{isKo ? "데이터 없음" : "No data"}</div>
         </div>
       ) : (
         <TVChart
@@ -87,7 +87,7 @@ export function PremiumChart() {
           priceFormat={{ type: "price", precision: 3, minMove: 0.001 }}
         />
       )}
-      <div className="mt-2 text-right text-xs text-gray-700">Data: Upbit / OKX</div>
+      <div className="mt-2 text-right text-xs text-[var(--fg-muted)]">Data: Upbit / OKX</div>
     </div>
   );
 }

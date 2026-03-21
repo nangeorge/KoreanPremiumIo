@@ -195,7 +195,7 @@ export function AlertBanner() {
           </p>
         </div>
 
-        <p className="text-xs text-gray-500 leading-relaxed">
+        <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
           {isKo
             ? "업비트-OKX 가격 차이(김치 프리미엄)는 한국 시장 과열·공포 신호. 137개 코인 실시간 추적."
             : isZh
@@ -206,7 +206,7 @@ export function AlertBanner() {
         {/* 공유 버튼들 */}
         {btcPremium !== null && (
           <div className="flex items-center gap-2 pt-1 flex-wrap">
-            <span className="text-xs text-gray-600">
+            <span className="text-xs text-[var(--fg-muted)]">
               {isKo ? "공유하기:" : isZh ? "分享:" : "Share:"}
             </span>
 
@@ -217,7 +217,7 @@ export function AlertBanner() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={p.label}
-                className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/10 bg-white/5 text-gray-400 transition-all hover:bg-white/12 hover:text-white hover:border-white/20"
+                className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/10 bg-white/5 text-[var(--fg-secondary)] transition-all hover:bg-white/12 hover:text-white hover:border-white/20"
               >
                 {p.icon}
               </a>
@@ -227,7 +227,7 @@ export function AlertBanner() {
             <button
               onClick={copyLink}
               title={isKo ? "텍스트 복사" : isZh ? "复制文本" : "Copy text"}
-              className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/10 bg-white/5 text-gray-400 transition-all hover:bg-white/12 hover:text-white hover:border-white/20"
+              className="flex items-center justify-center h-7 w-7 rounded-lg border border-white/10 bg-white/5 text-[var(--fg-secondary)] transition-all hover:bg-white/12 hover:text-white hover:border-white/20"
             >
               {copied ? (
                 <svg className="h-3.5 w-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>

@@ -82,7 +82,7 @@ const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
 
 // ── 정렬 아이콘 ────────────────────────────────────────────────────────────────
 function SortIcon({ field, current, dir }: { field: string; current: string; dir: string }) {
-  if (current === "default" || field !== current) return <span className="text-gray-700">↕</span>;
+  if (current === "default" || field !== current) return <span className="text-[var(--fg-muted)]">↕</span>;
   return <span className="text-white">{dir === "asc" ? "↑" : "↓"}</span>;
 }
 
@@ -136,7 +136,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
       )}
     >
       {/* 순위 */}
-      <td className="hidden w-8 py-3.5 pl-4 text-center text-xs text-gray-600 sm:table-cell">
+      <td className="hidden w-8 py-3.5 pl-4 text-center text-xs text-[var(--fg-muted)] sm:table-cell">
         {COIN_RANK[coin.symbol] ?? "—"}
       </td>
 
@@ -160,7 +160,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
             onClick={(e) => e.stopPropagation()}
             className="hover:opacity-80 transition-opacity min-w-0"
           >
-            <div className="font-semibold text-[var(--fg)] text-sm hover:text-gray-300 transition-colors truncate">{coin.symbol}</div>
+            <div className="font-semibold text-[var(--fg)] text-sm hover:text-[var(--fg)] transition-colors truncate">{coin.symbol}</div>
             <div className="text-xs text-[var(--fg-muted)] hidden sm:block truncate">{name}</div>
           </Link>
         </div>
@@ -174,7 +174,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
         <div className="font-number text-xs text-[var(--fg-muted)] mt-0.5">
           ₩{formatKrw(coin.upbitPrice)}
           {extPrice > 0 && (
-            <span className="ml-1 text-gray-600">
+            <span className="ml-1 text-[var(--fg-muted)]">
               · ≈{formatUsd(coin.upbitPrice / (coin.binancePriceKrw / coin.binancePrice || 1))}
             </span>
           )}
@@ -322,7 +322,7 @@ export function PremiumTable() {
   const pagedCoins = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const headerClass =
-    "cursor-pointer select-none py-3 text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider hover:text-gray-300 transition-colors";
+    "cursor-pointer select-none py-3 text-[11px] font-medium text-[var(--fg-muted)] uppercase tracking-wider hover:text-[var(--fg)] transition-colors";
 
   const exchangeLabel = selectedExchange === "coinbase" ? "Coinbase" : "OKX";
 
@@ -362,7 +362,7 @@ export function PremiumTable() {
       <div className="flex items-center gap-2 px-4 pb-3 sm:px-6 flex-wrap">
         {/* 검색창 */}
         <div className="relative flex-1 min-w-[160px]">
-          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-600 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--fg-muted)] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
           </svg>
           <input
@@ -375,14 +375,14 @@ export function PremiumTable() {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] transition-colors"
             >
               ✕
             </button>
           )}
         </div>
 
-        <span className="text-xs text-gray-500">{t("compareExchange")}</span>
+        <span className="text-xs text-[var(--fg-muted)]">{t("compareExchange")}</span>
         <div className="flex items-center rounded border border-[var(--border-color)] bg-[var(--bg-base)] p-0.5">
           {(["binance", "coinbase"] as const).map((ex) => (
             <button
@@ -439,7 +439,7 @@ export function PremiumTable() {
               >
                 <span className="flex items-center justify-end gap-1">
                   {locale === "ko" ? "시세" : "Price"}
-                  <span className="text-gray-700 normal-case">({exchangeLabel})</span>
+                  <span className="text-[var(--fg-muted)] normal-case">({exchangeLabel})</span>
                   <SortIcon field="upbitPrice" current={sortField} dir={sortDirection} />
                 </span>
               </th>

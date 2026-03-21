@@ -38,8 +38,8 @@ export default function CoinDetailPage() {
   if (!coinMeta) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-20 text-center">
-        <p className="text-gray-500">{isKo ? "코인을 찾을 수 없습니다." : "Coin not found."}</p>
-        <Link href={`/${locale}`} className="mt-4 inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm">
+        <p className="text-[var(--fg-muted)]">{isKo ? "코인을 찾을 수 없습니다." : "Coin not found."}</p>
+        <Link href={`/${locale}`} className="mt-4 inline-flex items-center gap-2 text-[var(--fg-secondary)] hover:text-white text-sm">
           <ArrowLeft size={14} /> {isKo ? "돌아가기" : "Back"}
         </Link>
       </div>
@@ -64,7 +64,7 @@ export default function CoinDetailPage() {
     {
       label: isKo ? "김치 프리미엄" : "Kimchi Premium",
       value: premium !== null ? formatPremium(premium) : "—",
-      color: premium === null ? "text-gray-500" : premium >= 0 ? "text-emerald-400" : "text-rose-400",
+      color: premium === null ? "text-[var(--fg-muted)]" : premium >= 0 ? "text-emerald-400" : "text-rose-400",
     },
     {
       label: isKo ? "24시간 변동" : "24h Change",
@@ -88,7 +88,7 @@ export default function CoinDetailPage() {
       {/* 뒤로가기 */}
       <Link
         href={`/${locale}`}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
       >
         <ArrowLeft size={14} />
         {isKo ? "전체 코인 목록" : "All Coins"}
@@ -104,7 +104,7 @@ export default function CoinDetailPage() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold text-white">{name}</h1>
-            <span className="text-sm font-mono text-gray-500 bg-white/5 px-2 py-0.5 rounded">{symbol}</span>
+            <span className="text-sm font-mono text-[var(--fg-muted)] bg-white/5 px-2 py-0.5 rounded">{symbol}</span>
             {premium !== null && (
               <span className={cn(
                 "text-sm font-bold px-3 py-1 rounded-full border",
@@ -128,7 +128,7 @@ export default function CoinDetailPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {coin ? stats.map((s) => (
           <div key={s.label} className="glass rounded-xl p-4">
-            <div className="text-xs text-gray-500 mb-1">{s.label}</div>
+            <div className="text-xs text-[var(--fg-muted)] mb-1">{s.label}</div>
             <div className={cn("font-number text-lg font-bold", s.color)}>{s.value}</div>
           </div>
         )) : Array.from({ length: 6 }).map((_, i) => (
@@ -154,7 +154,7 @@ export default function CoinDetailPage() {
                 "flex-1 py-3.5 text-sm font-medium transition-all duration-200 border-b-2",
                 activeTab === tab.key
                   ? "border-white text-white"
-                  : "border-transparent text-gray-500 hover:text-gray-300"
+                  : "border-transparent text-[var(--fg-muted)] hover:text-[var(--fg)]"
               )}
             >
               {isKo ? tab.ko : tab.en}
@@ -166,14 +166,14 @@ export default function CoinDetailPage() {
         <div className="p-6">
           {!content ? (
             <div className="rounded-xl border border-dashed border-white/10 p-8 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[var(--fg-muted)]">
                 {isKo ? "분석 내용이 곧 추가됩니다." : "Analysis coming soon."}
               </p>
             </div>
           ) : activeTab === "overview" ? (
             <div className="space-y-6">
               {/* 요약 */}
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-[var(--fg)] leading-relaxed">
                 {isKo ? content.summary.ko : content.summary.en}
               </p>
 
@@ -188,8 +188,8 @@ export default function CoinDetailPage() {
                       const item = isKo ? row[0] : row[1];
                       return (
                         <div key={i} className="flex items-start justify-between gap-4 py-2.5 border-b border-white/5 last:border-0 sm:[&:nth-last-child(2)]:border-0">
-                          <span className="text-sm text-gray-500 shrink-0">{item.label}</span>
-                          <span className="text-sm text-gray-200 text-right font-number">{item.value}</span>
+                          <span className="text-sm text-[var(--fg-muted)] shrink-0">{item.label}</span>
+                          <span className="text-sm text-[var(--fg)] text-right font-number">{item.value}</span>
                         </div>
                       );
                     })}
@@ -218,7 +218,7 @@ export default function CoinDetailPage() {
                       {sec.items.map((item, j) => (
                         <li key={j} className="flex gap-3">
                           <span className={cn("mt-1.5 h-1.5 w-1.5 rounded-full shrink-0", dotColor)} />
-                          <span className="text-sm text-gray-300 leading-relaxed">
+                          <span className="text-sm text-[var(--fg)] leading-relaxed">
                             {isKo ? item.ko : item.en}
                           </span>
                         </li>
@@ -250,7 +250,7 @@ export default function CoinDetailPage() {
                     {sec.items.map((item, j) => (
                       <li key={j} className="flex gap-3">
                         <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />
-                        <span className="text-sm text-gray-400 leading-relaxed">
+                        <span className="text-sm text-[var(--fg-secondary)] leading-relaxed">
                           {isKo ? item.ko : item.en}
                         </span>
                       </li>
@@ -261,7 +261,7 @@ export default function CoinDetailPage() {
 
               {/* 분석 없음 */}
               {content.type === "facts" && !content.sections?.length && (
-                <p className="text-sm text-gray-600 text-center py-6">
+                <p className="text-sm text-[var(--fg-muted)] text-center py-6">
                   {isKo ? "분석 내용이 곧 추가됩니다." : "Analysis coming soon."}
                 </p>
               )}
@@ -277,14 +277,14 @@ export default function CoinDetailPage() {
                       href={src.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-3 py-1.5 transition-colors"
+                      className="inline-flex items-center gap-1 text-xs text-[var(--fg-secondary)] hover:text-white bg-white/5 border border-white/10 rounded-full px-3 py-1.5 transition-colors"
                     >
                       {src.label} ↗
                     </a>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-600 text-center py-6">
+                <p className="text-sm text-[var(--fg-muted)] text-center py-6">
                   {isKo ? "참고 자료가 없습니다." : "No sources available."}
                 </p>
               )}

@@ -202,7 +202,7 @@ export default async function LocaleLayout({
           <main className="flex-1">{children}</main>
           {/* 투자 비조언 고지 */}
           <div className="border-t border-white/5 bg-[var(--bg-base)] px-4 py-3">
-            <p className="mx-auto max-w-7xl text-center text-xs text-gray-600 leading-relaxed">
+            <p className="mx-auto max-w-7xl text-center text-xs text-[var(--fg-muted)] leading-relaxed">
               ⚠️ {disclaimer}
             </p>
           </div>

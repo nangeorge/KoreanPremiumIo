@@ -38,7 +38,7 @@ export function InfoTooltip({ text, locale = "ko", className }: InfoTooltipProps
     <div ref={ref} className={cn("relative inline-flex", className)}>
       <button
         onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-white/15 bg-white/6 text-[10px] text-gray-500 hover:border-white/30 hover:text-gray-300 transition-colors"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-white/15 bg-white/6 text-[10px] text-[var(--fg-muted)] hover:border-white/30 hover:text-[var(--fg)] transition-colors"
         aria-label="설명 보기"
       >
         ?
@@ -46,7 +46,7 @@ export function InfoTooltip({ text, locale = "ko", className }: InfoTooltipProps
 
       {open && (
         <div className="absolute left-1/2 z-50 mt-6 w-72 -translate-x-1/2 top-0">
-          <div className="rounded-xl border border-white/10 bg-[var(--bg-overlay)] p-3 shadow-2xl text-xs text-gray-300 leading-relaxed whitespace-pre-line">
+          <div className="rounded-xl border border-white/10 bg-[var(--bg-overlay)] p-3 shadow-2xl text-xs text-[var(--fg)] leading-relaxed whitespace-pre-line">
             {content}
           </div>
           <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 border-l border-t border-white/10 bg-[var(--bg-overlay)]" />

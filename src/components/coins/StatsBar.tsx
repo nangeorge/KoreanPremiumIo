@@ -19,12 +19,12 @@ function toGaugePct(p: number) {
 // 프리미엄 존 정보
 function getPremiumZone(p: number | null, locale: string) {
   const ko = locale === "ko", zh = locale === "zh";
-  if (p === null) return { label: "—", sub: "", color: "text-gray-400", dot: "#6b7280", card: "glass" };
+  if (p === null) return { label: "—", sub: "", color: "text-[var(--fg-secondary)]", dot: "#6b7280", card: "glass" };
   if (p >= 7)  return { label: ko ? "🔴 극과열" : zh ? "🔴 极度过热" : "🔴 Extreme",  sub: ko ? "역대급 고점 수준" : zh ? "历史顶部" : "Historic peak zone",    color: "text-red-400",     dot: "#ef4444", card: "bg-red-500/10 border border-red-500/25" };
   if (p >= 4)  return { label: ko ? "🟠 고점"   : zh ? "🟠 高点"     : "🟠 Peak",      sub: ko ? "단기 조정 주의"   : zh ? "短期调整风险" : "Correction risk",       color: "text-orange-400",  dot: "#f97316", card: "bg-orange-500/8 border border-orange-500/20" };
   if (p >= 2)  return { label: ko ? "🟡 주의"   : zh ? "🟡 注意"     : "🟡 Caution",   sub: ko ? "과열 가능성 주시" : zh ? "注意过热"   : "Watch overheating",     color: "text-yellow-400",  dot: "#eab308", card: "bg-yellow-500/6 border border-yellow-500/15" };
   if (p >= 0)  return { label: ko ? "🟢 보통"   : zh ? "🟢 正常"     : "🟢 Normal",    sub: ko ? "국내외 가격 균형" : zh ? "价格均衡"   : "Balanced market",       color: "text-emerald-400", dot: "#22c55e", card: "bg-emerald-500/8 border border-emerald-500/20" };
-  if (p >= -3) return { label: ko ? "⚪ 무관심" : zh ? "⚪ 冷漠"     : "⚪ Apathy",    sub: ko ? "국내 수요 저조"   : zh ? "国内需求低迷" : "Low local demand",      color: "text-gray-400",    dot: "#9ca3af", card: "glass" };
+  if (p >= -3) return { label: ko ? "⚪ 무관심" : zh ? "⚪ 冷漠"     : "⚪ Apathy",    sub: ko ? "국내 수요 저조"   : zh ? "国内需求低迷" : "Low local demand",      color: "text-[var(--fg-secondary)]",    dot: "#9ca3af", card: "glass" };
   return         { label: ko ? "🔵 공포"   : zh ? "🔵 恐慌"     : "🔵 Fear",      sub: ko ? "시장 패닉 상태"   : zh ? "市场恐慌"   : "Market panic",          color: "text-blue-400",    dot: "#3b82f6", card: "bg-blue-500/8 border border-blue-500/20" };
 }
 
@@ -73,7 +73,7 @@ export function StatsBar() {
   }, [coins, selectedExchange]);
 
   const mvrvValue = indicators?.mvrv?.at(-1)?.value ?? null;
-  const mvrvInfo = mvrvValue === null ? { label: "—", color: "text-gray-500", pct: null }
+  const mvrvInfo = mvrvValue === null ? { label: "—", color: "text-[var(--fg-muted)]", pct: null }
     : mvrvValue > 3.7 ? { label: isKo ? `${mvrvValue.toFixed(2)} 과열`   : `${mvrvValue.toFixed(2)} Overheated`, color: "text-red-400",     pct: 95 }
     : mvrvValue > 2.4 ? { label: isKo ? `${mvrvValue.toFixed(2)} 주의`   : `${mvrvValue.toFixed(2)} Caution`,    color: "text-orange-400",  pct: 70 }
     : mvrvValue > 1.0 ? { label: isKo ? `${mvrvValue.toFixed(2)} 적정`   : `${mvrvValue.toFixed(2)} Fair`,       color: "text-emerald-400", pct: Math.round((mvrvValue - 1) / (2.4 - 1) * 55 + 15) }
@@ -81,7 +81,7 @@ export function StatsBar() {
 
   const fng = indicators?.fearGreed ?? null;
   const fngValue = fng?.value ?? null;
-  const fngInfo = fngValue === null ? { label: "—", color: "text-gray-500" }
+  const fngInfo = fngValue === null ? { label: "—", color: "text-[var(--fg-muted)]" }
     : fngValue >= 80 ? { label: isKo ? `${fngValue} 극탐욕` : isZh ? `${fngValue} 极度贪婪` : `${fngValue} Extreme Greed`, color: "text-red-400" }
     : fngValue >= 60 ? { label: isKo ? `${fngValue} 탐욕`   : isZh ? `${fngValue} 贪婪`     : `${fngValue} Greed`,         color: "text-orange-400" }
     : fngValue >= 40 ? { label: isKo ? `${fngValue} 중립`   : isZh ? `${fngValue} 中性`     : `${fngValue} Neutral`,       color: "text-yellow-400" }
@@ -89,7 +89,7 @@ export function StatsBar() {
     :                  { label: isKo ? `${fngValue} 극공포` : isZh ? `${fngValue} 极度恐慌` : `${fngValue} Extreme Fear`,  color: "text-blue-400" };
 
   const vixValue = indicators?.vix?.value ?? null;
-  const vixInfo = vixValue === null ? { label: "—", color: "text-gray-500" }
+  const vixInfo = vixValue === null ? { label: "—", color: "text-[var(--fg-muted)]" }
     : vixValue >= 30 ? { label: `${vixValue.toFixed(1)} ${isKo ? "공포" : isZh ? "恐慌" : "Fear"}`,     color: "text-red-400" }
     : vixValue >= 20 ? { label: `${vixValue.toFixed(1)} ${isKo ? "주의" : isZh ? "注意" : "Caution"}`,  color: "text-orange-400" }
     :                  { label: `${vixValue.toFixed(1)} ${isKo ? "안정" : isZh ? "稳定" : "Calm"}`,     color: "text-emerald-400" };
@@ -125,7 +125,7 @@ export function StatsBar() {
           {/* 왼쪽: 수치 + 시그널 */}
           <div className="flex-shrink-0 min-w-[140px]">
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-xs font-medium text-gray-400">
+              <span className="text-xs font-medium text-[var(--fg-secondary)]">
                 {isKo ? "BTC 김치 프리미엄" : isZh ? "BTC 泡菜溢价" : "BTC Kimchi Premium"}
               </span>
               <InfoTooltip text={btcTooltip} locale={locale} />

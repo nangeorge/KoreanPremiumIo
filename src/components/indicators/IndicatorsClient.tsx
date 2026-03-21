@@ -164,7 +164,7 @@ function FearGreedGauge({ value, prevValue, locale }: { value: number; prevValue
 
       <div className="text-5xl font-black font-number -mt-2" style={{ color: clr }}>{value}</div>
       <div className="text-base font-bold mt-0.5" style={{ color: clr }}>{zoneLabel}</div>
-      <div className="text-xs text-gray-500 mt-1">
+      <div className="text-xs text-[var(--fg-muted)] mt-1">
         {locale === "ko" ? "어제" : locale === "zh" ? "昨天" : "Yesterday"}: {prevValue} · {prevLabel}
       </div>
     </div>
@@ -181,11 +181,11 @@ function MetricCard({
   return (
     <div className="glass rounded-xl p-4 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">
-        <div className="text-xs text-gray-500">{label}</div>
+        <div className="text-xs text-[var(--fg-secondary)]">{label}</div>
         {info && <InfoTooltip text={info} locale={locale} />}
       </div>
       <div className={cn("font-number text-xl font-bold", color ?? "text-white")}>{value}</div>
-      {subValue && <div className="text-xs text-gray-600">{subValue}</div>}
+      {subValue && <div className="text-xs text-[var(--fg-muted)]">{subValue}</div>}
       {badge && (
         <span className={cn("mt-1 self-start rounded-full border px-2 py-0.5 text-[10px] font-medium", badgeBg)}>
           {badge}
@@ -209,14 +209,14 @@ function ChartCard({
             <h3 className="text-sm font-semibold text-white">{title}</h3>
             {info && <InfoTooltip text={info} locale={locale} />}
           </div>
-          {subtitle && <p className="text-xs text-gray-600 mt-0.5">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-[var(--fg-muted)] mt-0.5">{subtitle}</p>}
         </div>
         {badge && (
           <span className={cn("rounded-full border px-2.5 py-1 text-xs font-bold", badgeBg)}>{badge}</span>
         )}
       </div>
       {children}
-      {source && <div className="mt-2 text-right text-xs text-gray-700">Data: {source}</div>}
+      {source && <div className="mt-2 text-right text-xs text-[var(--fg-muted)]">Data: {source}</div>}
     </div>
   );
 }
@@ -477,7 +477,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
   // RSI
   const rsi = data?.rsi ?? null;
   function getRsiInfo(v: number | null) {
-    if (v === null) return { label: "—", color: "text-gray-500", badge: "", badgeBg: "" };
+    if (v === null) return { label: "—", color: "text-[var(--fg-muted)]", badge: "", badgeBg: "" };
     if (v >= 70) return { label: v.toFixed(1), color: "text-red-400",    badge: t.rsiOverbought, badgeBg: "bg-red-500/10 border-red-500/20 text-red-400" };
     if (v >= 50) return { label: v.toFixed(1), color: "text-orange-400", badge: t.rsiUptrend,    badgeBg: "bg-orange-500/10 border-orange-500/20 text-orange-400" };
     if (v >= 30) return { label: v.toFixed(1), color: "text-blue-400",   badge: t.rsiDowntrend,  badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-400" };
@@ -516,7 +516,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
       {/* 헤더 */}
       <div>
         <h1 className="text-2xl font-bold text-white">{t.title}</h1>
-        <p className="text-sm text-gray-500 mt-1">{t.subtitle}</p>
+        <p className="text-sm text-[var(--fg-muted)] mt-1">{t.subtitle}</p>
       </div>
 
       {/* 탭 */}
@@ -527,7 +527,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             onClick={() => setTab(i)}
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
-              tab === i ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
+              tab === i ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
             )}
           >
             {name}
@@ -546,7 +546,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
                 )}
               >
                 {label}
@@ -569,7 +569,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label="Hash Rate"
               value={isLoading ? "—" : (hashData.at(-1)?.value.toFixed(0) ?? "—") + " EH/s"}
               subValue={t.hashRateSub}
-              color="text-gray-300"
+              color="text-[var(--fg)]"
               info={INFO.hashRate} locale={locale}
             />
             <MetricCard
@@ -617,7 +617,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             title={`Hash Rate (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`}
             subtitle={t.hashChartSub}
             badge={isLoading ? "..." : (hashData.at(-1)?.value.toFixed(1) ?? "—") + " EH/s"}
-            badgeBg="bg-white/8 border-white/12 text-gray-300"
+            badgeBg="bg-white/8 border-white/12 text-[var(--fg)]"
             info={INFO.hashRate} locale={locale} source="blockchain.com"
           >
             {isLoading ? (
@@ -667,7 +667,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={locale === "ko" ? "빠른 수수료" : locale === "zh" ? "快速费率" : "Fast Fee"}
               value={isLoading ? "—" : mempool ? `${mempool.fastestFee} sat/vB` : "—"}
               subValue={locale === "ko" ? "다음 블록 (~10분)" : locale === "zh" ? "下一区块 (~10分)" : "Next block (~10 min)"}
-              color={mempool ? (mempool.fastestFee > 50 ? "text-red-400" : mempool.fastestFee > 20 ? "text-orange-400" : "text-emerald-400") : "text-gray-500"}
+              color={mempool ? (mempool.fastestFee > 50 ? "text-red-400" : mempool.fastestFee > 20 ? "text-orange-400" : "text-emerald-400") : "text-[var(--fg-muted)]"}
               info={{ ko: "다음 블록에 포함되기 위한 추천 수수료 (sat/vByte)", en: "Recommended fee for next block inclusion (sat/vByte)", zh: "推荐手续费率 (sat/vByte)" }}
               locale={locale}
             />
@@ -683,7 +683,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={locale === "ko" ? "저렴한 수수료" : locale === "zh" ? "低费率" : "Low Fee"}
               value={isLoading ? "—" : mempool ? `${mempool.hourFee} sat/vB` : "—"}
               subValue={locale === "ko" ? "~1시간" : locale === "zh" ? "~1小时" : "~1 hour"}
-              color="text-gray-400"
+              color="text-[var(--fg-secondary)]"
               info={{ ko: "1시간 내 확인을 위한 추천 수수료", en: "Recommended fee for ~1 hour confirmation", zh: "1小时内确认的推荐费率" }}
               locale={locale}
             />
@@ -727,7 +727,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
                 )}
               >
                 {label}
@@ -770,7 +770,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 <span className="text-sm font-semibold text-white">
                   {locale === "ko" ? "🔥 트렌딩 코인" : locale === "zh" ? "🔥 热门代币" : "🔥 Trending Coins"}
                 </span>
-                <span className="text-xs text-gray-600">CoinGecko · 24h</span>
+                <span className="text-xs text-[var(--fg-muted)]">CoinGecko · 24h</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {trending.map((coin) => (
@@ -790,7 +790,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                       </span>
                     )}
                     {coin.rank > 0 && (
-                      <span className="text-[10px] text-gray-600">#{coin.rank}</span>
+                      <span className="text-[10px] text-[var(--fg-muted)]">#{coin.rank}</span>
                     )}
                   </div>
                 ))}
@@ -841,7 +841,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                     <div key={s.label} className="rounded-xl bg-white/3 border border-white/5 p-4">
                       <div className="flex items-center gap-1.5 mb-2">
                         <span>{s.icon}</span>
-                        <span className="text-xs text-gray-500">{s.label}</span>
+                        <span className="text-xs text-[var(--fg-muted)]">{s.label}</span>
                       </div>
                       <div className={cn("font-number text-lg font-bold", s.color ?? "text-white")}>{s.value}</div>
                     </div>
@@ -862,7 +862,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                   const isPos = (coin.premium ?? 0) >= 0;
                   return (
                     <div key={coin.symbol} className="flex items-center gap-3">
-                      <div className="w-12 text-xs font-semibold text-gray-300 shrink-0">{coin.symbol}</div>
+                      <div className="w-12 text-xs font-semibold text-[var(--fg)] shrink-0">{coin.symbol}</div>
                       <div className="flex-1 h-2 rounded-full bg-white/5 relative overflow-hidden">
                         <div
                           className={cn("absolute top-0 h-full rounded-full transition-all duration-700", isPos ? "bg-emerald-500" : "bg-rose-500")}
@@ -885,7 +885,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             title={`VIX — CBOE Volatility Index (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`}
             subtitle={locale === "ko" ? "30↑ 공포 · 20~30 주의 · 20↓ 안정" : "30↑ Fear · 20–30 Caution · 20↓ Calm"}
             badge={vix ? vix.value.toFixed(1) : "—"}
-            badgeBg={`border ${vix ? (vix.value >= 30 ? "bg-red-500/10 border-red-500/20 text-red-400" : vix.value >= 20 ? "bg-orange-500/10 border-orange-500/20 text-orange-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400") : "bg-white/5 border-white/10 text-gray-400"}`}
+            badgeBg={`border ${vix ? (vix.value >= 30 ? "bg-red-500/10 border-red-500/20 text-red-400" : vix.value >= 20 ? "bg-orange-500/10 border-orange-500/20 text-orange-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400") : "bg-white/5 border-white/10 text-[var(--fg-secondary)]"}`}
             info={INFO.vix} locale={locale} source="Yahoo Finance (CBOE)"
           >
             {isLoading || vixData.length === 0 ? (
@@ -907,7 +907,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           {/* 김프 히스토리 */}
           <ChartCard title={t.kimchiHistoryTitle} subtitle={t.kimchiHistorySub} info={INFO.kimchiPremium} locale={locale} source="Upbit / OKX">
             {premiumData.length < 3 ? (
-              <div className="flex h-40 items-center justify-center text-sm text-gray-500">{t.collectingData}</div>
+              <div className="flex h-40 items-center justify-center text-sm text-[var(--fg-muted)]">{t.collectingData}</div>
             ) : (
               <TVChart
                 data={premiumData}
@@ -947,7 +947,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={t.btcLsLabel}
               value={isLoading || !btcLS ? "—" : `${(btcLS.longRatio * 100).toFixed(1)}% ${t.longSide}`}
               subValue={btcLS ? `${(btcLS.shortRatio * 100).toFixed(1)}% ${t.shortSide}` : undefined}
-              color={btcLS && btcLS.longRatio > 0.6 ? "text-rose-400" : btcLS && btcLS.longRatio < 0.4 ? "text-emerald-400" : "text-gray-300"}
+              color={btcLS && btcLS.longRatio > 0.6 ? "text-rose-400" : btcLS && btcLS.longRatio < 0.4 ? "text-emerald-400" : "text-[var(--fg)]"}
               badge={btcLS && btcLS.longRatio > 0.65 ? (locale === "ko" ? "롱 과열" : locale === "zh" ? "多头过热" : "Long Extreme") : btcLS && btcLS.longRatio < 0.35 ? (locale === "ko" ? "숏 과열" : locale === "zh" ? "空头过热" : "Short Extreme") : ""}
               badgeBg={btcLS && btcLS.longRatio > 0.65 ? "bg-rose-500/10 border-rose-500/20 text-rose-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"}
               info={INFO.longShort} locale={locale}
@@ -956,7 +956,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={t.ethLsLabel}
               value={isLoading || !ethLS ? "—" : `${(ethLS.longRatio * 100).toFixed(1)}% ${t.longSide}`}
               subValue={ethLS ? `${(ethLS.shortRatio * 100).toFixed(1)}% ${t.shortSide}` : undefined}
-              color={ethLS && ethLS.longRatio > 0.6 ? "text-rose-400" : ethLS && ethLS.longRatio < 0.4 ? "text-emerald-400" : "text-gray-300"}
+              color={ethLS && ethLS.longRatio > 0.6 ? "text-rose-400" : ethLS && ethLS.longRatio < 0.4 ? "text-emerald-400" : "text-[var(--fg)]"}
               info={INFO.longShort} locale={locale}
             />
           </div>
@@ -981,14 +981,14 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={t.annualFundingLabel}
               value={isLoading ? "—" : `${(latestBtcFunding * 3 * 365).toFixed(1)}%`}
               subValue="8h × 3 × 365"
-              color="text-gray-300"
+              color="text-[var(--fg)]"
               info={INFO.fundingAnnual} locale={locale}
             />
             <MetricCard
               label={t.sentimentLabel}
               value={latestBtcFunding > 0.05 ? t.longOverheat : latestBtcFunding < -0.05 ? t.shortOverheat : t.neutral}
               subValue={t.sentimentBasis}
-              color={latestBtcFunding > 0.05 ? "text-rose-400" : latestBtcFunding < -0.05 ? "text-emerald-400" : "text-gray-400"}
+              color={latestBtcFunding > 0.05 ? "text-rose-400" : latestBtcFunding < -0.05 ? "text-emerald-400" : "text-[var(--fg-secondary)]"}
               info={INFO.fundingSentiment} locale={locale}
             />
           </div>
@@ -1047,7 +1047,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               {t.fundingGuides.map((g, i) => {
                 const colors = [
                   { color: "text-rose-400", bg: "bg-rose-500/10 border-rose-500/20" },
-                  { color: "text-gray-300", bg: "bg-white/5 border-white/10" },
+                  { color: "text-[var(--fg)]", bg: "bg-white/5 border-white/10" },
                   { color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
                 ];
                 const { color, bg } = colors[i];
@@ -1055,7 +1055,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                   <div key={g.range} className={cn("rounded-xl border p-4", bg)}>
                     <div className={cn("text-xs font-bold mb-1 font-number", color)}>{g.range}</div>
                     <div className="text-sm font-semibold text-white">{g.label}</div>
-                    <div className="text-xs text-gray-500 mt-1">{g.desc}</div>
+                    <div className="text-xs text-[var(--fg-muted)] mt-1">{g.desc}</div>
                   </div>
                 );
               })}

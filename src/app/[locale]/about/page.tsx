@@ -139,7 +139,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 space-y-6">
       <Link
         href={`/${locale}`}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors"
       >
         <ArrowLeft size={14} />
         {c.back}
@@ -148,8 +148,8 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* 헤더 */}
       <div className="glass rounded-2xl p-8">
         <h1 className="text-2xl font-bold text-white mb-1">{c.title}</h1>
-        <p className="text-sm text-gray-400 mb-4">{c.tagline}</p>
-        <p className="text-sm text-gray-400 leading-relaxed">{c.description}</p>
+        <p className="text-sm text-[var(--fg-secondary)] mb-4">{c.tagline}</p>
+        <p className="text-sm text-[var(--fg-secondary)] leading-relaxed">{c.description}</p>
       </div>
 
       {/* 주요 기능 */}
@@ -159,11 +159,11 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
           return (
             <div key={i} className="glass rounded-xl p-5 flex gap-4">
               <div className="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-white/8 flex items-center justify-center">
-                <Icon size={16} className="text-gray-300" />
+                <Icon size={16} className="text-[var(--fg)]" />
               </div>
               <div>
                 <div className="text-sm font-semibold text-white mb-1">{f.title}</div>
-                <div className="text-xs text-gray-500">{f.desc}</div>
+                <div className="text-xs text-[var(--fg-muted)]">{f.desc}</div>
               </div>
             </div>
           );
@@ -173,7 +173,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* 김치 프리미엄이란 */}
       <div className="glass rounded-2xl p-6">
         <h2 className="text-base font-bold text-white mb-3">{c.premiumSection.heading}</h2>
-        <p className="text-sm text-gray-400 leading-relaxed whitespace-pre-line">{c.premiumSection.body}</p>
+        <p className="text-sm text-[var(--fg-secondary)] leading-relaxed whitespace-pre-line">{c.premiumSection.body}</p>
       </div>
 
       {/* 데이터 출처 */}
@@ -183,7 +183,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
           {c.dataSection.items.map((item, i) => (
             <li key={i} className="flex gap-3">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />
-              <span className="text-sm text-gray-400">{item}</span>
+              <span className="text-sm text-[var(--fg-secondary)]">{item}</span>
             </li>
           ))}
         </ul>
@@ -197,10 +197,10 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* 문의 */}
       <div className="glass rounded-2xl p-6">
         <h2 className="text-base font-bold text-white mb-2">{c.contactSection.heading}</h2>
-        <p className="text-sm text-gray-400 mb-3">{c.contactSection.body}</p>
+        <p className="text-sm text-[var(--fg-secondary)] mb-3">{c.contactSection.body}</p>
         <a
           href={`mailto:${c.contactSection.email}`}
-          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-[var(--fg-secondary)] hover:text-white transition-colors"
         >
           <Mail size={14} />
           {c.contactSection.email}
@@ -209,10 +209,10 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
 
       {/* 법적 링크 */}
       <div className="flex gap-4 pb-4">
-        <Link href={`/${locale}/privacy`} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+        <Link href={`/${locale}/privacy`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] transition-colors">
           {c.legalLinks.privacy}
         </Link>
-        <Link href={`/${locale}/terms`} className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+        <Link href={`/${locale}/terms`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] transition-colors">
           {c.legalLinks.terms}
         </Link>
       </div>

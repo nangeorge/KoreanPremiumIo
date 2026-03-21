@@ -8,7 +8,7 @@ import { formatPremium } from "@/lib/utils";
 // 프리미엄 기반 시장 서사 — 비전문가도 이해 가능
 function getMarketNarrative(p: number | null, locale: string) {
   const ko = locale === "ko", zh = locale === "zh";
-  if (p === null) return { emoji: "📡", state: ko ? "데이터 로딩" : zh ? "加载中" : "Loading", story: "", color: "text-gray-400", bg: "bg-white/3 border-white/8" };
+  if (p === null) return { emoji: "📡", state: ko ? "데이터 로딩" : zh ? "加载中" : "Loading", story: "", color: "text-[var(--fg-secondary)]", bg: "bg-white/3 border-white/8" };
   if (p >= 7)  return {
     emoji: "🚨",
     state: ko ? "극과열" : zh ? "极度过热" : "EXTREME",
@@ -37,7 +37,7 @@ function getMarketNarrative(p: number | null, locale: string) {
     emoji: "😐",
     state: ko ? "무관심" : zh ? "冷漠" : "APATHY",
     story: ko ? "국내 수요 저조. 한국 투자자들이 시장을 외면 중." : zh ? "国内需求低迷，韩国投资者回避市场。" : "Low Korean demand. Local investors avoiding the market.",
-    color: "text-gray-300", bg: "bg-white/4 border-white/10",
+    color: "text-[var(--fg)]", bg: "bg-white/4 border-white/10",
   };
   return {
     emoji: "❄️",
