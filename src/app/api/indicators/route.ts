@@ -99,6 +99,8 @@ export interface IndicatorsResponse {
   defiTvl: DefiTvlData | null;
   mempool: MempoolData | null;
   trending: TrendingCoin[];
+  fearGreedHistory: OnChainPoint[];
+  altcoinSeason: number | null;
   updatedAt: number;
 }
 
@@ -279,6 +281,26 @@ async function fetchTrending(): Promise<TrendingCoin[]> {
   } catch { return []; }
 }
 
+async function fetchAltcoinSeason(): Promise<number | null> {
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&price_change_percentage=90d",
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return null;
+    const coins: Array<{ symbol: string; price_change_percentage_90d_in_currency: number | null }> = await res.json();
+    const btc = coins.find((c) => c.symbol.toLowerCase() === "btc");
+    if (!btc || btc.price_change_percentage_90d_in_currency === null) return null;
+    const btcChange = btc.price_change_percentage_90d_in_currency;
+    const outperformed = coins.filter(
+      (c) => c.symbol.toLowerCase() !== "btc" &&
+        c.price_change_percentage_90d_in_currency !== null &&
+        c.price_change_percentage_90d_in_currency > btcChange
+    ).length;
+    return Math.round((outperformed / 49) * 100);
+  } catch { return null; }
+}
+
 async function fetchFundingRates(symbol: string, limit = 24): Promise<FundingRatePoint[]> {
   // symbol: BTCUSDT → BTC-USDT-SWAP (OKX perpetual)
   const okxSymbol = symbol.endsWith("USDT")
@@ -312,9 +334,9 @@ export async function GET(request: Request) {
       fngRes, globalRes, onChainData, btcFunding, ethFunding, vixHistRes, vixQuoteRes,
       rsiDailyCloses, rsiWeeklyCloses, rsiMonthlyCloses,
       btcOI, ethOI, btcLS, ethLS, stablecoinRes,
-      defiTvlRes, mempoolRes, trendingRes,
+      defiTvlRes, mempoolRes, trendingRes, altcoinSeasonRes,
     ] = await Promise.allSettled([
-      fetch("https://api.alternative.me/fng/?limit=2", { next: { revalidate: 600 } }),
+      fetch("https://api.alternative.me/fng/?limit=31", { next: { revalidate: 600 } }),
       fetch("https://api.coingecko.com/api/v3/global", { next: { revalidate: 300 } }),
       fetchCoinMetrics("CapMVRVCur,HashRate,AdrActCnt,TxCnt", days),
       fetchFundingRates("BTCUSDT", 24),
@@ -338,14 +360,17 @@ export async function GET(request: Request) {
       fetchDefiTvl(),
       fetchMempoolFees(),
       fetchTrending(),
+      fetchAltcoinSeason(),
     ]);
 
     // Fear & Greed
     let fearGreed: FearGreedData | null = null;
+    let fearGreedHistory: OnChainPoint[] = [];
     if (fngRes.status === "fulfilled" && fngRes.value.ok) {
       const data = await fngRes.value.json();
-      const current = data.data?.[0];
-      const previous = data.data?.[1];
+      const entries: Array<{ value: string; value_classification: string; timestamp: string }> = data.data ?? [];
+      const current = entries[0];
+      const previous = entries[1];
       if (current) {
         fearGreed = {
           value: parseInt(current.value),
@@ -355,6 +380,13 @@ export async function GET(request: Request) {
           previousValueText: previous?.value_classification ?? "",
         };
       }
+      fearGreedHistory = entries
+        .slice(0, 30)
+        .reverse()
+        .map((e) => ({
+          time: new Date(parseInt(e.timestamp) * 1000).toISOString().slice(0, 10),
+          value: parseInt(e.value),
+        }));
     }
 
     // Global Market
@@ -466,6 +498,8 @@ export async function GET(request: Request) {
       defiTvl: defiTvlRes.status === "fulfilled" ? defiTvlRes.value : null,
       mempool: mempoolRes.status === "fulfilled" ? mempoolRes.value : null,
       trending: trendingRes.status === "fulfilled" ? trendingRes.value : [],
+      fearGreedHistory,
+      altcoinSeason: altcoinSeasonRes.status === "fulfilled" ? altcoinSeasonRes.value : null,
       updatedAt: Date.now(),
     } satisfies IndicatorsResponse);
   } catch (error) {
@@ -476,6 +510,7 @@ export async function GET(request: Request) {
       fundingRates: { btc: [], eth: [] },
       rsi: null, openInterest: null, longShort: null, stablecoin: null,
       defiTvl: null, mempool: null, trending: [],
+      fearGreedHistory: [], altcoinSeason: null,
       updatedAt: Date.now(),
     });
   }

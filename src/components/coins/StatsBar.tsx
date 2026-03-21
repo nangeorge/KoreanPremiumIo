@@ -94,6 +94,29 @@ export function StatsBar() {
     : vixValue >= 20 ? { label: `${vixValue.toFixed(1)} ${isKo ? "주의" : isZh ? "注意" : "Caution"}`,  color: "text-orange-400" }
     :                  { label: `${vixValue.toFixed(1)} ${isKo ? "안정" : isZh ? "稳定" : "Calm"}`,     color: "text-emerald-400" };
 
+  // BTC 도미넌스
+  const btcDom = indicators?.globalMarket?.btcDominance ?? null;
+  const btcDomInfo = btcDom === null ? { label: "—", color: "text-[var(--fg-muted)]" }
+    : btcDom >= 55 ? { label: `${btcDom.toFixed(1)}% ${isKo ? "BTC 시즌" : isZh ? "BTC季节" : "BTC Season"}`, color: "text-orange-400" }
+    : btcDom >= 45 ? { label: `${btcDom.toFixed(1)}% ${isKo ? "중립" : isZh ? "中性" : "Neutral"}`,            color: "text-yellow-400" }
+    :               { label: `${btcDom.toFixed(1)}% ${isKo ? "알트 시즌" : isZh ? "山寨季" : "Alt Season"}`,   color: "text-emerald-400" };
+
+  // 스테이블코인 시총
+  const stableTotal = indicators?.stablecoin?.total ?? null;
+  function formatStable(v: number) {
+    if (v >= 1e12) return `$${(v / 1e12).toFixed(2)}T`;
+    if (v >= 1e9)  return `$${(v / 1e9).toFixed(1)}B`;
+    return `$${(v / 1e6).toFixed(0)}M`;
+  }
+  const stableChange = indicators?.stablecoin?.change24h ?? null;
+
+  // 알트코인 시즌 지수
+  const altSeason = indicators?.altcoinSeason ?? null;
+  const altSeasonInfo = altSeason === null ? { label: "—", color: "text-[var(--fg-muted)]", sub: "" }
+    : altSeason >= 75 ? { label: `${altSeason}`, color: "text-emerald-400", sub: isKo ? "알트 시즌" : isZh ? "山寨季" : "Alt Season" }
+    : altSeason >= 50 ? { label: `${altSeason}`, color: "text-yellow-400",  sub: isKo ? "알트 우세" : isZh ? "山寨强势" : "Alt Leading" }
+    : altSeason >= 25 ? { label: `${altSeason}`, color: "text-orange-400",  sub: isKo ? "BTC 우세" : isZh ? "BTC强势" : "BTC Leading" }
+    :                   { label: `${altSeason}`, color: "text-red-400",     sub: isKo ? "BTC 시즌" : isZh ? "BTC季节" : "BTC Season" };
 
   const zone = getPremiumZone(btcPremium, locale);
   const gaugePct = btcPremium !== null ? toGaugePct(btcPremium) : null;
@@ -392,6 +415,58 @@ export function StatsBar() {
           </div>
         </div>
 
+        {/* BTC 도미넌스 */}
+        <div className="glass glass-hover rounded-lg p-4">
+          <div className="text-xs text-white mb-1.5">
+            {isKo ? "BTC 도미넌스" : isZh ? "BTC占比" : "BTC Dominance"}
+          </div>
+          <div className={cn("font-number text-lg font-bold leading-none", btcDomInfo.color)}>
+            {btcDom === null ? <span className="skeleton rounded block h-6 w-16" /> : btcDomInfo.label}
+          </div>
+          {btcDom !== null && (
+            <MiniSegmentBar value={btcDom} max={70} segments={[
+              { to: 45, color: "#22c55e" },
+              { to: 55, color: "#eab308" },
+              { to: 70, color: "#f97316" },
+            ]} />
+          )}
+        </div>
+
+        {/* 스테이블코인 시총 */}
+        <div className="glass glass-hover rounded-lg p-4">
+          <div className="text-xs text-white mb-1.5">
+            {isKo ? "스테이블코인" : isZh ? "稳定币总量" : "Stablecoin Mcap"}
+          </div>
+          <div className="font-number text-lg font-bold leading-none text-white">
+            {stableTotal === null ? <span className="skeleton rounded block h-6 w-16" /> : formatStable(stableTotal)}
+          </div>
+          {stableChange !== null && (
+            <div className={cn("text-[10px] font-number mt-1.5", stableChange >= 0 ? "text-emerald-400" : "text-rose-400")}>
+              {stableChange >= 0 ? "▲" : "▼"} {Math.abs(stableChange).toFixed(3)}% 24h
+            </div>
+          )}
+        </div>
+
+        {/* 알트코인 시즌 지수 */}
+        <div className="glass glass-hover rounded-lg p-4">
+          <div className="text-xs text-white mb-1.5">
+            {isKo ? "알트 시즌 지수" : isZh ? "山寨季指数" : "Altcoin Season"}
+          </div>
+          <div className={cn("font-number text-lg font-bold leading-none", altSeasonInfo.color)}>
+            {altSeason === null ? <span className="skeleton rounded block h-6 w-16" /> : altSeasonInfo.label}
+          </div>
+          {altSeason !== null && (
+            <>
+              <MiniSegmentBar value={altSeason} max={100} segments={[
+                { to: 25, color: "#ef4444" },
+                { to: 50, color: "#f97316" },
+                { to: 75, color: "#eab308" },
+                { to: 100, color: "#22c55e" },
+              ]} />
+              <div className="text-[10px] text-[var(--fg-muted)] mt-1">{altSeasonInfo.sub}</div>
+            </>
+          )}
+        </div>
 
       </div>
     </div>

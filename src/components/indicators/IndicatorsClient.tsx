@@ -500,6 +500,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
   const fng = data?.fearGreed;
   const fngColor = fng ? getFngColor(fng.value) : "#6b7280";
   const fngZone = fng ? getFngZone(fng.value) : null;
+  const fngHistory = toTV(data?.fearGreedHistory ?? []);
   const latestBtcFunding = data?.fundingRates?.btc?.at(-1)?.value ?? 0;
   const latestEthFunding = data?.fundingRates?.eth?.at(-1)?.value ?? 0;
   const global = data?.globalMarket;
@@ -799,7 +800,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
           )}
 
           {/* 공탐지수 + 글로벌 */}
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
             {/* 공탐지수 게이지 */}
             <div className="glass rounded-2xl p-5">
               <div className="flex items-center gap-1.5 mb-4">
@@ -816,8 +817,31 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               )}
             </div>
 
+            {/* 공탐 30일 히스토리 차트 */}
+            <div className="glass rounded-2xl p-5">
+              <h3 className="text-sm font-semibold text-white mb-3">
+                {locale === "ko" ? "30일 추이" : locale === "zh" ? "30日趋势" : "30-Day History"}
+              </h3>
+              {fngHistory.length > 1 ? (
+                <TVChart
+                  data={fngHistory}
+                  type="area"
+                  color={fngColor}
+                  height={150}
+                  bandLines={[
+                    { value: 25, color: "rgba(59,130,246,0.4)", style: "dashed", label: "Fear" },
+                    { value: 75, color: "rgba(239,68,68,0.4)",  style: "dashed", label: "Greed" },
+                  ]}
+                  priceFormat={{ type: "price", precision: 0, minMove: 1 }}
+                />
+              ) : (
+                <div className="skeleton w-full rounded-lg" style={{ height: 150 }} />
+              )}
+            </div>
+
             {/* 글로벌 지표 */}
             <div className="glass rounded-2xl p-5 lg:col-span-2">
+
               <h3 className="text-sm font-semibold text-white mb-4">{t.globalTitle}</h3>
               {!global ? (
                 <div className="grid grid-cols-2 gap-3">

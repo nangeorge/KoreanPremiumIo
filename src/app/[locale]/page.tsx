@@ -5,6 +5,8 @@ import { PremiumChart } from "@/components/charts/PremiumChart";
 import { BTCChart } from "@/components/charts/BTCChart";
 import { AlertBanner } from "@/components/coins/AlertBanner";
 import { MarketPulse } from "@/components/coins/MarketPulse";
+import { TrendingBanner } from "@/components/coins/TrendingBanner";
+import { TVTickerTape } from "@/components/layout/TVTickerTape";
 
 type Params = { locale: string };
 
@@ -12,7 +14,12 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
   await params;
 
   return (
+    <>
+      <TVTickerTape />
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 space-y-6">
+      {/* 트렌딩 배너 */}
+      <TrendingBanner />
+
       {/* 시장 상태 펄스 */}
       <MarketPulse />
 
@@ -37,5 +44,6 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
         </div>
       </div>
     </div>
+    </>
   );
 }
