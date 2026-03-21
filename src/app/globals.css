@@ -9,29 +9,29 @@
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 
-  --color-brand: #6366f1;
-  --color-brand-dark: #4f46e5;
-  --color-premium-positive: #3fb950;
-  --color-premium-negative: #f85149;
-  --color-premium-neutral: #8b949e;
+  --color-brand: #ffffff;
+  --color-brand-dark: #e4e4e7;
+  --color-premium-positive: #22c55e;
+  --color-premium-negative: #ef4444;
+  --color-premium-neutral: #71717a;
 }
 
 /* ── CSS Custom Properties ── */
 :root {
-  /* Dark mode (default) — DefiLlama inspired deep navy-dark */
-  --bg-base:    #0d1117;
-  --bg-raised:  #161b27;
-  --bg-overlay: #1e2433;
-  --bg-hover:   #1c2232;
-  --fg:         #e6edf3;
-  --fg-secondary: #8b949e;
-  --fg-muted:   #6e7681;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --divider:    rgba(255, 255, 255, 0.06);
-  --glass-bg:   #161b27;
+  /* Pure Black */
+  --bg-base:    #000000;
+  --bg-raised:  #0a0a0a;
+  --bg-overlay: #111111;
+  --bg-hover:   #0f0f0f;
+  --fg:         #f0f0f0;
+  --fg-secondary: #888888;
+  --fg-muted:   #555555;
+  --border-color: rgba(255, 255, 255, 0.07);
+  --divider:    rgba(255, 255, 255, 0.05);
+  --glass-bg:   #0a0a0a;
   --card-shadow: none;
   --card-shadow-hover: none;
-  --glow-brand: rgba(99, 102, 241, 0.1);
+  --glow-brand: rgba(255, 255, 255, 0);
   color-scheme: dark;
 }
 
@@ -48,7 +48,7 @@
   --glass-bg:   #ffffff;
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
   --card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.07);
-  --glow-brand: rgba(99, 102, 241, 0.05);
+  --glow-brand: rgba(0, 0, 0, 0);
   color-scheme: light;
 }
 
@@ -79,10 +79,10 @@ body {
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 2px;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.22); }
 
 /* ── Skeleton shimmer ── */
 @keyframes shimmer {
@@ -190,7 +190,7 @@ body {
   background-clip: text;
 }
 .text-gradient-brand {
-  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -247,5 +247,5 @@ body {
   & .text-red-400      { color: #cf222e !important; }
   & .text-red-600      { color: #a40e26 !important; }
   & .text-indigo-300,
-  & .text-indigo-400   { color: #3730a3 !important; }
+  & .text-indigo-400   { color: #374151 !important; }
 }

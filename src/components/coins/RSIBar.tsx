@@ -13,7 +13,7 @@ function rsiStatus(v: number | null, locale: string) {
   const ko = locale === "ko", zh = locale === "zh";
   if (v >= 70) return { label: ko ? "과매수" : zh ? "超买" : "Overbought", color: "text-red-400",    fillColor: "#ef4444" };
   if (v <= 30) return { label: ko ? "과매도" : zh ? "超卖" : "Oversold",   color: "text-blue-400",   fillColor: "#3b82f6" };
-  return       { label: ko ? "중립"   : zh ? "中性" : "Neutral",            color: "text-gray-300",   fillColor: "#6366f1" };
+  return       { label: ko ? "중립"   : zh ? "中性" : "Neutral",            color: "text-gray-300",   fillColor: "#94a3b8" };
 }
 
 function RSICard({
@@ -76,8 +76,8 @@ function RSICard({
                 width: `${pct}%`,
                 background: `linear-gradient(to right, ${
                   pct <= 30 ? "#3b82f6" :
-                  pct >= 70 ? `#6366f1, #ef4444` :
-                  "#6366f1"
+                  pct >= 70 ? `#94a3b8, #ef4444` :
+                  "#94a3b8"
                 })`,
                 boxShadow: isOverbought ? "0 0 6px 1px rgba(239,68,68,0.4)" :
                            isOversold   ? "0 0 6px 1px rgba(59,130,246,0.4)" : "none",

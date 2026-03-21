@@ -22,6 +22,17 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86400, // 24시간 캐시 (로고는 변경 거의 없음)
+    remotePatterns: [
+      { protocol: "https", hostname: "**.bitcoin.com" },
+      { protocol: "https", hostname: "**.bitcoinist.com" },
+      { protocol: "https", hostname: "**.coindesk.com" },
+      { protocol: "https", hostname: "**.cointelegraph.com" },
+      { protocol: "https", hostname: "**.cryptonews.com" },
+      { protocol: "https", hostname: "**.decrypt.co" },
+      { protocol: "https", hostname: "**.newsbtc.com" },
+      { protocol: "https", hostname: "images.cryptocompare.com" },
+      { protocol: "https", hostname: "**.cryptocompare.com" },
+    ],
   },
   async headers() {
     return [

@@ -77,7 +77,7 @@ export function StatsBar() {
     : mvrvValue > 3.7 ? { label: isKo ? `${mvrvValue.toFixed(2)} 과열`   : `${mvrvValue.toFixed(2)} Overheated`, color: "text-red-400",     pct: 95 }
     : mvrvValue > 2.4 ? { label: isKo ? `${mvrvValue.toFixed(2)} 주의`   : `${mvrvValue.toFixed(2)} Caution`,    color: "text-orange-400",  pct: 70 }
     : mvrvValue > 1.0 ? { label: isKo ? `${mvrvValue.toFixed(2)} 적정`   : `${mvrvValue.toFixed(2)} Fair`,       color: "text-emerald-400", pct: Math.round((mvrvValue - 1) / (2.4 - 1) * 55 + 15) }
-    :                   { label: isKo ? `${mvrvValue.toFixed(2)} 저평가` : `${mvrvValue.toFixed(2)} Undervalued`, color: "text-indigo-400",  pct: 5 };
+    :                   { label: isKo ? `${mvrvValue.toFixed(2)} 저평가` : `${mvrvValue.toFixed(2)} Undervalued`, color: "text-blue-400",  pct: 5 };
 
   const fng = indicators?.fearGreed ?? null;
   const fngValue = fng?.value ?? null;
@@ -86,7 +86,7 @@ export function StatsBar() {
     : fngValue >= 60 ? { label: isKo ? `${fngValue} 탐욕`   : isZh ? `${fngValue} 贪婪`     : `${fngValue} Greed`,         color: "text-orange-400" }
     : fngValue >= 40 ? { label: isKo ? `${fngValue} 중립`   : isZh ? `${fngValue} 中性`     : `${fngValue} Neutral`,       color: "text-yellow-400" }
     : fngValue >= 20 ? { label: isKo ? `${fngValue} 공포`   : isZh ? `${fngValue} 恐慌`     : `${fngValue} Fear`,          color: "text-blue-400" }
-    :                  { label: isKo ? `${fngValue} 극공포` : isZh ? `${fngValue} 极度恐慌` : `${fngValue} Extreme Fear`,  color: "text-indigo-400" };
+    :                  { label: isKo ? `${fngValue} 극공포` : isZh ? `${fngValue} 极度恐慌` : `${fngValue} Extreme Fear`,  color: "text-blue-400" };
 
   const vixValue = indicators?.vix?.value ?? null;
   const vixInfo = vixValue === null ? { label: "—", color: "text-gray-500" }
@@ -287,7 +287,7 @@ export function StatsBar() {
               value={mvrvInfo.pct}
               max={100}
               segments={[
-                { to: 25, color: "#6366f1" },
+                { to: 25, color: "#3b82f6" },
                 { to: 60, color: "#22c55e" },
                 { to: 80, color: "#f97316" },
                 { to: 100, color: "#ef4444" },
@@ -316,7 +316,7 @@ export function StatsBar() {
               value={fngValue}
               max={100}
               segments={[
-                { to: 20, color: "#6366f1" },
+                { to: 20, color: "#3b82f6" },
                 { to: 40, color: "#3b82f6" },
                 { to: 60, color: "#eab308" },
                 { to: 80, color: "#f97316" },
@@ -371,7 +371,7 @@ export function StatsBar() {
               {t("exchangeRate")} <ExternalLink size={10} className="shrink-0" />
             </a>
           </div>
-          <div className="font-number text-lg font-bold leading-none text-indigo-300">
+          <div className="font-number text-lg font-bold leading-none text-white">
             {isLoading
               ? <span className="skeleton rounded block h-6 w-20" />
               : `$1 = ₩${exchangeRate.toLocaleString("ko-KR")}`

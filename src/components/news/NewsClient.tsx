@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import useSWR from "swr";
-import Image from "next/image";
 import type { NewsItem } from "@/app/api/news/route";
 import { cn } from "@/lib/utils";
 
@@ -76,12 +75,11 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
       <div className="flex gap-3">
         {item.imageUrl && (
           <div className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-xl bg-white/5">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={item.imageUrl}
               alt={item.title}
-              fill
-              className="object-cover"
-             
+              className="object-cover w-full h-full"
               onError={(e) => {
                 const parent = (e.currentTarget as HTMLImageElement).parentElement;
                 if (parent) parent.style.display = "none";
@@ -90,7 +88,7 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
+          <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2 group-hover:text-gray-300 transition-colors">
             {item.title}
           </h3>
           {item.body && (
@@ -103,7 +101,7 @@ function NewsCard({ item, t }: { item: NewsItem; t: typeof LABELS.ko }) {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-indigo-400">{item.source}</span>
+          <span className="text-xs font-medium text-gray-400">{item.source}</span>
           <span className="text-gray-700">·</span>
           <span className="text-xs text-gray-600">{t.timeAgo(ago)}</span>
         </div>
@@ -174,7 +172,7 @@ export function NewsClient({ locale }: { locale: string }) {
             className={cn(
               "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
               activeFilter === f
-                ? "bg-indigo-600 text-white"
+                ? "bg-white text-black"
                 : "border border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15"
             )}
           >

@@ -57,7 +57,7 @@ export function TVChart({
   data = [],
   candleData,
   height = 180,
-  color = "#6366f1",
+  color = "#e2e8f0",
   type = "area",
   topColor,
   bottomColor,

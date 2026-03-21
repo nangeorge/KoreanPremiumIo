@@ -24,7 +24,7 @@ function getMvrvBands(locale: string): TVBandLine[] {
     { value: 3.7, color: "#ef4444", label: ko ? "과열" : zh ? "过热" : "Overheated", style: "dashed" },
     { value: 2.4, color: "#f97316", label: ko ? "주의" : zh ? "警惕" : "Caution", style: "dashed" },
     { value: 1.0, color: "#10b981", label: ko ? "적정" : zh ? "合理" : "Fair", style: "dashed" },
-    { value: 0.6, color: "#6366f1", label: ko ? "저평가" : zh ? "低估" : "Undervalued", style: "dashed" },
+    { value: 0.6, color: "#60a5fa", label: ko ? "저평가" : zh ? "低估" : "Undervalued", style: "dashed" },
   ];
 }
 
@@ -33,7 +33,7 @@ function getMvrvZone(v: number, locale = "ko"): { label: string; color: string; 
   if (v > 3.7) return { label: ko ? "과열 🔴" : zh ? "过热 🔴" : "Overheated 🔴", color: "text-red-400", bg: "bg-red-500/10 border-red-500/20" };
   if (v > 2.4) return { label: ko ? "주의 🟠" : zh ? "警惕 🟠" : "Caution 🟠", color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20" };
   if (v > 1.0) return { label: ko ? "적정 🟢" : zh ? "合理 🟢" : "Fair 🟢", color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" };
-  return { label: ko ? "저평가 🔵" : zh ? "低估 🔵" : "Undervalued 🔵", color: "text-indigo-400", bg: "bg-indigo-500/10 border-indigo-500/20" };
+  return { label: ko ? "저평가 🔵" : zh ? "低估 🔵" : "Undervalued 🔵", color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/20" };
 }
 
 // ── 공탐지수 색상 ────────────────────────────────────────────────
@@ -481,7 +481,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
     if (v >= 70) return { label: v.toFixed(1), color: "text-red-400",    badge: t.rsiOverbought, badgeBg: "bg-red-500/10 border-red-500/20 text-red-400" };
     if (v >= 50) return { label: v.toFixed(1), color: "text-orange-300", badge: t.rsiUptrend,    badgeBg: "bg-orange-500/10 border-orange-500/20 text-orange-300" };
     if (v >= 30) return { label: v.toFixed(1), color: "text-blue-300",   badge: t.rsiDowntrend,  badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-300" };
-    return            { label: v.toFixed(1), color: "text-indigo-400", badge: t.rsiOversold,   badgeBg: "bg-indigo-500/10 border-indigo-500/20 text-indigo-400" };
+    return            { label: v.toFixed(1), color: "text-blue-400",   badge: t.rsiOversold,   badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-400" };
   }
 
   // Open Interest
@@ -494,6 +494,9 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
   // Stablecoin
   const stablecoin = data?.stablecoin ?? null;
+  const defiTvl = data?.defiTvl ?? null;
+  const mempool = data?.mempool ?? null;
+  const trending = data?.trending ?? [];
   const fng = data?.fearGreed;
   const fngColor = fng ? getFngColor(fng.value) : "#6b7280";
   const fngZone = fng ? getFngZone(fng.value) : null;
@@ -524,7 +527,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             onClick={() => setTab(i)}
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
-              tab === i ? "bg-indigo-600 text-white shadow-md" : "text-gray-500 hover:text-gray-300"
+              tab === i ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
             )}
           >
             {name}
@@ -543,7 +546,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-purple-600 text-white shadow-md" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
                 )}
               >
                 {label}
@@ -566,7 +569,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label="Hash Rate"
               value={isLoading ? "—" : (hashData.at(-1)?.value.toFixed(0) ?? "—") + " EH/s"}
               subValue={t.hashRateSub}
-              color="text-purple-400"
+              color="text-gray-300"
               info={INFO.hashRate} locale={locale}
             />
             <MetricCard
@@ -600,9 +603,9 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 data={mvrvData}
                 height={200}
                 type="area"
-                color="#6366f1"
-                topColor="#6366f140"
-                bottomColor="#6366f104"
+                color="#e2e8f0"
+                topColor="#e2e8f020"
+                bottomColor="#e2e8f004"
                 bandLines={getMvrvBands(locale)}
                 priceFormat={{ type: "price", precision: 3, minMove: 0.001 }}
               />
@@ -614,7 +617,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             title={`Hash Rate (${PERIODS.find((p) => p.days === period)?.label ?? "90D"})`}
             subtitle={t.hashChartSub}
             badge={isLoading ? "..." : (hashData.at(-1)?.value.toFixed(1) ?? "—") + " EH/s"}
-            badgeBg="bg-purple-500/10 border-purple-500/20 text-purple-400"
+            badgeBg="bg-white/8 border-white/12 text-gray-300"
             info={INFO.hashRate} locale={locale} source="blockchain.com"
           >
             {isLoading ? (
@@ -624,9 +627,9 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 data={hashData}
                 height={180}
                 type="area"
-                color="#a855f7"
-                topColor="#a855f740"
-                bottomColor="#a855f704"
+                color="#94a3b8"
+                topColor="#94a3b840"
+                bottomColor="#94a3b804"
                 priceFormat={{ type: "price", precision: 1, minMove: 0.1 }}
               />
             )}
@@ -649,6 +652,67 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               )}
             </ChartCard>
           </div>
+
+          {/* BTC Mempool */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <MetricCard
+              label="BTC Mempool"
+              value={isLoading ? "—" : mempool ? `${mempool.count.toLocaleString()} txs` : "—"}
+              subValue={mempool ? `${(mempool.vsize / 1e6).toFixed(1)} MB` : ""}
+              color="text-amber-400"
+              info={{ ko: "비트코인 네트워크 미확인 트랜잭션 수. 많을수록 수수료 상승.", en: "Unconfirmed Bitcoin transactions. Higher count = higher fees.", zh: "比特币网络未确认交易数。越多手续费越高。" }}
+              locale={locale}
+            />
+            <MetricCard
+              label={locale === "ko" ? "빠른 수수료" : locale === "zh" ? "快速费率" : "Fast Fee"}
+              value={isLoading ? "—" : mempool ? `${mempool.fastestFee} sat/vB` : "—"}
+              subValue={locale === "ko" ? "다음 블록 (~10분)" : locale === "zh" ? "下一区块 (~10分)" : "Next block (~10 min)"}
+              color={mempool ? (mempool.fastestFee > 50 ? "text-red-400" : mempool.fastestFee > 20 ? "text-orange-400" : "text-emerald-400") : "text-gray-500"}
+              info={{ ko: "다음 블록에 포함되기 위한 추천 수수료 (sat/vByte)", en: "Recommended fee for next block inclusion (sat/vByte)", zh: "推荐手续费率 (sat/vByte)" }}
+              locale={locale}
+            />
+            <MetricCard
+              label={locale === "ko" ? "보통 수수료" : locale === "zh" ? "普通费率" : "Normal Fee"}
+              value={isLoading ? "—" : mempool ? `${mempool.halfHourFee} sat/vB` : "—"}
+              subValue={locale === "ko" ? "~30분" : locale === "zh" ? "~30分钟" : "~30 min"}
+              color="text-blue-400"
+              info={{ ko: "30분 내 확인을 위한 추천 수수료", en: "Recommended fee for ~30 min confirmation", zh: "30分钟内确认的推荐费率" }}
+              locale={locale}
+            />
+            <MetricCard
+              label={locale === "ko" ? "저렴한 수수료" : locale === "zh" ? "低费率" : "Low Fee"}
+              value={isLoading ? "—" : mempool ? `${mempool.hourFee} sat/vB` : "—"}
+              subValue={locale === "ko" ? "~1시간" : locale === "zh" ? "~1小时" : "~1 hour"}
+              color="text-gray-400"
+              info={{ ko: "1시간 내 확인을 위한 추천 수수료", en: "Recommended fee for ~1 hour confirmation", zh: "1小时内确认的推荐费率" }}
+              locale={locale}
+            />
+          </div>
+
+          {/* DeFi TVL */}
+          <ChartCard
+            title="DeFi TVL"
+            subtitle={locale === "ko" ? "전체 DeFi 예치금 (단위: $B)" : locale === "zh" ? "DeFi总锁定价值（十亿美元）" : "Total DeFi Locked Value ($B)"}
+            badge={isLoading ? "..." : defiTvl ? `$${(defiTvl.total / 1e9).toFixed(0)}B` : "—"}
+            badgeBg={defiTvl && defiTvl.change24h >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"}
+            info={{ ko: "DeFi 프로토콜에 예치된 총 자산 가치 (DefiLlama 기준). 시장 신뢰도 지표.", en: "Total assets locked in DeFi protocols (DefiLlama). Market confidence indicator.", zh: "DeFi协议中锁定的总资产价值（DefiLlama数据）" }}
+            locale={locale}
+            source="DefiLlama"
+          >
+            {isLoading || !defiTvl?.history.length ? (
+              <div className="skeleton w-full rounded-lg" style={{ height: 180 }} />
+            ) : (
+              <TVChart
+                data={toTV(defiTvl.history)}
+                height={180}
+                type="area"
+                color="#10b981"
+                topColor="#10b98130"
+                bottomColor="#10b98104"
+                priceFormat={{ type: "price", precision: 1, minMove: 0.1 }}
+              />
+            )}
+          </ChartCard>
         </div>
       )}
 
@@ -663,7 +727,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-purple-600 text-white shadow-md" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
                 )}
               >
                 {label}
@@ -698,6 +762,41 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               info={INFO.stablecoin} locale={locale}
             />
           </div>
+
+          {/* 트렌딩 코인 */}
+          {!isLoading && trending.length > 0 && (
+            <div className="glass rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-sm font-semibold text-white">
+                  {locale === "ko" ? "🔥 트렌딩 코인" : locale === "zh" ? "🔥 热门代币" : "🔥 Trending Coins"}
+                </span>
+                <span className="text-xs text-gray-600">CoinGecko · 24h</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {trending.map((coin) => (
+                  <div
+                    key={coin.id}
+                    className="flex items-center gap-1.5 rounded-lg border border-white/8 bg-white/4 px-2.5 py-1.5 hover:bg-white/8 transition-colors"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={coin.thumb} alt={coin.symbol} width={16} height={16} className="rounded-full" />
+                    <span className="text-xs font-medium text-white">{coin.symbol.toUpperCase()}</span>
+                    {coin.priceChangePercent !== null && (
+                      <span className={cn(
+                        "text-[10px] font-medium",
+                        coin.priceChangePercent >= 0 ? "text-emerald-400" : "text-rose-400"
+                      )}>
+                        {coin.priceChangePercent >= 0 ? "+" : ""}{coin.priceChangePercent.toFixed(1)}%
+                      </span>
+                    )}
+                    {coin.rank > 0 && (
+                      <span className="text-[10px] text-gray-600">#{coin.rank}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 공탐지수 + 글로벌 */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -814,9 +913,9 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 data={premiumData}
                 height={180}
                 type="area"
-                color="#6366f1"
-                topColor="#6366f140"
-                bottomColor="#6366f104"
+                color="#e2e8f0"
+                topColor="#e2e8f020"
+                bottomColor="#e2e8f004"
                 bandLines={[{ value: 0, color: "rgba(255,255,255,0.2)", style: "dashed" }]}
                 priceFormat={{ type: "price", precision: 3, minMove: 0.001 }}
               />
@@ -910,7 +1009,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 }))}
                 height={200}
                 type="histogram"
-                color="#6366f1"
+                color="#e2e8f0"
                 bandLines={[
                   { value: 0.05, color: "#ef444480", label: t.longOverheat, style: "dashed" },
                   { value: -0.05, color: "#10b98180", label: t.shortOverheat, style: "dashed" },
@@ -934,7 +1033,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 }))}
                 height={180}
                 type="histogram"
-                color="#6366f1"
+                color="#e2e8f0"
                 bandLines={[{ value: 0, color: "rgba(255,255,255,0.2)", style: "solid" }]}
                 priceFormat={{ type: "price", precision: 4, minMove: 0.0001 }}
               />

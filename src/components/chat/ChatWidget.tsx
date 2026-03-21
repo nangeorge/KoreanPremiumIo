@@ -188,18 +188,18 @@ export function ChatWidget() {
         onClick={() => setIsOpen((o) => !o)}
         className={cn(
           "fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-all duration-300",
-          "bg-gradient-to-br from-indigo-500 to-purple-600 hover:scale-110 active:scale-95",
+          "bg-white hover:scale-110 active:scale-95",
           isOpen && "rotate-180"
         )}
         aria-label="채팅 열기"
       >
         {isOpen ? (
-          <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         ) : (
           <>
-            <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
             {unread > 0 && (
@@ -223,7 +223,7 @@ export function ChatWidget() {
         style={{ height: "min(480px, 70vh)" }}
       >
         {/* 헤더 */}
-        <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border-b border-white/8">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/8">
           <div className="flex items-center gap-2">
             <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
             <span className="text-sm font-semibold text-white">{t.title}</span>
@@ -240,13 +240,13 @@ export function ChatWidget() {
                 value={nickInput}
                 onChange={(e) => setNickInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && saveNickname()}
-                className="flex-1 rounded-lg bg-white/8 px-2 py-1 text-xs text-white outline-none border border-indigo-500/40"
+                className="flex-1 rounded-lg bg-white/8 px-2 py-1 text-xs text-white outline-none border border-white/20"
                 placeholder={t.nickname}
                 maxLength={20}
               />
               <button
                 onClick={saveNickname}
-                className="rounded-lg bg-indigo-600 px-2 py-1 text-xs text-white"
+                className="rounded-lg bg-white px-2 py-1 text-xs text-black"
               >
                 ✓
               </button>
@@ -260,7 +260,7 @@ export function ChatWidget() {
           ) : (
             <>
               <span className="text-xs text-gray-500">{t.nickname}:</span>
-              <span className="text-xs font-medium text-indigo-300">{nickname}</span>
+              <span className="text-xs font-medium text-white">{nickname}</span>
               <button
                 onClick={() => { setNickInput(nickname); setEditingNick(true); }}
                 className="ml-auto text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
@@ -287,7 +287,7 @@ export function ChatWidget() {
                 >
                   <div className={cn("flex items-center gap-1 text-[10px]", isMe ? "flex-row-reverse" : "flex-row")}>
                     {msg.badge && <span>{BADGE_ICON[msg.badge]}</span>}
-                    <span className={cn("font-medium", isMe ? "text-indigo-300" : "text-gray-400")}>
+                    <span className={cn("font-medium", isMe ? "text-white" : "text-gray-400")}>
                       {msg.nickname}
                     </span>
                     <span className="text-gray-700">{timeLabel(msg.timestamp)}</span>
@@ -296,7 +296,7 @@ export function ChatWidget() {
                     className={cn(
                       "max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-snug break-words",
                       isMe
-                        ? "rounded-tr-sm bg-indigo-600 text-white"
+                        ? "rounded-tr-sm bg-white/15 text-white"
                         : "rounded-tl-sm bg-white/8 text-gray-200"
                     )}
                   >
@@ -316,7 +316,7 @@ export function ChatWidget() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
-            className="flex-1 rounded-xl bg-white/8 px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none border border-white/5 focus:border-indigo-500/40 transition-colors"
+            className="flex-1 rounded-xl bg-white/8 px-3 py-2.5 text-sm text-white placeholder-gray-600 outline-none border border-white/5 focus:border-white/20 transition-colors"
             placeholder={t.placeholder}
             maxLength={200}
             disabled={isSending}
@@ -327,7 +327,7 @@ export function ChatWidget() {
             className={cn(
               "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-200",
               input.trim()
-                ? "bg-indigo-600 hover:bg-indigo-500 text-white"
+                ? "bg-white hover:bg-white/90 text-black"
                 : "bg-white/5 text-gray-600"
             )}
           >

@@ -40,7 +40,7 @@ export function TabNav() {
               className={cn(
                 "flex items-center gap-1.5 border-b-2 px-3 py-3 sm:px-4 text-sm font-medium transition-all duration-200",
                 isActive(tab)
-                  ? "border-[#6366f1] text-[var(--fg)]"
+                  ? "border-white text-[var(--fg)]"
                   : "border-transparent text-[var(--fg-secondary)] hover:text-[var(--fg)]"
               )}
             >

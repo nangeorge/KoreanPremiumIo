@@ -114,7 +114,7 @@ export function Header() {
                   className={cn(
                     "flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-200",
                     locale === loc.code
-                      ? "bg-indigo-600 text-white"
+                      ? "bg-white text-black"
                       : "text-[var(--fg-secondary)] hover:text-[var(--fg)]"
                   )}
                 >

@@ -39,7 +39,7 @@ export default function CoinDetailPage() {
     return (
       <div className="mx-auto max-w-4xl px-4 py-20 text-center">
         <p className="text-gray-500">{isKo ? "코인을 찾을 수 없습니다." : "Coin not found."}</p>
-        <Link href={`/${locale}`} className="mt-4 inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm">
+        <Link href={`/${locale}`} className="mt-4 inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm">
           <ArrowLeft size={14} /> {isKo ? "돌아가기" : "Back"}
         </Link>
       </div>
@@ -74,7 +74,7 @@ export default function CoinDetailPage() {
     {
       label: isKo ? "거래량 (24h)" : "Volume (24h)",
       value: formatVolume(coin.volume24h, locale),
-      color: "text-indigo-300",
+      color: "text-gray-300",
     },
     {
       label: isKo ? "원/달러 환율" : "USD/KRW",
@@ -153,7 +153,7 @@ export default function CoinDetailPage() {
               className={cn(
                 "flex-1 py-3.5 text-sm font-medium transition-all duration-200 border-b-2",
                 activeTab === tab.key
-                  ? "border-indigo-500 text-white"
+                  ? "border-white text-white"
                   : "border-transparent text-gray-500 hover:text-gray-300"
               )}
             >
@@ -249,7 +249,7 @@ export default function CoinDetailPage() {
                   <ul className="space-y-2.5">
                     {sec.items.map((item, j) => (
                       <li key={j} className="flex gap-3">
-                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
+                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />
                         <span className="text-sm text-gray-400 leading-relaxed">
                           {isKo ? item.ko : item.en}
                         </span>
@@ -277,7 +277,7 @@ export default function CoinDetailPage() {
                       href={src.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 bg-indigo-500/8 border border-indigo-500/15 rounded-full px-3 py-1.5 transition-colors"
+                      className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white bg-white/5 border border-white/10 rounded-full px-3 py-1.5 transition-colors"
                     >
                       {src.label} ↗
                     </a>

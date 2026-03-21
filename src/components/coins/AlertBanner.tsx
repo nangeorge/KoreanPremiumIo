@@ -24,7 +24,7 @@ export function AlertBanner() {
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/8 bg-gradient-to-br from-[var(--bg-raised)] to-[var(--bg-base)] p-5">
-      <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-indigo-600/8 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-white/3 blur-3xl pointer-events-none" />
       <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-orange-500/6 blur-3xl pointer-events-none" />
 
       <div className="relative flex flex-col gap-3">
@@ -61,7 +61,7 @@ export function AlertBanner() {
           )}
           <a
             href={`/${locale}`}
-            className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors"
           >
             {isKo ? "북마크 해두기 →" : isZh ? "收藏此页 →" : "Bookmark this →"}
           </a>

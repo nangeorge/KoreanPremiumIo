@@ -59,6 +59,30 @@ export interface StablecoinData {
   change24h: number; // percentage
 }
 
+export interface DefiTvlData {
+  total: number;       // current TVL in USD
+  change24h: number;   // % change
+  history: OnChainPoint[];  // time-series (reuse existing type)
+}
+
+export interface MempoolData {
+  fastestFee: number;  // sat/vB (next block)
+  halfHourFee: number; // sat/vB (~30 min)
+  hourFee: number;     // sat/vB (~1 hour)
+  minimumFee: number;  // sat/vB
+  count: number;       // unconfirmed tx count
+  vsize: number;       // mempool size in vbytes
+}
+
+export interface TrendingCoin {
+  id: string;
+  name: string;
+  symbol: string;
+  thumb: string;       // small image url
+  priceChangePercent: number | null; // 24h change if available
+  rank: number;        // market cap rank
+}
+
 export interface IndicatorsResponse {
   fearGreed: FearGreedData | null;
   vix: VixData | null;
@@ -72,6 +96,9 @@ export interface IndicatorsResponse {
   openInterest: { btc: OpenInterestData | null; eth: OpenInterestData | null } | null;
   longShort: { btc: LongShortData | null; eth: LongShortData | null } | null;
   stablecoin: StablecoinData | null;
+  defiTvl: DefiTvlData | null;
+  mempool: MempoolData | null;
+  trending: TrendingCoin[];
   updatedAt: number;
 }
 
@@ -188,6 +215,70 @@ async function fetchStablecoinSupply(): Promise<StablecoinData | null> {
   } catch { return null; }
 }
 
+async function fetchDefiTvl(): Promise<DefiTvlData | null> {
+  try {
+    const res = await fetch("https://api.llama.fi/v2/historicalChainTvl", {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    const data: Array<{ date: number; tvl: number }> = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    const recent = data.slice(-2);
+    const current = recent[recent.length - 1]?.tvl ?? 0;
+    const prev = recent[recent.length - 2]?.tvl ?? current;
+    const change24h = prev > 0 ? parseFloat((((current - prev) / prev) * 100).toFixed(2)) : 0;
+    // Return last 90 days of history
+    const history: OnChainPoint[] = data.slice(-90).map((d) => ({
+      time: new Date(d.date * 1000).toISOString().slice(0, 10),
+      value: parseFloat((d.tvl / 1e9).toFixed(2)), // billions
+    }));
+    return { total: current, change24h, history };
+  } catch { return null; }
+}
+
+async function fetchMempoolFees(): Promise<MempoolData | null> {
+  try {
+    const [feesRes, mempoolRes] = await Promise.all([
+      fetch("https://mempool.space/api/v1/fees/recommended", { next: { revalidate: 60 } }),
+      fetch("https://mempool.space/api/mempool", { next: { revalidate: 60 } }),
+    ]);
+    if (!feesRes.ok || !mempoolRes.ok) return null;
+    const [fees, mempool] = await Promise.all([feesRes.json(), mempoolRes.json()]);
+    return {
+      fastestFee: fees.fastestFee ?? 0,
+      halfHourFee: fees.halfHourFee ?? 0,
+      hourFee: fees.hourFee ?? 0,
+      minimumFee: fees.minimumFee ?? 1,
+      count: mempool.count ?? 0,
+      vsize: mempool.vsize ?? 0,
+    };
+  } catch { return null; }
+}
+
+async function fetchTrending(): Promise<TrendingCoin[]> {
+  try {
+    const res = await fetch("https://api.coingecko.com/api/v3/search/trending", {
+      next: { revalidate: 600 },
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return (json.coins ?? []).slice(0, 7).map((c: {
+      item: {
+        id: string; name: string; symbol: string; thumb: string;
+        market_cap_rank: number;
+        data?: { price_change_percentage_24h?: { usd?: number } };
+      }
+    }) => ({
+      id: c.item.id,
+      name: c.item.name,
+      symbol: c.item.symbol,
+      thumb: c.item.thumb,
+      priceChangePercent: c.item.data?.price_change_percentage_24h?.usd ?? null,
+      rank: c.item.market_cap_rank ?? 0,
+    }));
+  } catch { return []; }
+}
+
 async function fetchFundingRates(symbol: string, limit = 24): Promise<FundingRatePoint[]> {
   // symbol: BTCUSDT → BTC-USDT-SWAP (OKX perpetual)
   const okxSymbol = symbol.endsWith("USDT")
@@ -221,6 +312,7 @@ export async function GET(request: Request) {
       fngRes, globalRes, onChainData, btcFunding, ethFunding, vixHistRes, vixQuoteRes,
       rsiDailyCloses, rsiWeeklyCloses, rsiMonthlyCloses,
       btcOI, ethOI, btcLS, ethLS, stablecoinRes,
+      defiTvlRes, mempoolRes, trendingRes,
     ] = await Promise.allSettled([
       fetch("https://api.alternative.me/fng/?limit=2", { next: { revalidate: 600 } }),
       fetch("https://api.coingecko.com/api/v3/global", { next: { revalidate: 300 } }),
@@ -243,6 +335,9 @@ export async function GET(request: Request) {
       fetchLongShort("BTC-USDT-SWAP"),
       fetchLongShort("ETH-USDT-SWAP"),
       fetchStablecoinSupply(),
+      fetchDefiTvl(),
+      fetchMempoolFees(),
+      fetchTrending(),
     ]);
 
     // Fear & Greed
@@ -368,6 +463,9 @@ export async function GET(request: Request) {
       openInterest,
       longShort,
       stablecoin,
+      defiTvl: defiTvlRes.status === "fulfilled" ? defiTvlRes.value : null,
+      mempool: mempoolRes.status === "fulfilled" ? mempoolRes.value : null,
+      trending: trendingRes.status === "fulfilled" ? trendingRes.value : [],
       updatedAt: Date.now(),
     } satisfies IndicatorsResponse);
   } catch (error) {
@@ -377,6 +475,7 @@ export async function GET(request: Request) {
       mvrv: [], hashRate: [], activeAddresses: [], txCount: [],
       fundingRates: { btc: [], eth: [] },
       rsi: null, openInterest: null, longShort: null, stablecoin: null,
+      defiTvl: null, mempool: null, trending: [],
       updatedAt: Date.now(),
     });
   }

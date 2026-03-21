@@ -83,7 +83,7 @@ const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
 // ── 정렬 아이콘 ────────────────────────────────────────────────────────────────
 function SortIcon({ field, current, dir }: { field: string; current: string; dir: string }) {
   if (current === "default" || field !== current) return <span className="text-gray-700">↕</span>;
-  return <span className="text-indigo-400">{dir === "asc" ? "↑" : "↓"}</span>;
+  return <span className="text-white">{dir === "asc" ? "↑" : "↓"}</span>;
 }
 
 // ── 코인 행 ────────────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
       onClick={onClick}
       className={cn(
         "group cursor-pointer border-b border-[var(--divider)] transition-all duration-150",
-        isSelected ? "bg-indigo-500/10 border-indigo-500/25" : cn(rowGlow, "hover:bg-[var(--bg-hover)]")
+        isSelected ? "bg-white/6 border-white/15" : cn(rowGlow, "hover:bg-[var(--bg-hover)]")
       )}
     >
       {/* 순위 — 정렬 무관 고정 */}
@@ -157,7 +157,7 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
             onClick={(e) => e.stopPropagation()}
             className="hover:opacity-80 transition-opacity"
           >
-            <div className="font-semibold text-[var(--fg)] text-sm hover:text-indigo-300 transition-colors">{coin.symbol}</div>
+            <div className="font-semibold text-[var(--fg)] text-sm hover:text-gray-300 transition-colors">{coin.symbol}</div>
             <div className="text-xs text-[var(--fg-muted)] hidden xs:block">{name}</div>
           </Link>
         </div>
@@ -353,7 +353,7 @@ export function PremiumTable() {
               className={cn(
                 "flex-shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200",
                 activeCategory === cat
-                  ? "bg-indigo-600/90 text-white"
+                  ? "bg-white text-black"
                   : "bg-white/5 text-[var(--fg-muted)] hover:bg-white/8 hover:text-[var(--fg-secondary)]"
               )}
             >
@@ -375,7 +375,7 @@ export function PremiumTable() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={locale === "ko" ? "코인 검색..." : locale === "zh" ? "搜索..." : "Search coin..."}
-            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-base)] pl-8 pr-8 py-1.5 text-xs text-[var(--fg)] placeholder-[var(--fg-muted)] outline-none focus:border-indigo-500/60 focus:bg-[var(--bg-raised)] transition-all"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--bg-base)] pl-8 pr-8 py-1.5 text-xs text-[var(--fg)] placeholder-[var(--fg-muted)] outline-none focus:border-white/20 focus:bg-[var(--bg-raised)] transition-all"
           />
           {searchQuery && (
             <button
@@ -397,7 +397,7 @@ export function PremiumTable() {
               className={cn(
                 "rounded-md px-2.5 py-1.5 transition-all duration-200 flex items-center justify-center",
                 selectedExchange === ex
-                  ? "bg-indigo-600"
+                  ? "bg-white/15"
                   : "hover:bg-white/5"
               )}
             >

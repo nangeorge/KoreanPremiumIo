@@ -148,7 +148,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* 헤더 */}
       <div className="glass rounded-2xl p-8">
         <h1 className="text-2xl font-bold text-white mb-1">{c.title}</h1>
-        <p className="text-sm text-indigo-400 mb-4">{c.tagline}</p>
+        <p className="text-sm text-gray-400 mb-4">{c.tagline}</p>
         <p className="text-sm text-gray-400 leading-relaxed">{c.description}</p>
       </div>
 
@@ -158,8 +158,8 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
           const Icon = iconMap[f.icon as keyof typeof iconMap];
           return (
             <div key={i} className="glass rounded-xl p-5 flex gap-4">
-              <div className="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                <Icon size={16} className="text-indigo-400" />
+              <div className="mt-0.5 shrink-0 h-8 w-8 rounded-lg bg-white/8 flex items-center justify-center">
+                <Icon size={16} className="text-gray-300" />
               </div>
               <div>
                 <div className="text-sm font-semibold text-white mb-1">{f.title}</div>
@@ -182,7 +182,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
         <ul className="space-y-2">
           {c.dataSection.items.map((item, i) => (
             <li key={i} className="flex gap-3">
-              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-white/40 shrink-0" />
               <span className="text-sm text-gray-400">{item}</span>
             </li>
           ))}
@@ -200,7 +200,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
         <p className="text-sm text-gray-400 mb-3">{c.contactSection.body}</p>
         <a
           href={`mailto:${c.contactSection.email}`}
-          className="inline-flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
         >
           <Mail size={14} />
           {c.contactSection.email}
