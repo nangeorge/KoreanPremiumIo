@@ -188,7 +188,7 @@ export function ChatWidget() {
         onClick={() => setIsOpen((o) => !o)}
         className={cn(
           "fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-2xl transition-all duration-300",
-          "bg-white hover:scale-110 active:scale-95",
+          "bg-[var(--fg)] hover:scale-110 active:scale-95",
           isOpen && "rotate-180"
         )}
         aria-label="채팅 열기"
@@ -246,7 +246,7 @@ export function ChatWidget() {
               />
               <button
                 onClick={saveNickname}
-                className="rounded-lg bg-white px-2 py-1 text-xs text-black"
+                className="rounded-lg bg-[var(--fg)] px-2 py-1 text-xs text-[var(--bg-base)]"
               >
                 ✓
               </button>
@@ -327,7 +327,7 @@ export function ChatWidget() {
             className={cn(
               "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-200",
               input.trim()
-                ? "bg-white hover:bg-white/90 text-black"
+                ? "bg-[var(--fg)] hover:opacity-90 text-[var(--bg-base)]"
                 : "bg-white/5 text-gray-600"
             )}
           >

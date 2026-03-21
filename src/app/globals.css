@@ -209,6 +209,8 @@ body {
    GLOBAL — text-gray-* 기본값을 읽기 좋은 밝은 회색으로
    (라이트 모드에서는 아래 LIGHT MODE OVERRIDES 가 덮어씀)
    ═══════════════════════════════════════════════════════ */
+.text-gray-100 { color: #f0f0f0 !important; }
+.text-gray-200 { color: #e8e8e8 !important; }
 .text-gray-300 { color: #e0e0e0 !important; }
 .text-gray-400 { color: #cccccc !important; }
 .text-gray-500 { color: #b8b8b8 !important; }
@@ -241,9 +243,9 @@ body {
 
   /* 밝은 gray 텍스트 → 검정 계열로 */
   & .text-white       { color: #111111 !important; }
-  & .text-gray-100,
-  & .text-gray-200,
-  & .text-gray-300    { color: #111111 !important; }
+  & .text-gray-100    { color: #111111 !important; }
+  & .text-gray-200    { color: #222222 !important; }
+  & .text-gray-300    { color: #333333 !important; }
   & .text-gray-400    { color: #555555 !important; }
   & .text-gray-500    { color: #777777 !important; }
   & .text-gray-600    { color: #909090 !important; }

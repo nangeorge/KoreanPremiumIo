@@ -172,8 +172,8 @@ export function NewsClient({ locale }: { locale: string }) {
             className={cn(
               "rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
               activeFilter === f
-                ? "bg-white text-black"
-                : "border border-white/8 bg-white/3 text-gray-400 hover:text-gray-200 hover:border-white/15"
+                ? "bg-[var(--fg)] text-[var(--bg-base)]"
+                : "border border-white/8 bg-white/3 text-gray-400 hover:text-gray-300 hover:border-white/15"
             )}
           >
             {f}

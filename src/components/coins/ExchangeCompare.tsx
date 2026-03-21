@@ -16,7 +16,7 @@ export function ExchangeCompare({ locale }: { locale: string }) {
     <div className="mt-8 flex items-center gap-3 flex-wrap">
       <div className="flex items-center gap-2 rounded-xl border border-blue-500/20 bg-blue-500/8 px-4 py-2">
         <span className="text-sm">🇰🇷</span>
-        <span className="text-sm font-medium text-blue-300">
+        <span className="text-sm font-medium text-blue-400">
           {locale === "ko" ? "업비트 (KRW)" : "Upbit (KRW)"}
         </span>
       </div>
@@ -26,7 +26,7 @@ export function ExchangeCompare({ locale }: { locale: string }) {
       </div>
       <div className="flex items-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/8 px-4 py-2">
         <span className="text-sm">{ext.flag}</span>
-        <span className="text-sm font-medium text-yellow-300">
+        <span className="text-sm font-medium text-yellow-400">
           {extLabel} ({ext.currency})
         </span>
       </div>

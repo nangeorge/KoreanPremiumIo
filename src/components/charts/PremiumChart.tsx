@@ -62,7 +62,7 @@ export function PremiumChart() {
               onClick={() => setInterval(iv)}
               className={cn(
                 "rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-200 min-w-[2.5rem]",
-                interval === iv ? "bg-white text-black" : "text-gray-500 hover:text-gray-300"
+                interval === iv ? "bg-[var(--fg)] text-[var(--bg-base)]" : "text-gray-500 hover:text-gray-300"
               )}
             >
               {iv.toUpperCase()}

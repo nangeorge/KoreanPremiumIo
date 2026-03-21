@@ -13,19 +13,19 @@ function getMarketNarrative(p: number | null, locale: string) {
     emoji: "🚨",
     state: ko ? "극과열" : zh ? "极度过热" : "EXTREME",
     story: ko ? "역사적 고점 수준. 단기 급락 리스크 최고조." : zh ? "历史顶部水平，短期崩溃风险极高。" : "Historic peak zone. Short-term crash risk at maximum.",
-    color: "text-red-300", bg: "bg-red-500/10 border-red-500/25",
+    color: "text-red-400", bg: "bg-red-500/10 border-red-500/25",
   };
   if (p >= 4)  return {
     emoji: "🔥",
     state: ko ? "고점 경고" : zh ? "高点警告" : "PEAK WARNING",
     story: ko ? "한국 투자자 과열 매수. 과거 이 수준에서 단기 조정이 잦았음." : zh ? "韩国投资者过热买入。历史上此水平常见短期调整。" : "Korean FOMO buying. Short-term corrections historically common at this level.",
-    color: "text-orange-300", bg: "bg-orange-500/8 border-orange-500/20",
+    color: "text-orange-400", bg: "bg-orange-500/8 border-orange-500/20",
   };
   if (p >= 2)  return {
     emoji: "⚠️",
     state: ko ? "주의 구간" : zh ? "注意区间" : "CAUTION",
     story: ko ? "국내 매수 열기 상승 중. 과열 여부 지속 모니터링 필요." : zh ? "国内买入热情上升，需持续监控是否过热。" : "Rising local demand. Monitor for overheating signs.",
-    color: "text-yellow-300", bg: "bg-yellow-500/6 border-yellow-500/15",
+    color: "text-yellow-400", bg: "bg-yellow-500/6 border-yellow-500/15",
   };
   if (p >= 0)  return {
     emoji: "✅",
@@ -43,7 +43,7 @@ function getMarketNarrative(p: number | null, locale: string) {
     emoji: "❄️",
     state: ko ? "공포 패닉" : zh ? "恐慌" : "FEAR/PANIC",
     story: ko ? "역프리미엄 심화. 한국 시장 패닉 매도 상태. 역사적 저점 신호." : zh ? "负溢价加深，韩国市场恐慌抛售，历史性低点信号。" : "Negative premium deepens. Korean panic selling. Historic bottom signal.",
-    color: "text-blue-300", bg: "bg-blue-500/8 border-blue-500/20",
+    color: "text-blue-400", bg: "bg-blue-500/8 border-blue-500/20",
   };
 }
 

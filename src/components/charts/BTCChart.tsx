@@ -131,7 +131,7 @@ export function BTCChart() {
             className={cn(
               "rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 border",
               exchange === id
-                ? "bg-orange-500/15 border-orange-500/30 text-orange-300"
+                ? "bg-orange-500/15 border-orange-500/30 text-orange-400"
                 : "border-white/8 bg-white/3 text-gray-500 hover:text-gray-300 hover:border-white/15"
             )}
           >

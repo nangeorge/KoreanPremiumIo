@@ -479,8 +479,8 @@ export function IndicatorsClient({ locale }: { locale: string }) {
   function getRsiInfo(v: number | null) {
     if (v === null) return { label: "—", color: "text-gray-500", badge: "", badgeBg: "" };
     if (v >= 70) return { label: v.toFixed(1), color: "text-red-400",    badge: t.rsiOverbought, badgeBg: "bg-red-500/10 border-red-500/20 text-red-400" };
-    if (v >= 50) return { label: v.toFixed(1), color: "text-orange-300", badge: t.rsiUptrend,    badgeBg: "bg-orange-500/10 border-orange-500/20 text-orange-300" };
-    if (v >= 30) return { label: v.toFixed(1), color: "text-blue-300",   badge: t.rsiDowntrend,  badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-300" };
+    if (v >= 50) return { label: v.toFixed(1), color: "text-orange-400", badge: t.rsiUptrend,    badgeBg: "bg-orange-500/10 border-orange-500/20 text-orange-400" };
+    if (v >= 30) return { label: v.toFixed(1), color: "text-blue-400",   badge: t.rsiDowntrend,  badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-400" };
     return            { label: v.toFixed(1), color: "text-blue-400",   badge: t.rsiOversold,   badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-400" };
   }
 
@@ -527,7 +527,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             onClick={() => setTab(i)}
             className={cn(
               "rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
-              tab === i ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
+              tab === i ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
             )}
           >
             {name}
@@ -546,7 +546,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
                 )}
               >
                 {label}
@@ -727,7 +727,7 @@ export function IndicatorsClient({ locale }: { locale: string }) {
                 onClick={() => setPeriod(days)}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200",
-                  period === days ? "bg-white text-black shadow-md" : "text-gray-500 hover:text-gray-300"
+                  period === days ? "bg-[var(--fg)] text-[var(--bg-base)] shadow-sm" : "text-gray-500 hover:text-gray-300"
                 )}
               >
                 {label}
@@ -933,14 +933,14 @@ export function IndicatorsClient({ locale }: { locale: string }) {
               label={t.btcOiLabel}
               value={isLoading || !btcOI ? "—" : `${btcOI.oiCcy.toLocaleString("en-US", { maximumFractionDigits: 0 })} BTC`}
               subValue={btcOI ? formatBigUsd(btcOI.oiUsd) : undefined}
-              color="text-orange-300"
+              color="text-orange-400"
               info={INFO.openInterest} locale={locale}
             />
             <MetricCard
               label={t.ethOiLabel}
               value={isLoading || !ethOI ? "—" : `${(ethOI.oiCcy / 1000).toFixed(1)}K ETH`}
               subValue={ethOI ? formatBigUsd(ethOI.oiUsd) : undefined}
-              color="text-blue-300"
+              color="text-blue-400"
               info={INFO.openInterest} locale={locale}
             />
             <MetricCard

@@ -74,12 +74,12 @@ export default function CoinDetailPage() {
     {
       label: isKo ? "거래량 (24h)" : "Volume (24h)",
       value: formatVolume(coin.volume24h, locale),
-      color: "text-gray-300",
+      color: "text-[var(--fg-secondary)]",
     },
     {
       label: isKo ? "원/달러 환율" : "USD/KRW",
       value: `₩${exchangeRate.toLocaleString("ko-KR")}`,
-      color: "text-gray-300",
+      color: "text-[var(--fg-secondary)]",
     },
   ] : [];
 
