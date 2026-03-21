@@ -36,6 +36,29 @@ export interface VixData {
   history: OnChainPoint[]; // time-series for chart
 }
 
+export interface RSIData {
+  daily: number | null;
+  weekly: number | null;
+  monthly: number | null;
+}
+
+export interface OpenInterestData {
+  oiCcy: number;  // base currency (BTC or ETH)
+  oiUsd: number;  // USD value
+}
+
+export interface LongShortData {
+  longRatio: number;  // 0~1
+  shortRatio: number; // 0~1
+}
+
+export interface StablecoinData {
+  total: number;
+  usdt: number;
+  usdc: number;
+  change24h: number; // percentage
+}
+
 export interface IndicatorsResponse {
   fearGreed: FearGreedData | null;
   vix: VixData | null;
@@ -45,6 +68,10 @@ export interface IndicatorsResponse {
   activeAddresses: OnChainPoint[];
   txCount: OnChainPoint[];
   fundingRates: { btc: FundingRatePoint[]; eth: FundingRatePoint[] };
+  rsi: RSIData | null;
+  openInterest: { btc: OpenInterestData | null; eth: OpenInterestData | null } | null;
+  longShort: { btc: LongShortData | null; eth: LongShortData | null } | null;
+  stablecoin: StablecoinData | null;
   updatedAt: number;
 }
 
@@ -70,6 +97,95 @@ async function fetchCoinMetrics(metrics: string, days = 90): Promise<Record<stri
       }));
   }
   return result;
+}
+
+// ── RSI ──────────────────────────────────────────────────────────
+function calcRSI(closes: number[], period = 14): number | null {
+  if (closes.length < period + 1) return null;
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const diff = closes[i] - closes[i - 1];
+    if (diff > 0) gains += diff; else losses += -diff;
+  }
+  let avgGain = gains / period, avgLoss = losses / period;
+  for (let i = period + 1; i < closes.length; i++) {
+    const diff = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + Math.max(0, diff)) / period;
+    avgLoss = (avgLoss * (period - 1) + Math.max(0, -diff)) / period;
+  }
+  if (avgLoss === 0) return 100;
+  return parseFloat((100 - 100 / (1 + avgGain / avgLoss)).toFixed(2));
+}
+
+async function fetchRsiCloses(bar: string, limit = 100): Promise<number[]> {
+  try {
+    const res = await fetch(
+      `https://www.okx.com/api/v5/market/candles?instId=BTC-USDT&bar=${bar}&limit=${limit}`,
+      { next: { revalidate: 300 } }
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    if (json.code !== "0" || !Array.isArray(json.data)) return [];
+    return json.data.reverse().map((k: string[]) => parseFloat(k[4]));
+  } catch { return []; }
+}
+
+// ── Open Interest ─────────────────────────────────────────────────
+async function fetchOpenInterest(instId: string): Promise<OpenInterestData | null> {
+  try {
+    const [oiRes, priceRes] = await Promise.all([
+      fetch(`https://www.okx.com/api/v5/public/open-interest?instType=SWAP&instId=${instId}`, { next: { revalidate: 60 } }),
+      fetch(`https://www.okx.com/api/v5/public/mark-price?instType=SWAP&instId=${instId}`, { next: { revalidate: 60 } }),
+    ]);
+    if (!oiRes.ok || !priceRes.ok) return null;
+    const [oiJson, priceJson] = await Promise.all([oiRes.json(), priceRes.json()]);
+    if (oiJson.code !== "0" || priceJson.code !== "0") return null;
+    const oiCcy = parseFloat(oiJson.data?.[0]?.oiCcy ?? "0");
+    const markPx = parseFloat(priceJson.data?.[0]?.markPx ?? "0");
+    if (!oiCcy || !markPx) return null;
+    return { oiCcy, oiUsd: oiCcy * markPx };
+  } catch { return null; }
+}
+
+// ── Long/Short Ratio ──────────────────────────────────────────────
+async function fetchLongShort(instId: string): Promise<LongShortData | null> {
+  try {
+    const res = await fetch(
+      `https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId=${instId}&period=5m&limit=1`,
+      { next: { revalidate: 300 } }
+    );
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json.code !== "0" || !json.data?.[0]) return null;
+    const longRatio = parseFloat(json.data[0][1]);
+    if (isNaN(longRatio)) return null;
+    return { longRatio, shortRatio: parseFloat((1 - longRatio).toFixed(4)) };
+  } catch { return null; }
+}
+
+// ── Stablecoin Supply ─────────────────────────────────────────────
+async function fetchStablecoinSupply(): Promise<StablecoinData | null> {
+  try {
+    const res = await fetch("https://stablecoins.llama.fi/stablecoins", { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const coins: Array<{
+      symbol: string;
+      circulating?: { peggedUSD?: number };
+      circulatingPrevDay?: { peggedUSD?: number };
+    }> = json.peggedAssets ?? [];
+    let total = 0, totalPrev = 0, usdt = 0, usdc = 0;
+    for (const c of coins) {
+      const cur = c.circulating?.peggedUSD ?? 0;
+      const prev = c.circulatingPrevDay?.peggedUSD ?? cur;
+      total += cur;
+      totalPrev += prev;
+      if (c.symbol === "USDT") usdt = cur;
+      if (c.symbol === "USDC") usdc = cur;
+    }
+    const change24h = totalPrev > 0 ? parseFloat((((total - totalPrev) / totalPrev) * 100).toFixed(3)) : 0;
+    return { total, usdt, usdc, change24h };
+  } catch { return null; }
 }
 
 async function fetchFundingRates(symbol: string, limit = 24): Promise<FundingRatePoint[]> {
@@ -101,22 +217,32 @@ export async function GET(request: Request) {
 
   try {
     const vixRange = days <= 30 ? "1mo" : days <= 90 ? "3mo" : days <= 180 ? "6mo" : "1y";
-    const [fngRes, globalRes, onChainData, btcFunding, ethFunding, vixHistRes, vixQuoteRes] = await Promise.allSettled([
+    const [
+      fngRes, globalRes, onChainData, btcFunding, ethFunding, vixHistRes, vixQuoteRes,
+      rsiDailyCloses, rsiWeeklyCloses, rsiMonthlyCloses,
+      btcOI, ethOI, btcLS, ethLS, stablecoinRes,
+    ] = await Promise.allSettled([
       fetch("https://api.alternative.me/fng/?limit=2", { next: { revalidate: 600 } }),
       fetch("https://api.coingecko.com/api/v3/global", { next: { revalidate: 300 } }),
       fetchCoinMetrics("CapMVRVCur,HashRate,AdrActCnt,TxCnt", days),
       fetchFundingRates("BTCUSDT", 24),
       fetchFundingRates("ETHUSDT", 24),
-      // 히스토리용 (일봉)
       fetch(`https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=${vixRange}`, {
         headers: { "User-Agent": "Mozilla/5.0" },
         next: { revalidate: 1800 },
       }),
-      // 실시간 현재값용 (quote API)
       fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EVIX", {
         headers: { "User-Agent": "Mozilla/5.0" },
         next: { revalidate: 60 },
       }),
+      fetchRsiCloses("1D", 100),
+      fetchRsiCloses("1W", 100),
+      fetchRsiCloses("1M", 50),
+      fetchOpenInterest("BTC-USDT-SWAP"),
+      fetchOpenInterest("ETH-USDT-SWAP"),
+      fetchLongShort("BTC-USDT-SWAP"),
+      fetchLongShort("ETH-USDT-SWAP"),
+      fetchStablecoinSupply(),
     ]);
 
     // Fear & Greed
@@ -207,6 +333,28 @@ export async function GET(request: Request) {
     const btcFundingData = btcFunding.status === "fulfilled" ? btcFunding.value : [];
     const ethFundingData = ethFunding.status === "fulfilled" ? ethFunding.value : [];
 
+    // RSI
+    const rsi: RSIData = {
+      daily:   calcRSI(rsiDailyCloses.status   === "fulfilled" ? rsiDailyCloses.value   : []),
+      weekly:  calcRSI(rsiWeeklyCloses.status  === "fulfilled" ? rsiWeeklyCloses.value  : []),
+      monthly: calcRSI(rsiMonthlyCloses.status === "fulfilled" ? rsiMonthlyCloses.value : []),
+    };
+
+    // Open Interest
+    const openInterest = {
+      btc: btcOI.status === "fulfilled" ? btcOI.value : null,
+      eth: ethOI.status === "fulfilled" ? ethOI.value : null,
+    };
+
+    // Long/Short
+    const longShort = {
+      btc: btcLS.status === "fulfilled" ? btcLS.value : null,
+      eth: ethLS.status === "fulfilled" ? ethLS.value : null,
+    };
+
+    // Stablecoin
+    const stablecoin = stablecoinRes.status === "fulfilled" ? stablecoinRes.value : null;
+
     return NextResponse.json({
       fearGreed,
       vix,
@@ -216,6 +364,10 @@ export async function GET(request: Request) {
       activeAddresses,
       txCount,
       fundingRates: { btc: btcFundingData, eth: ethFundingData },
+      rsi,
+      openInterest,
+      longShort,
+      stablecoin,
       updatedAt: Date.now(),
     } satisfies IndicatorsResponse);
   } catch (error) {
@@ -224,6 +376,7 @@ export async function GET(request: Request) {
       fearGreed: null, vix: null, globalMarket: null,
       mvrv: [], hashRate: [], activeAddresses: [], txCount: [],
       fundingRates: { btc: [], eth: [] },
+      rsi: null, openInterest: null, longShort: null, stablecoin: null,
       updatedAt: Date.now(),
     });
   }

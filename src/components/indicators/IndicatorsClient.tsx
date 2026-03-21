@@ -239,6 +239,12 @@ function FundingRateBadge({ value }: { value: number }) {
 const LABELS = {
   ko: {
     title: "지표 분석", subtitle: "BTC 온체인 · 시장 · 파생상품 지표", tabs: ["온체인", "시장", "파생상품"],
+    rsi1d: "RSI 1일봉", rsi1w: "RSI 주봉", rsi1m: "RSI 월봉",
+    rsiOverbought: "과매수", rsiOversold: "과매도", rsiUptrend: "상승", rsiDowntrend: "하락",
+    stablecoinLabel: "스테이블코인 공급", stablecoinChange: "24h 변동",
+    btcOiLabel: "BTC 미결제약정", ethOiLabel: "ETH 미결제약정",
+    btcLsLabel: "BTC 롱/숏 비율", ethLsLabel: "ETH 롱/숏 비율",
+    longSide: "롱", shortSide: "숏",
     hashRateSub: "네트워크 채굴 능력", addrSub: "24h 활성 주소 수", txSub: "24h 트랜잭션 수",
     mvrvChartSub: "3.7 과열 · 2.4 주의 · 1.0 적정 · 0.6 저평가 기준선",
     hashChartSub: "네트워크 전체 채굴 해시파워 (EH/s)",
@@ -264,6 +270,12 @@ const LABELS = {
   },
   en: {
     title: "Market Indicators", subtitle: "BTC On-chain · Market · Derivatives", tabs: ["On-chain", "Market", "Derivatives"],
+    rsi1d: "RSI Daily", rsi1w: "RSI Weekly", rsi1m: "RSI Monthly",
+    rsiOverbought: "Overbought", rsiOversold: "Oversold", rsiUptrend: "Uptrend", rsiDowntrend: "Downtrend",
+    stablecoinLabel: "Stablecoin Supply", stablecoinChange: "24h Change",
+    btcOiLabel: "BTC Open Interest", ethOiLabel: "ETH Open Interest",
+    btcLsLabel: "BTC Long/Short", ethLsLabel: "ETH Long/Short",
+    longSide: "Long", shortSide: "Short",
     hashRateSub: "Network mining power", addrSub: "24h active addresses", txSub: "24h transactions",
     mvrvChartSub: "3.7↑ overheated · 2.4↑ caution · 1.0 fair · 0.6↓ undervalued",
     hashChartSub: "Total network hash power (EH/s)",
@@ -289,6 +301,12 @@ const LABELS = {
   },
   zh: {
     title: "市场指标", subtitle: "BTC链上数据 · 市场 · 衍生品", tabs: ["链上数据", "市场", "衍生品"],
+    rsi1d: "RSI日线", rsi1w: "RSI周线", rsi1m: "RSI月线",
+    rsiOverbought: "超买", rsiOversold: "超卖", rsiUptrend: "上升", rsiDowntrend: "下降",
+    stablecoinLabel: "稳定币供应", stablecoinChange: "24h变动",
+    btcOiLabel: "BTC未平仓量", ethOiLabel: "ETH未平仓量",
+    btcLsLabel: "BTC多空比率", ethLsLabel: "ETH多空比率",
+    longSide: "多", shortSide: "空",
     hashRateSub: "网络算力", addrSub: "24h活跃地址数", txSub: "24h交易数",
     mvrvChartSub: "3.7↑过热 · 2.4↑注意 · 1.0合理 · 0.6↓低估",
     hashChartSub: "全网算力 (EH/s)",
@@ -375,6 +393,26 @@ const INFO: Record<string, InfoText> = {
     en: "Summarizes current futures sentiment from funding rate. Above +0.05% = longs overheated (correction risk), below -0.05% = shorts overheated (rebound potential).",
     zh: "根据资金费率概括当前合约市场情绪。高于+0.05%=多头过热（调整风险），低于-0.05%=空头过热（反弹可能）。",
   },
+  rsi: {
+    ko: "RSI(14) — 과매수/과매도 지표. 70↑ 과매수(단기 조정 가능), 30↓ 과매도(반등 가능). OKX BTC-USDT 기준.",
+    en: "RSI(14) — Overbought/oversold indicator. Above 70 = overbought (correction risk), below 30 = oversold (rebound potential). Source: OKX BTC-USDT.",
+    zh: "RSI(14)——超买/超卖指标。高于70=超买（调整风险），低于30=超卖（反弹可能）。数据来源：OKX BTC-USDT。",
+  },
+  openInterest: {
+    ko: "선물 시장 전체 미결제 포지션 규모. OI 급증=레버리지 과열, OI 급감=청산 연쇄 신호. OKX 무기한 선물 기준.",
+    en: "Total open futures positions on exchange. Surging OI = leverage overheating, sharp drop = liquidation cascade risk. Source: OKX perpetuals.",
+    zh: "期货市场未平仓头寸总量。OI急升=杠杆过热，急降=爆仓风险。数据来源：OKX永续合约。",
+  },
+  longShort: {
+    ko: "롱 포지션 보유 계좌 vs 숏 포지션 보유 계좌 비율. 롱 편향이 극단적으로 높으면 역설적으로 하락 위험. OKX 계정 기준.",
+    en: "Ratio of accounts holding long vs short positions. Extreme long bias = contrarian bearish signal. Source: OKX account data.",
+    zh: "持多头与空头仓位账户的比率。多头极端偏高反而是看跌信号。数据来源：OKX账户数据。",
+  },
+  stablecoin: {
+    ko: "전체 블록체인의 스테이블코인 총 발행량. 증가=크립토 시장 자금 유입, 감소=자금 이탈. 출처: DefiLlama.",
+    en: "Total stablecoin supply across all chains. Rising = capital inflows into crypto, falling = outflows. Source: DefiLlama.",
+    zh: "全链稳定币总供应量。增加=资金流入加密市场，减少=资金外流。数据来源：DefiLlama。",
+  },
   fundingChart: {
     ko: "BTC 무기한 선물 펀딩비 이력. 지속적인 높은 양수값=과열(조정 신호), 지속적인 음수값=과도한 비관론(반등 가능성).",
     en: "BTC perpetual futures funding rate history. Persistently high positive values = overheating (correction signal). Persistently negative = excessive pessimism (rebound potential).",
@@ -435,6 +473,27 @@ export function IndicatorsClient({ locale }: { locale: string }) {
 
   const currentMvrv = mvrvData.at(-1)?.value ?? 0;
   const mvrvZone = getMvrvZone(currentMvrv, locale);
+
+  // RSI
+  const rsi = data?.rsi ?? null;
+  function getRsiInfo(v: number | null) {
+    if (v === null) return { label: "—", color: "text-gray-500", badge: "", badgeBg: "" };
+    if (v >= 70) return { label: v.toFixed(1), color: "text-red-400",    badge: t.rsiOverbought, badgeBg: "bg-red-500/10 border-red-500/20 text-red-400" };
+    if (v >= 50) return { label: v.toFixed(1), color: "text-orange-300", badge: t.rsiUptrend,    badgeBg: "bg-orange-500/10 border-orange-500/20 text-orange-300" };
+    if (v >= 30) return { label: v.toFixed(1), color: "text-blue-300",   badge: t.rsiDowntrend,  badgeBg: "bg-blue-500/10 border-blue-500/20 text-blue-300" };
+    return            { label: v.toFixed(1), color: "text-indigo-400", badge: t.rsiOversold,   badgeBg: "bg-indigo-500/10 border-indigo-500/20 text-indigo-400" };
+  }
+
+  // Open Interest
+  const btcOI = data?.openInterest?.btc ?? null;
+  const ethOI = data?.openInterest?.eth ?? null;
+
+  // Long/Short
+  const btcLS = data?.longShort?.btc ?? null;
+  const ethLS = data?.longShort?.eth ?? null;
+
+  // Stablecoin
+  const stablecoin = data?.stablecoin ?? null;
   const fng = data?.fearGreed;
   const fngColor = fng ? getFngColor(fng.value) : "#6b7280";
   const fngZone = fng ? getFngZone(fng.value) : null;
@@ -612,6 +671,34 @@ export function IndicatorsClient({ locale }: { locale: string }) {
             ))}
           </div>
 
+          {/* RSI + 스테이블코인 */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { label: t.rsi1d, info: getRsiInfo(rsi?.daily ?? null) },
+              { label: t.rsi1w, info: getRsiInfo(rsi?.weekly ?? null) },
+              { label: t.rsi1m, info: getRsiInfo(rsi?.monthly ?? null) },
+            ].map(({ label, info }) => (
+              <MetricCard
+                key={label}
+                label={label}
+                value={isLoading ? "—" : info.label}
+                color={info.color}
+                badge={isLoading ? "" : info.badge}
+                badgeBg={info.badgeBg}
+                info={INFO.rsi} locale={locale}
+              />
+            ))}
+            <MetricCard
+              label={t.stablecoinLabel}
+              value={isLoading || !stablecoin ? "—" : formatBigUsd(stablecoin.total)}
+              subValue={stablecoin ? `USDT ${formatBigUsd(stablecoin.usdt)} · USDC ${formatBigUsd(stablecoin.usdc)}` : undefined}
+              color={stablecoin && stablecoin.change24h >= 0 ? "text-emerald-400" : "text-rose-400"}
+              badge={stablecoin ? `${stablecoin.change24h >= 0 ? "+" : ""}${stablecoin.change24h.toFixed(2)}% 24h` : ""}
+              badgeBg={stablecoin && stablecoin.change24h >= 0 ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-rose-500/10 border-rose-500/20 text-rose-400"}
+              info={INFO.stablecoin} locale={locale}
+            />
+          </div>
+
           {/* 공탐지수 + 글로벌 */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* 공탐지수 게이지 */}
@@ -741,6 +828,40 @@ export function IndicatorsClient({ locale }: { locale: string }) {
       {/* ── 파생상품 탭 ── */}
       {tab === 2 && (
         <div className="space-y-4">
+          {/* Open Interest + Long/Short */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <MetricCard
+              label={t.btcOiLabel}
+              value={isLoading || !btcOI ? "—" : `${btcOI.oiCcy.toLocaleString("en-US", { maximumFractionDigits: 0 })} BTC`}
+              subValue={btcOI ? formatBigUsd(btcOI.oiUsd) : undefined}
+              color="text-orange-300"
+              info={INFO.openInterest} locale={locale}
+            />
+            <MetricCard
+              label={t.ethOiLabel}
+              value={isLoading || !ethOI ? "—" : `${(ethOI.oiCcy / 1000).toFixed(1)}K ETH`}
+              subValue={ethOI ? formatBigUsd(ethOI.oiUsd) : undefined}
+              color="text-blue-300"
+              info={INFO.openInterest} locale={locale}
+            />
+            <MetricCard
+              label={t.btcLsLabel}
+              value={isLoading || !btcLS ? "—" : `${(btcLS.longRatio * 100).toFixed(1)}% ${t.longSide}`}
+              subValue={btcLS ? `${(btcLS.shortRatio * 100).toFixed(1)}% ${t.shortSide}` : undefined}
+              color={btcLS && btcLS.longRatio > 0.6 ? "text-rose-400" : btcLS && btcLS.longRatio < 0.4 ? "text-emerald-400" : "text-gray-300"}
+              badge={btcLS && btcLS.longRatio > 0.65 ? (locale === "ko" ? "롱 과열" : locale === "zh" ? "多头过热" : "Long Extreme") : btcLS && btcLS.longRatio < 0.35 ? (locale === "ko" ? "숏 과열" : locale === "zh" ? "空头过热" : "Short Extreme") : ""}
+              badgeBg={btcLS && btcLS.longRatio > 0.65 ? "bg-rose-500/10 border-rose-500/20 text-rose-400" : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"}
+              info={INFO.longShort} locale={locale}
+            />
+            <MetricCard
+              label={t.ethLsLabel}
+              value={isLoading || !ethLS ? "—" : `${(ethLS.longRatio * 100).toFixed(1)}% ${t.longSide}`}
+              subValue={ethLS ? `${(ethLS.shortRatio * 100).toFixed(1)}% ${t.shortSide}` : undefined}
+              color={ethLS && ethLS.longRatio > 0.6 ? "text-rose-400" : ethLS && ethLS.longRatio < 0.4 ? "text-emerald-400" : "text-gray-300"}
+              info={INFO.longShort} locale={locale}
+            />
+          </div>
+
           {/* 펀딩비 요약 */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <MetricCard
