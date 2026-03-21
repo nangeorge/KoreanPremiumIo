@@ -167,7 +167,7 @@ body {
 
 /* ── Number font — JetBrains Mono ── */
 .font-number {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-family: var(--font-jetbrains-mono, 'Geist Mono', 'DM Mono', monospace);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }

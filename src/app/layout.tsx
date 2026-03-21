@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -13,7 +13,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const geistMono = Geist_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
@@ -112,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <meta name="google-adsense-account" content={`ca-pub-${ADSENSE_ID}`} />
         )}
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         {children}
 
         {/* Google AdSense Script */}
