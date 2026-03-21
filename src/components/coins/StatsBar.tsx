@@ -248,7 +248,7 @@ export function StatsBar() {
 
         {/* Alt 평균 프리미엄 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-[var(--fg-secondary)] mb-1.5">
+          <div className="text-xs text-white mb-1.5">
             {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", altAvg >= 0 ? "text-emerald-400" : "text-rose-400")}>

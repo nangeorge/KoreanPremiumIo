@@ -36,7 +36,7 @@ function RSICard({
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-1">
-          <span className="text-xs text-[var(--fg-secondary)]">{label}</span>
+          <span className="text-xs text-white">{label}</span>
           <InfoTooltip text={tooltip} locale={locale} />
         </div>
         {value !== null && (

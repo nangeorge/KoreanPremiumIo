@@ -181,7 +181,7 @@ function MetricCard({
   return (
     <div className="glass rounded-xl p-4 flex flex-col gap-1">
       <div className="flex items-center gap-1.5">
-        <div className="text-xs text-[var(--fg-secondary)]">{label}</div>
+        <div className="text-xs text-white">{label}</div>
         {info && <InfoTooltip text={info} locale={locale} />}
       </div>
       <div className={cn("font-number text-xl font-bold", color ?? "text-white")}>{value}</div>
