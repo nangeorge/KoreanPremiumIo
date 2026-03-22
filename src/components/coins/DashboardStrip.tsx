@@ -107,14 +107,14 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
 
       {/* 툴팁 */}
       {tooltip && (
-        <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-xl border border-white/10 bg-[var(--bg-raised)] p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50 text-left">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100] text-left">
           <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{tooltip}</p>
           {link && (
             <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="pointer-events-auto mt-1.5 inline-block text-[10px] text-sky-400 hover:text-sky-300 transition-colors"
+              className="mt-1.5 inline-block text-[10px] text-sky-400 hover:text-sky-300 transition-colors"
             >
               Learn more ↗
             </a>
@@ -215,7 +215,7 @@ export function DashboardStrip() {
   };
 
   return (
-    <div className="rounded-2xl border border-white/6 bg-[var(--bg-raised)] overflow-hidden">
+    <div className="rounded-2xl border border-white/6 bg-[var(--bg-raised)]">
       {/* 상단: BTC 김프 강조 */}
       <div className="flex items-stretch border-b border-white/6">
         {/* BTC 김프 — 가장 중요한 지표 */}
@@ -310,22 +310,24 @@ export function DashboardStrip() {
         </div>
       </div>
 
-      {/* 하단: Why Kimchi Premium? + 설명 텍스트 */}
-      <div className="flex items-start gap-3 px-4 py-2.5">
-        <span className="text-sm mt-0.5">🌶️</span>
-        <div className="flex-1 min-w-0">
-          <span className="text-xs font-bold text-white">
-            {isKo ? "왜 김치 프리미엄인가?" : isZh ? "为什么关注泡菜溢价？" : "Why Kimchi Premium?"}
-          </span>
-          <span className="ml-2 text-[11px] text-[var(--fg-muted)]">
-            {isKo
-              ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
-              : isZh
-              ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
-              : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
-          </span>
+      {/* 하단: Why Kimchi Premium? + 설명 */}
+      <div className="flex items-start justify-between gap-3 px-4 py-3 border-t border-white/6">
+        <div className="flex items-start gap-2.5 flex-1 min-w-0">
+          <span className="text-sm mt-0.5 shrink-0">🌶️</span>
+          <div>
+            <p className="text-xs font-bold text-white">
+              {isKo ? "왜 김치 프리미엄인가?" : isZh ? "为什么关注泡菜溢价？" : "Why Kimchi Premium?"}
+            </p>
+            <p className="mt-0.5 text-[11px] text-[var(--fg-muted)] leading-relaxed">
+              {isKo
+                ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
+                : isZh
+                ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
+                : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
+            </p>
+          </div>
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
+        <span className="shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5 mt-0.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
         </span>
