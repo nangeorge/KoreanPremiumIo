@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useRef, useState } from "react";
 import { useAppStore } from "@/store";
 import { formatPremium, cn } from "@/lib/utils";
 import useSWR from "swr";
@@ -88,11 +89,21 @@ interface CellProps {
 }
 
 function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: CellProps) {
-  const inner = (
-    <div className="relative group flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default">
+  const [open, setOpen] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const show = () => { clearTimeout(timer.current); setOpen(true); };
+  const hide = () => { timer.current = setTimeout(() => setOpen(false), 120); };
+
+  return (
+    <div
+      className="relative flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default"
+      onMouseEnter={tooltip ? show : undefined}
+      onMouseLeave={tooltip ? hide : undefined}
+    >
       <span className={cn(
-        "text-[10px] whitespace-nowrap",
-        tooltip ? "text-[var(--fg-muted)] underline decoration-dotted underline-offset-2 decoration-white/20 group-hover:decoration-white/50 transition-colors" : "text-[var(--fg-muted)]"
+        "text-[10px] whitespace-nowrap transition-colors",
+        tooltip ? "text-[var(--fg-muted)] underline decoration-dotted underline-offset-2 decoration-white/20 hover:decoration-white/50" : "text-[var(--fg-muted)]"
       )}>
         {label}
       </span>
@@ -106,8 +117,12 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
       )}
 
       {/* 툴팁 */}
-      {tooltip && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100] text-left">
+      {tooltip && open && (
+        <div
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-56 rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-2xl z-[200] text-left"
+          onMouseEnter={show}
+          onMouseLeave={hide}
+        >
           <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{tooltip}</p>
           {link && (
             <a
@@ -123,8 +138,6 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
       )}
     </div>
   );
-
-  return inner;
 }
 
 // ── 메인 컴포넌트 ──────────────────────────────────────────────────────────
