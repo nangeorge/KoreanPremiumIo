@@ -162,6 +162,8 @@ export function DashboardStrip() {
   });
   const { data: rsi } = useSWR<RSIResponse>("/api/rsi", fetcher, {
     refreshInterval: 300_000,
+    revalidateOnMount: true,
+    errorRetryInterval: 10_000,
   });
 
   // BTC / ETH 프리미엄
@@ -342,10 +344,10 @@ export function DashboardStrip() {
             </p>
             <p className="mt-0.5 text-[11px] text-[var(--fg-muted)] leading-relaxed">
               {isKo
-                ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
+                ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 가장 많이 팔 때가 역사적 저점이고, 가장 많이 살 때가 역사적 고점이다. 2018년 1월 BTC 고점: 김프 +40~50% · 2018년 12월 BTC 저점: 역프 −3~−5% · 2021년 4월 고점: 김프 +20~25% · 2022년 11월 FTX 저점: 역프 −3~−5%"
                 : isZh
-                ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
-                : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
+                ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。他们抛售最多时是历史低点，买入最多时是历史高点。2018年1月BTC高点: 溢价+40~50% · 2018年12月低点: 折价−3~−5% · 2021年4月高点: 溢价+20~25% · 2022年11月FTX低点: 折价−3~−5%"
+                : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When Koreans sell most, it's a historic bottom. When they buy most, it's a historic top. Jan 2018 BTC peak: +40–50% · Dec 2018 bottom: −3–5% · Apr 2021 peak: +20–25% · Nov 2022 FTX bottom: −3–5%"}
             </p>
           </div>
         </div>

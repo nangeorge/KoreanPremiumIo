@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 function calcRSI(closes: number[], period = 14): number | null {
   if (closes.length < period + 1) return null;
@@ -32,7 +32,10 @@ function calcRSI(closes: number[], period = 14): number | null {
 async function fetchBinanceCloses(interval: string, limit = 100): Promise<number[]> {
   const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${interval}&limit=${limit}`;
   try {
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
+    clearTimeout(timeout);
     if (!res.ok) return [];
     const data: Array<[number, string, string, string, string, string, number]> = await res.json();
     const now = Date.now();
