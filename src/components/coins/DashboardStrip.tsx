@@ -515,8 +515,9 @@ export function DashboardStrip() {
       </div>
 
       {/* 하단: Why Kimchi Premium? + 설명 */}
-      <div className="flex items-start justify-between gap-3 px-4 py-3 border-t border-white/6">
-        <div className="flex items-start gap-2.5 flex-1 min-w-0">
+      <div className="flex flex-col gap-2.5 px-4 py-3 border-t border-white/6">
+        {/* 텍스트 */}
+        <div className="flex items-start gap-2.5">
           <span className="text-sm mt-0.5 shrink-0">🌶️</span>
           <div>
             <p className="text-xs font-bold text-white">
@@ -531,12 +532,13 @@ export function DashboardStrip() {
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-end gap-2 shrink-0">
+        {/* 하단 바: 공유 버튼 + 갱신 뱃지 */}
+        <div className="flex items-center justify-between">
+          <ShareButtons btcPremium={btcPremium} fng={fng} vix={vix} rsiD={rsiD} locale={locale} />
           <span className="inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
           </span>
-          <ShareButtons btcPremium={btcPremium} fng={fng} vix={vix} rsiD={rsiD} locale={locale} />
         </div>
       </div>
     </div>
