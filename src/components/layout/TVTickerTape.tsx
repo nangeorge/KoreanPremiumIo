@@ -47,7 +47,7 @@ export function TVTickerTape() {
   }, []);
 
   return (
-    <div className="w-full border-b border-white/5" style={{ background: "#191919" }}>
+    <div className="w-full border-b border-white/5 bg-black">
       <div
         ref={containerRef}
         className="tradingview-widget-container mx-auto max-w-7xl"
