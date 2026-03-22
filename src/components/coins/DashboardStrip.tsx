@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { useAppStore } from "@/store";
 import { formatPremium, cn } from "@/lib/utils";
 import useSWR from "swr";
+import { Copy, Check } from "lucide-react";
 import type { IndicatorsResponse } from "@/app/api/indicators/route";
 import type { RSIResponse } from "@/app/api/rsi/route";
 
@@ -145,6 +146,61 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ── SNS 공유 버튼 ─────────────────────────────────────────────────────────
+
+function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
+  const [copied, setCopied] = useState(false);
+  const url = "https://koreanpremium.io";
+  const text = btcPremium !== null
+    ? `BTC 김치 프리미엄 ${btcPremium >= 0 ? "+" : ""}${btcPremium.toFixed(2)}% | 실시간 추적`
+    : "실시간 김치 프리미엄 트래커";
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const btnCls = "flex items-center justify-center w-7 h-7 rounded-lg border border-white/10 bg-white/5 text-[var(--fg-muted)] hover:text-white hover:bg-white/10 hover:border-white/20 transition-all";
+
+  return (
+    <div className="flex items-center gap-1.5 shrink-0">
+      {/* X (Twitter) */}
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`}
+        target="_blank" rel="noopener noreferrer"
+        className={btnCls}
+        title="X (Twitter)로 공유"
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+        </svg>
+      </a>
+
+      {/* Telegram */}
+      <a
+        href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`}
+        target="_blank" rel="noopener noreferrer"
+        className={btnCls}
+        title="텔레그램으로 공유"
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+        </svg>
+      </a>
+
+      {/* 링크 복사 */}
+      <button onClick={copyLink} className={btnCls} title="링크 복사">
+        {copied
+          ? <Check size={12} className="text-emerald-400" />
+          : <Copy size={12} />
+        }
+      </button>
     </div>
   );
 }
@@ -351,10 +407,13 @@ export function DashboardStrip() {
             </p>
           </div>
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5 mt-0.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
-        </span>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
+          </span>
+          <ShareButtons btcPremium={btcPremium} />
+        </div>
       </div>
     </div>
   );
