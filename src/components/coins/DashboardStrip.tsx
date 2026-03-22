@@ -235,16 +235,34 @@ export function DashboardStrip() {
         </div>
       </div>
 
-      {/* 하단: Why Kimchi Premium 한 줄 */}
-      <div className="flex items-center gap-2 px-4 py-2">
+      {/* 하단: Why Kimchi Premium? 강조 + 툴팁 */}
+      <div className="flex items-center gap-3 px-4 py-2">
         <span className="text-sm">🌶️</span>
-        <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
-          {isKo
-            ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다."
-            : isZh
-            ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。"
-            : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume."}
-        </p>
+
+        {/* 툴팁 트리거 */}
+        <div className="relative group">
+          <a
+            href={`/${locale}/about`}
+            className="text-xs font-bold text-white underline decoration-dotted underline-offset-2 decoration-white/30 hover:decoration-white/70 transition-colors"
+          >
+            {isKo ? "왜 김치 프리미엄인가?" : isZh ? "为什么关注泡菜溢价？" : "Why Kimchi Premium?"}
+          </a>
+
+          {/* 툴팁 */}
+          <div className="pointer-events-none absolute bottom-full left-0 mb-2 w-72 rounded-xl border border-white/10 bg-[var(--bg-raised)] p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
+            <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
+              {isKo
+                ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유하고, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
+                : isZh
+                ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
+                : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
+            </p>
+            <p className="mt-1.5 text-[10px] text-[var(--fg-muted)]/60">
+              {isKo ? "자세히 보기 →" : isZh ? "了解更多 →" : "Learn more →"}
+            </p>
+          </div>
+        </div>
+
         <span className="ml-auto shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
