@@ -271,8 +271,16 @@ export function StatsBar() {
 
         {/* Alt 평균 프리미엄 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-white mb-1.5">
-            {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="text-xs text-white">
+              {isKo ? "Alt 평균 프리미엄" : isZh ? "山寨币均值" : "Avg Alt Premium"}
+            </span>
+            <InfoTooltip text={{
+              ko: "업비트 상장 알트코인 전체의 김치 프리미엄 평균값. BTC 프리미엄보다 높으면 알트 과열 가능성.",
+              en: "Average kimchi premium of all altcoins on Upbit. Higher than BTC premium may signal altcoin overheating.",
+              zh: "Upbit上所有山寨币的泡菜溢价均值。高于BTC溢价可能暗示山寨币过热。",
+              source: { label: "Upbit", url: "https://upbit.com" },
+            }} locale={locale} />
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", altAvg >= 0 ? "text-emerald-400" : "text-rose-400")}>
             {isLoading ? <span className="skeleton rounded block h-6 w-16" /> : formatPremium(altAvg)}
@@ -417,8 +425,16 @@ export function StatsBar() {
 
         {/* BTC 도미넌스 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-white mb-1.5">
-            {isKo ? "BTC 도미넌스" : isZh ? "BTC占比" : "BTC Dominance"}
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="text-xs text-white">
+              {isKo ? "BTC 도미넌스" : isZh ? "BTC占比" : "BTC Dominance"}
+            </span>
+            <InfoTooltip text={{
+              ko: "전체 암호화폐 시총 대비 BTC 시총 비율.\n\n• 55%↑ BTC 시즌: 자금이 BTC에 집중, 알트 약세\n• 45~55% 중립: BTC·알트 균형\n• 45%↓ 알트 시즌: 자금이 알트코인으로 분산\n\n강세장 초반엔 BTC 도미넌스 상승 → 이후 알트로 자금 이동하는 패턴이 반복됩니다.",
+              en: "BTC market cap as a percentage of total crypto market cap.\n\n• 55%+ BTC Season: capital concentrated in BTC, alts weak\n• 45–55% Neutral: balanced between BTC and alts\n• 45%- Alt Season: capital rotating into altcoins\n\nTypically, BTC dominance rises early in a bull run, then capital flows into alts.",
+              zh: "BTC市值占全部加密货币总市值的比例。\n\n• 55%↑ BTC季节：资金集中于BTC，山寨弱势\n• 45~55% 中性：BTC与山寨均衡\n• 45%↓ 山寨季节：资金向山寨币分散\n\n牛市初期BTC占比上升，随后资金流向山寨是常见规律。",
+              source: { label: "CoinGecko Global", url: "https://www.coingecko.com/en/global-charts" },
+            }} locale={locale} />
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", btcDomInfo.color)}>
             {btcDom === null ? <span className="skeleton rounded block h-6 w-16" /> : btcDomInfo.label}
@@ -434,8 +450,16 @@ export function StatsBar() {
 
         {/* 스테이블코인 시총 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-white mb-1.5">
-            {isKo ? "스테이블코인" : isZh ? "稳定币总量" : "Stablecoin Mcap"}
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="text-xs text-white">
+              {isKo ? "스테이블코인" : isZh ? "稳定币总量" : "Stablecoin Mcap"}
+            </span>
+            <InfoTooltip text={{
+              ko: "USDT, USDC 등 전체 스테이블코인 총 발행량(USD 기준).\n\n• 증가 → 크립토 시장 대기 자금 유입, 상승 여력 존재\n• 감소 → 시장 이탈 자금 증가, 하락 압력\n\n스테이블코인은 크립토 시장의 '총알' 역할. 24h 변동이 크면 단기 수급 변화 신호.",
+              en: "Total circulating supply of all stablecoins (USDT, USDC, etc.) in USD.\n\n• Increasing → Capital flowing into crypto, bullish\n• Decreasing → Capital leaving crypto, bearish\n\nStablecoins act as 'dry powder' — large 24h change signals short-term supply shifts.",
+              zh: "所有稳定币（USDT、USDC等）的总流通量（美元计）。\n\n• 增加 → 资金流入加密市场，看涨\n• 减少 → 资金流出，看跌\n\n稳定币是市场的「子弹」，24h大幅变化是短期资金动向信号。",
+              source: { label: "DefiLlama Stablecoins", url: "https://defillama.com/stablecoins" },
+            }} locale={locale} />
           </div>
           <div className="font-number text-lg font-bold leading-none text-white">
             {stableTotal === null ? <span className="skeleton rounded block h-6 w-16" /> : formatStable(stableTotal)}
@@ -449,8 +473,16 @@ export function StatsBar() {
 
         {/* 알트코인 시즌 지수 */}
         <div className="glass glass-hover rounded-lg p-4">
-          <div className="text-xs text-white mb-1.5">
-            {isKo ? "알트 시즌 지수" : isZh ? "山寨季指数" : "Altcoin Season"}
+          <div className="flex items-center gap-1 mb-1.5">
+            <span className="text-xs text-white">
+              {isKo ? "알트 시즌 지수" : isZh ? "山寨季指数" : "Altcoin Season"}
+            </span>
+            <InfoTooltip text={{
+              ko: "시총 상위 50개 코인 중 최근 30일간 BTC 수익률을 초과한 알트코인 비율(0~100).\n\n• 75↑ 알트 시즌: 대부분 알트가 BTC 아웃퍼폼 → 알트코인 매수세 강함\n• 50~75 알트 우세: 알트가 BTC보다 강세\n• 25~50 BTC 우세: BTC가 시장 주도\n• 25↓ BTC 시즌: 자금이 BTC에만 집중\n\n출처: CoinGecko top 50 코인 30일 수익률 기준.",
+              en: "Percentage of top-50 coins (by market cap) that outperformed BTC over the last 30 days (0–100).\n\n• 75+ Alt Season: most alts beating BTC → strong altcoin momentum\n• 50–75 Alt Leading: alts generally outperforming\n• 25–50 BTC Leading: BTC dominates the market\n• 25- BTC Season: capital concentrated in BTC only\n\nSource: CoinGecko top-50 30-day returns.",
+              zh: "市值前50的币种中，最近30天跑赢BTC的山寨币占比（0~100）。\n\n• 75↑ 山寨季：大多数山寨跑赢BTC → 买山寨\n• 50~75 山寨强势：山寨整体优于BTC\n• 25~50 BTC强势：BTC主导市场\n• 25↓ BTC季节：资金仅集中于BTC\n\n数据来源：CoinGecko前50币种30日收益率。",
+              source: { label: "CoinGecko Markets", url: "https://www.coingecko.com/en/coins/markets" },
+            }} locale={locale} />
           </div>
           <div className={cn("font-number text-lg font-bold leading-none", altSeasonInfo.color)}>
             {altSeason === null ? <span className="skeleton rounded block h-6 w-16" /> : altSeasonInfo.label}
