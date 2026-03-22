@@ -80,7 +80,7 @@ export function Header() {
             )}
             {updatedAt && (
               <div className="text-xs text-[var(--fg-muted)]">
-                {new Date(updatedAt).toLocaleTimeString("ko-KR")}
+                {new Date(updatedAt).toLocaleTimeString(locale === "zh" ? "zh-CN" : locale === "en" ? "en-US" : "ko-KR")}
               </div>
             )}
           </div>

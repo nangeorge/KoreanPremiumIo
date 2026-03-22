@@ -64,8 +64,8 @@ const LABELS = {
   },
 };
 
-function timeLabel(ts: number): string {
-  return new Date(ts).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+function timeLabel(ts: number, locale: string): string {
+  return new Date(ts).toLocaleTimeString(locale === "zh" ? "zh-CN" : locale === "en" ? "en-US" : "ko-KR", { hour: "2-digit", minute: "2-digit" });
 }
 
 function getRandomNick(locale: string): string {
@@ -290,7 +290,7 @@ export function ChatWidget() {
                     <span className={cn("font-medium", isMe ? "text-white" : "text-[var(--fg-secondary)]")}>
                       {msg.nickname}
                     </span>
-                    <span className="text-[var(--fg-muted)]">{timeLabel(msg.timestamp)}</span>
+                    <span className="text-[var(--fg-muted)]">{timeLabel(msg.timestamp, locale)}</span>
                   </div>
                   <div
                     className={cn(

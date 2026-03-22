@@ -144,7 +144,7 @@ export default async function LocaleLayout({
       featureList: [
         "Real-time Kimchi Premium tracking",
         "Upbit vs Binance vs Coinbase price comparison",
-        "40 cryptocurrencies supported",
+        "137 cryptocurrencies supported",
         "Bitcoin Fear & Greed Index",
         "MVRV ratio",
         "Funding rate tracker",

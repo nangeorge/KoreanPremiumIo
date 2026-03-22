@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocale } from "next-intl";
 import { useAppStore } from "@/store";
 import { formatPremium } from "@/lib/utils";
@@ -109,6 +109,25 @@ export function AlertBanner() {
   const rsiMonthly = indicators?.rsi?.monthly ?? null;
 
   const [copied, setCopied] = useState(false);
+  const [email, setEmail] = useState("");
+  const [subState, setSubState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim() || subState === "loading") return;
+    setSubState("loading");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      setSubState(res.ok ? "done" : "error");
+    } catch {
+      setSubState("error");
+    }
+  }
 
   const rawText = buildShareText({ locale, btcPremium, ethPremium, fng, fngText, vix, rsiDaily, rsiWeekly, rsiMonthly });
   const encodedText = encodeURIComponent(rawText);
@@ -242,6 +261,56 @@ export function AlertBanner() {
             </button>
           </div>
         )}
+
+        {/* 구분선 */}
+        <div className="border-t border-white/6 pt-3 mt-1">
+          {subState === "done" ? (
+            <div className="flex items-center gap-2">
+              <svg className="h-4 w-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-xs text-emerald-400">
+                {isKo ? "등록됐어요! 출시 때 바로 알려드릴게요 🎉" : isZh ? "已登记！上线时第一时间通知您 🎉" : "You're in! We'll notify you at launch 🎉"}
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+              <p className="text-xs text-[var(--fg-muted)]">
+                {isKo
+                  ? "📱 크롬 익스텐션 출시 알림 받기 — 프리미엄 급변 시 바로 알려드려요"
+                  : isZh
+                  ? "📱 获取 Chrome 扩展上线通知 — 溢价剧变时立即提醒您"
+                  : "📱 Get notified when the Chrome extension launches — instant alerts when premium spikes"}
+              </p>
+              <div className="flex gap-2">
+                <input
+                  ref={inputRef}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={isKo ? "이메일 주소" : isZh ? "电子邮件" : "Email address"}
+                  className="flex-1 min-w-0 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white placeholder:text-[var(--fg-muted)] outline-none focus:border-white/25 transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={subState === "loading" || !email.trim()}
+                  className="shrink-0 rounded-lg bg-white/10 border border-white/15 px-3 py-1.5 text-xs font-medium text-white transition-all hover:bg-white/18 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {subState === "loading"
+                    ? "..."
+                    : isKo ? "알림 신청"
+                    : isZh ? "订阅"
+                    : "Notify me"}
+                </button>
+              </div>
+              {subState === "error" && (
+                <p className="text-[10px] text-rose-400">
+                  {isKo ? "오류가 발생했어요. 다시 시도해 주세요." : isZh ? "出错了，请重试。" : "Something went wrong. Please try again."}
+                </p>
+              )}
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import { MarketPulse } from "@/components/coins/MarketPulse";
 import { TrendingBanner } from "@/components/coins/TrendingBanner";
 import { TVTickerTape } from "@/components/layout/TVTickerTape";
 import { LiquidationFeed } from "@/components/coins/LiquidationFeed";
+import { HeroSection } from "@/components/coins/HeroSection";
 
 type Params = { locale: string };
 
@@ -18,6 +19,9 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
     <>
       <TVTickerTape />
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 space-y-6">
+      {/* Hero */}
+      <HeroSection />
+
       {/* 트렌딩 배너 */}
       <TrendingBanner />
 

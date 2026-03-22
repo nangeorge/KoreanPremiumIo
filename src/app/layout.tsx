@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Kimchi Premium Live | 실시간 김프 트래커",
-    description: "Real-time Kimchi Premium — Upbit vs Binance price difference for BTC, ETH, XRP & 40 coins. 업비트 바이낸스 실시간 김프.",
+    description: "Real-time Kimchi Premium — Upbit vs Binance price difference for BTC, ETH, XRP & 137 coins. 업비트 바이낸스 실시간 김프.",
     images: ["/og"],
   },
   robots: {
