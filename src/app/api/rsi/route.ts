@@ -27,21 +27,23 @@ function calcRSI(closes: number[], period = 14): number | null {
   return parseFloat((100 - 100 / (1 + avgGain / avgLoss)).toFixed(2));
 }
 
-// Binance klines: [openTime, open, high, low, close, vol, closeTime, ...]
-// closeTime < now 인 캔들만 사용 (미완성 캔들 제외)
-async function fetchBinanceCloses(interval: string, limit = 100): Promise<number[]> {
-  const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${interval}&limit=${limit}`;
+// OKX candles: [ts, open, high, low, close, vol, volCcy, volCcyQuote, confirm]
+// confirm = "1" → 완성된 캔들
+async function fetchOkxCloses(bar: string, limit = 100): Promise<number[]> {
+  const url = `https://www.okx.com/api/v5/market/candles?instId=BTC-USDT&bar=${bar}&limit=${limit}`;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(url, { signal: controller.signal, cache: "no-store" });
     clearTimeout(timeout);
     if (!res.ok) return [];
-    const data: Array<[number, string, string, string, string, string, number]> = await res.json();
-    const now = Date.now();
-    // closeTime(index 6) < now → 완성된 캔들만
-    return data
-      .filter((k) => k[6] < now)
+    const json: { code: string; data: string[][] } = await res.json();
+    if (json.code !== "0" || !Array.isArray(json.data)) return [];
+    // OKX returns newest first → reverse to chronological order
+    // confirm (index 8) = "1" means closed candle
+    return json.data
+      .filter((k) => k[8] === "1")
+      .reverse()
       .map((k) => parseFloat(k[4]));
   } catch {
     return [];
@@ -57,9 +59,9 @@ export interface RSIResponse {
 
 export async function GET() {
   const [dailyCloses, weeklyCloses, monthlyCloses] = await Promise.all([
-    fetchBinanceCloses("1d", 100),
-    fetchBinanceCloses("1w", 60),
-    fetchBinanceCloses("1M", 50),
+    fetchOkxCloses("1D", 100),
+    fetchOkxCloses("1W", 60),
+    fetchOkxCloses("1M", 50),
   ]);
 
   return NextResponse.json(
