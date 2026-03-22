@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SYMBOLS = [
   // ── 글로벌 주요 지수 ──
@@ -29,9 +29,32 @@ const SYMBOLS = [
 
 export function TVTickerTape() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [colorTheme, setColorTheme] = useState<"dark" | "light">("dark");
 
+  // 초기 테마 로드
   useEffect(() => {
-    if (!containerRef.current || containerRef.current.querySelector("script")) return;
+    const stored = (localStorage.getItem("theme") as "dark" | "light") ?? "dark";
+    setColorTheme(stored);
+  }, []);
+
+  // data-theme 속성 변경 감지
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const theme = document.documentElement.getAttribute("data-theme");
+      setColorTheme(theme === "light" ? "light" : "dark");
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, []);
+
+  // 테마 변경 시 위젯 재인젝션
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // 기존 위젯 제거
+    container.innerHTML = '<div class="tradingview-widget-container__widget"></div>';
+
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
     script.async = true;
@@ -40,14 +63,14 @@ export function TVTickerTape() {
       showSymbolLogo: true,
       isTransparent: false,
       displayMode: "regular",
-      colorTheme: "dark",
+      colorTheme,
       locale: "en",
     });
-    containerRef.current.appendChild(script);
-  }, []);
+    container.appendChild(script);
+  }, [colorTheme]);
 
   return (
-    <div className="w-full border-b border-[var(--divider)] bg-[var(--bg-base)]">
+    <div className="w-full border-b border-[var(--divider)]">
       <div
         ref={containerRef}
         className="tradingview-widget-container mx-auto max-w-7xl"
