@@ -293,19 +293,20 @@ async function fetchTrending(): Promise<TrendingCoin[]> {
 
 async function fetchAltcoinSeason(): Promise<number | null> {
   try {
+    // CoinGecko 무료 API 지원 기간: 1h, 24h, 7d, 14d, 30d, 200d, 1y (90d 미지원)
     const res = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&price_change_percentage=90d",
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&price_change_percentage=30d",
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return null;
-    const coins: Array<{ symbol: string; price_change_percentage_90d_in_currency: number | null }> = await res.json();
+    const coins: Array<{ symbol: string; price_change_percentage_30d_in_currency: number | null }> = await res.json();
     const btc = coins.find((c) => c.symbol.toLowerCase() === "btc");
-    if (!btc || btc.price_change_percentage_90d_in_currency === null) return null;
-    const btcChange = btc.price_change_percentage_90d_in_currency;
+    if (!btc || btc.price_change_percentage_30d_in_currency === null) return null;
+    const btcChange = btc.price_change_percentage_30d_in_currency;
     const outperformed = coins.filter(
       (c) => c.symbol.toLowerCase() !== "btc" &&
-        c.price_change_percentage_90d_in_currency !== null &&
-        c.price_change_percentage_90d_in_currency > btcChange
+        c.price_change_percentage_30d_in_currency !== null &&
+        c.price_change_percentage_30d_in_currency > btcChange
     ).length;
     return Math.round((outperformed / 49) * 100);
   } catch { return null; }
