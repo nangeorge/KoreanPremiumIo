@@ -62,7 +62,7 @@ export function TVTickerTape() {
       symbols: SYMBOLS,
       showSymbolLogo: true,
       isTransparent: false,
-      displayMode: "regular",
+      displayMode: "compact",
       colorTheme,
       locale: "en",
     });
@@ -73,7 +73,7 @@ export function TVTickerTape() {
     <div className="w-full border-b border-[var(--divider)]">
       <div
         ref={containerRef}
-        className="tradingview-widget-container mx-auto max-w-7xl"
+        className="tradingview-widget-container"
         style={{ minHeight: 46 }}
       >
         <div className="tradingview-widget-container__widget" />
