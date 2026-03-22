@@ -2,6 +2,32 @@
 
 import { useEffect, useRef } from "react";
 
+const SYMBOLS = [
+  // ── 글로벌 주요 지수 ──
+  { proName: "FOREXCOM:SPXUSD",  title: "S&P 500"  },
+  { proName: "FOREXCOM:NSXUSD",  title: "NASDAQ"   },
+  { proName: "FOREXCOM:DJI",     title: "DOW"      },
+  { proName: "KRX:KOSPI",        title: "KOSPI"    },
+  { proName: "KRX:KOSDAQ",       title: "KOSDAQ"   },
+  // ── NASDAQ Top 10 ──
+  { proName: "NASDAQ:NVDA",  title: "NVDA"  },
+  { proName: "NASDAQ:AAPL",  title: "AAPL"  },
+  { proName: "NASDAQ:MSFT",  title: "MSFT"  },
+  { proName: "NASDAQ:AMZN",  title: "AMZN"  },
+  { proName: "NASDAQ:META",  title: "META"  },
+  { proName: "NASDAQ:GOOGL", title: "GOOGL" },
+  { proName: "NASDAQ:TSLA",  title: "TSLA"  },
+  { proName: "NASDAQ:AVGO",  title: "AVGO"  },
+  { proName: "NASDAQ:NFLX",  title: "NFLX"  },
+  { proName: "NASDAQ:COST",  title: "COST"  },
+  // ── 주요 암호화폐 ──
+  { proName: "BINANCE:BTCUSDT",  title: "BTC"     },
+  { proName: "BINANCE:ETHUSDT",  title: "ETH"     },
+  { proName: "BINANCE:SOLUSDT",  title: "SOL"     },
+  { proName: "BINANCE:XRPUSDT",  title: "XRP"     },
+  { proName: "FX_IDC:USDKRW",   title: "USD/KRW" },
+];
+
 export function TVTickerTape() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -11,15 +37,7 @@ export function TVTickerTape() {
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
-      symbols: [
-        { proName: "BINANCE:BTCUSDT",  title: "BTC"     },
-        { proName: "BINANCE:ETHUSDT",  title: "ETH"     },
-        { proName: "BINANCE:SOLUSDT",  title: "SOL"     },
-        { proName: "BINANCE:XRPUSDT",  title: "XRP"     },
-        { proName: "BINANCE:BNBUSDT",  title: "BNB"     },
-        { proName: "BINANCE:DOGEUSDT", title: "DOGE"    },
-        { proName: "FX_IDC:USDKRW",   title: "USD/KRW" },
-      ],
+      symbols: SYMBOLS,
       showSymbolLogo: true,
       isTransparent: true,
       displayMode: "adaptive",
@@ -30,7 +48,7 @@ export function TVTickerTape() {
   }, []);
 
   return (
-    <div className="w-full border-b border-white/5 bg-[var(--bg-base)]">
+    <div className="w-full border-b border-white/5" style={{ background: "#191919" }}>
       <div
         ref={containerRef}
         className="tradingview-widget-container mx-auto max-w-7xl"
