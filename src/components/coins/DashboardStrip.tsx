@@ -89,15 +89,23 @@ interface CellProps {
 }
 
 function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: CellProps) {
-  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
-  const show = () => { clearTimeout(timer.current); setOpen(true); };
-  const hide = () => { timer.current = setTimeout(() => setOpen(false), 120); };
+  const show = () => {
+    clearTimeout(timer.current);
+    if (triggerRef.current) {
+      const r = triggerRef.current.getBoundingClientRect();
+      setPos({ x: r.left + r.width / 2, y: r.top });
+    }
+  };
+  const hide = () => { timer.current = setTimeout(() => setPos(null), 120); };
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default"
+      ref={triggerRef}
+      className="flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default"
       onMouseEnter={tooltip ? show : undefined}
       onMouseLeave={tooltip ? hide : undefined}
     >
@@ -116,11 +124,12 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
         </span>
       )}
 
-      {/* 툴팁 */}
-      {tooltip && open && (
+      {/* 툴팁 — fixed로 overflow 탈출 */}
+      {tooltip && pos && (
         <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-56 rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-2xl z-[200] text-left"
-          onMouseEnter={show}
+          className="fixed w-56 rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-2xl z-[999] text-left"
+          style={{ left: pos.x, top: pos.y - 8, transform: "translate(-50%, -100%)" }}
+          onMouseEnter={() => { clearTimeout(timer.current); }}
           onMouseLeave={hide}
         >
           <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{tooltip}</p>
