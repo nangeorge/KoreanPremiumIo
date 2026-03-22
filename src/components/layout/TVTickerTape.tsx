@@ -7,7 +7,6 @@ const SYMBOLS = [
   { proName: "FOREXCOM:SPXUSD",  title: "S&P 500"  },
   { proName: "FOREXCOM:NSXUSD",  title: "NASDAQ"   },
   { proName: "FOREXCOM:DJI",     title: "DOW"      },
-  { proName: "KRX:KOSPI",        title: "KOSPI"    },
   { proName: "KRX:KOSDAQ",       title: "KOSDAQ"   },
   // ── NASDAQ Top 10 ──
   { proName: "NASDAQ:NVDA",  title: "NVDA"  },
@@ -40,7 +39,7 @@ export function TVTickerTape() {
       symbols: SYMBOLS,
       showSymbolLogo: true,
       isTransparent: true,
-      displayMode: "adaptive",
+      displayMode: "regular",
       colorTheme: "dark",
       locale: "en",
     });
