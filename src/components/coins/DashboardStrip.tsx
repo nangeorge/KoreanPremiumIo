@@ -152,16 +152,93 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
 
 // ── SNS 공유 버튼 ─────────────────────────────────────────────────────────
 
-function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
+interface ShareButtonsProps {
+  btcPremium: number | null;
+  fng: number | null;
+  vix: number | null;
+  rsiD: number | null;
+  locale: string;
+}
+
+function ShareButtons({ btcPremium, fng, vix, rsiD, locale }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const url = "https://koreanpremium.io";
-  const text = btcPremium !== null
-    ? `BTC 김치 프리미엄 ${btcPremium >= 0 ? "+" : ""}${btcPremium.toFixed(2)}% | 실시간 추적`
-    : "실시간 김치 프리미엄 트래커";
-  const shareText = `${text} ${url}`;
+  const isKo = locale === "ko";
+  const isZh = locale === "zh";
+
+  const premiumStr = btcPremium !== null
+    ? `${btcPremium >= 0 ? "+" : ""}${btcPremium.toFixed(2)}%`
+    : null;
+
+  // Twitter — 280자 제한, 간결하게
+  const twitterText = isKo
+    ? [
+        `🌶️ BTC 김치 프리미엄 ${premiumStr ?? "—"}`,
+        fng !== null ? `공포탐욕: ${fng} | RSI(1D): ${rsiD?.toFixed(1) ?? "—"}` : "",
+        "한국인 30%가 코인 보유, 글로벌 거래량 10%가 원화 — 고점 김프 +50%, 저점 역프 -5%",
+      ].filter(Boolean).join("\n")
+    : isZh
+    ? [
+        `🌶️ BTC泡菜溢价 ${premiumStr ?? "—"}`,
+        fng !== null ? `恐贪指数: ${fng} | RSI(1D): ${rsiD?.toFixed(1) ?? "—"}` : "",
+        "韩国30%人口持币，全球交易量10%来自韩元",
+      ].filter(Boolean).join("\n")
+    : [
+        `🌶️ BTC Kimchi Premium ${premiumStr ?? "—"}`,
+        fng !== null ? `Fear/Greed: ${fng} | RSI(1D): ${rsiD?.toFixed(1) ?? "—"}` : "",
+        "30% of Koreans own crypto — driving 10% of global volume",
+      ].filter(Boolean).join("\n");
+
+  // 나머지 플랫폼 — 풍부한 텍스트
+  const fullText = isKo
+    ? [
+        `🌶️ BTC 김치 프리미엄 ${premiumStr ?? "—"} | 실시간 추적`,
+        "",
+        "📊 주요 지표",
+        fng !== null ? `• 공포탐욕지수: ${fng} (${fng >= 75 ? "극탐욕" : fng >= 55 ? "탐욕" : fng >= 45 ? "중립" : fng >= 25 ? "공포" : "극공포"})` : "",
+        vix !== null ? `• VIX: ${vix.toFixed(1)} (${vix >= 30 ? "공포" : vix >= 20 ? "주의" : "안정"})` : "",
+        rsiD !== null ? `• BTC RSI(1D): ${rsiD.toFixed(1)} (${rsiD >= 70 ? "과매수" : rsiD <= 30 ? "과매도" : "중립"})` : "",
+        "",
+        "💡 왜 김치 프리미엄인가?",
+        "한국인 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다.",
+        "고점 신호: 김프 +20~50% | 저점 신호: 역프 −3~−5%",
+        "(2018년 고점 +50% · 2021년 고점 +25% · FTX 저점 −5%)",
+        "",
+        `🔗 ${url}`,
+      ].filter(Boolean).join("\n")
+    : isZh
+    ? [
+        `🌶️ BTC泡菜溢价 ${premiumStr ?? "—"} | 实时追踪`,
+        "",
+        "📊 主要指标",
+        fng !== null ? `• 恐贪指数: ${fng}` : "",
+        vix !== null ? `• VIX: ${vix.toFixed(1)}` : "",
+        rsiD !== null ? `• BTC RSI(1D): ${rsiD.toFixed(1)}` : "",
+        "",
+        "💡 为什么关注泡菜溢价？",
+        "韩国30%人口持有加密货币，全球交易量10%来自韩元。",
+        "顶部信号: 溢价+20~50% | 底部信号: 折价−3~−5%",
+        "",
+        `🔗 ${url}`,
+      ].filter(Boolean).join("\n")
+    : [
+        `🌶️ BTC Kimchi Premium ${premiumStr ?? "—"} | Live Tracker`,
+        "",
+        "📊 Key Indicators",
+        fng !== null ? `• Fear/Greed: ${fng} (${fng >= 75 ? "Extreme Greed" : fng >= 55 ? "Greedy" : fng >= 45 ? "Neutral" : fng >= 25 ? "Fear" : "Extreme Fear"})` : "",
+        vix !== null ? `• VIX: ${vix.toFixed(1)} (${vix >= 30 ? "Fear" : vix >= 20 ? "Caution" : "Stable"})` : "",
+        rsiD !== null ? `• BTC RSI(1D): ${rsiD.toFixed(1)} (${rsiD >= 70 ? "Overbought" : rsiD <= 30 ? "Oversold" : "Neutral"})` : "",
+        "",
+        "💡 Why Kimchi Premium?",
+        "30% of Koreans own crypto — driving 10% of global volume.",
+        "Top signal: +20–50% premium | Bottom signal: −3–5% discount",
+        "(Jan 2018 peak: +50% · Apr 2021 peak: +25% · Nov 2022 FTX: −5%)",
+        "",
+        `🔗 ${url}`,
+      ].filter(Boolean).join("\n");
 
   const copyLink = () => {
-    navigator.clipboard.writeText(url).then(() => {
+    navigator.clipboard.writeText(fullText).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -169,9 +246,9 @@ function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
 
   const kakaoShare = () => {
     if (typeof navigator.share === "function") {
-      navigator.share({ title: text, url });
+      navigator.share({ title: twitterText.split("\n")[0], text: fullText, url });
     } else {
-      navigator.clipboard.writeText(shareText);
+      navigator.clipboard.writeText(fullText);
     }
   };
 
@@ -181,7 +258,7 @@ function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
     <div className="flex items-center gap-1.5 shrink-0">
       {/* X (Twitter) */}
       <a
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`}
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(url)}`}
         target="_blank" rel="noopener noreferrer"
         className={btnCls} title="X (Twitter)로 공유"
       >
@@ -192,7 +269,7 @@ function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
 
       {/* Telegram */}
       <a
-        href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`}
+        href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(fullText)}`}
         target="_blank" rel="noopener noreferrer"
         className={btnCls} title="텔레그램으로 공유"
       >
@@ -203,7 +280,7 @@ function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
 
       {/* Reddit */}
       <a
-        href={`https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}`}
+        href={`https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(twitterText.split("\n")[0])}`}
         target="_blank" rel="noopener noreferrer"
         className={btnCls} title="Reddit으로 공유"
       >
@@ -232,7 +309,7 @@ function ShareButtons({ btcPremium }: { btcPremium: number | null }) {
 
       {/* WhatsApp */}
       <a
-        href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+        href={`https://wa.me/?text=${encodeURIComponent(fullText)}`}
         target="_blank" rel="noopener noreferrer"
         className={btnCls} title="왓츠앱으로 공유"
       >
@@ -459,7 +536,7 @@ export function DashboardStrip() {
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
           </span>
-          <ShareButtons btcPremium={btcPremium} />
+          <ShareButtons btcPremium={btcPremium} fng={fng} vix={vix} rsiD={rsiD} locale={locale} />
         </div>
       </div>
     </div>
