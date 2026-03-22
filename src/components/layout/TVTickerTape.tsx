@@ -38,7 +38,7 @@ export function TVTickerTape() {
     script.innerHTML = JSON.stringify({
       symbols: SYMBOLS,
       showSymbolLogo: true,
-      isTransparent: true,
+      isTransparent: false,
       displayMode: "regular",
       colorTheme: "dark",
       locale: "en",
