@@ -83,12 +83,19 @@ interface CellProps {
   state?: string;
   valueClass?: string;
   stateClass?: string;
+  tooltip?: string;
+  link?: string;
 }
 
-function Cell({ label, value, state, valueClass, stateClass }: CellProps) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px]">
-      <span className="text-[10px] text-[var(--fg-muted)] whitespace-nowrap">{label}</span>
+function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: CellProps) {
+  const inner = (
+    <div className="relative group flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default">
+      <span className={cn(
+        "text-[10px] whitespace-nowrap",
+        tooltip ? "text-[var(--fg-muted)] underline decoration-dotted underline-offset-2 decoration-white/20 group-hover:decoration-white/50 transition-colors" : "text-[var(--fg-muted)]"
+      )}>
+        {label}
+      </span>
       <span className={cn("font-number text-base font-bold leading-none whitespace-nowrap", valueClass ?? "text-white")}>
         {value ?? "—"}
       </span>
@@ -97,8 +104,27 @@ function Cell({ label, value, state, valueClass, stateClass }: CellProps) {
           {state}
         </span>
       )}
+
+      {/* 툴팁 */}
+      {tooltip && (
+        <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-xl border border-white/10 bg-[var(--bg-raised)] p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50 text-left">
+          <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">{tooltip}</p>
+          {link && (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pointer-events-auto mt-1.5 inline-block text-[10px] text-sky-400 hover:text-sky-300 transition-colors"
+            >
+              Learn more ↗
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
+
+  return inner;
 }
 
 // ── 메인 컴포넌트 ──────────────────────────────────────────────────────────
@@ -153,6 +179,41 @@ export function DashboardStrip() {
     dom:        isKo ? "BTC 도미"   : isZh ? "BTC占比"   : "BTC Dom.",
   };
 
+  const tooltips = {
+    ethPremium: isKo
+      ? "이더리움의 업비트 vs Bybit 가격 차이. BTC 김프와 함께 한국 시장 전반의 과열도를 측정하는 보조 지표."
+      : isZh ? "ETH在Upbit与Bybit之间的价差，辅助判断韩国市场整体热度。"
+      : "ETH price spread between Upbit and Bybit. A secondary signal for overall Korean market heat.",
+    altPremium: isKo
+      ? "상위 20개 알트코인의 평균 김치 프리미엄. BTC보다 높으면 알트 시즌 과열 신호."
+      : isZh ? "前20种山寨币的平均泡菜溢价。高于BTC时表示山寨币季节过热。"
+      : "Average kimchi premium of the top 20 altcoins. Higher than BTC signals altcoin season overheating.",
+    fng: isKo
+      ? "크립토 시장 참여자들의 탐욕·공포 심리를 0~100으로 수치화. 75 이상은 극탐욕, 25 이하는 극공포."
+      : isZh ? "将加密市场情绪量化为0~100。75以上为极度贪婪，25以下为极度恐惧。"
+      : "Crypto market sentiment from 0 (extreme fear) to 100 (extreme greed). Above 75 signals overheating.",
+    vix: isKo
+      ? "S&P 500 변동성 지수. 30 이상이면 글로벌 금융 공포 구간 — 위험자산 전반에 하락 압력이 커진다."
+      : isZh ? "标普500波动率指数。超过30表示全球金融恐慌，风险资产承压。"
+      : "S&P 500 volatility index. Above 30 signals global financial fear and broad risk-off pressure.",
+    rsiD: isKo
+      ? "비트코인 일봉 RSI(14). 70 이상은 과매수(단기 조정 가능), 30 이하는 과매도(반등 가능성)."
+      : isZh ? "比特币日线RSI(14)。70以上超买，30以下超卖。"
+      : "Bitcoin daily RSI(14). Above 70 = overbought, below 30 = oversold.",
+    rsiW: isKo
+      ? "비트코인 주봉 RSI(14). 중장기 추세 강도를 측정. 일봉보다 신뢰도가 높다."
+      : isZh ? "比特币周线RSI(14)。衡量中长期趋势强度，比日线更可靠。"
+      : "Bitcoin weekly RSI(14). Measures mid-term trend strength — more reliable than daily.",
+    rsiM: isKo
+      ? "비트코인 월봉 RSI(14). 강세장·약세장 사이클 판단에 사용. 70 돌파 시 역대 고점 신호."
+      : isZh ? "比特币月线RSI(14)。用于判断牛熊周期。突破70是历史顶部信号。"
+      : "Bitcoin monthly RSI(14). Used to identify bull/bear cycles. Above 70 has historically signaled major tops.",
+    dom: isKo
+      ? "전체 암호화폐 시총 중 비트코인의 비중. 50% 이상이면 BTC 시즌, 40% 이하면 알트 시즌."
+      : isZh ? "比特币占总加密市值的比例。50%以上为BTC季节，40%以下为山寨季节。"
+      : "Bitcoin's share of total crypto market cap. Above 50% = BTC season, below 40% = altcoin season.",
+  };
+
   return (
     <div className="rounded-2xl border border-white/6 bg-[var(--bg-raised)] overflow-hidden">
       {/* 상단: BTC 김프 강조 */}
@@ -183,6 +244,7 @@ export function DashboardStrip() {
               state={ethPremium !== null ? premiumState(ethPremium, locale) : undefined}
               valueClass={premiumColor(ethPremium)}
               stateClass={premiumColor(ethPremium)}
+              tooltip={tooltips.ethPremium}
             />
             <Cell
               label={labels.altPremium}
@@ -190,6 +252,7 @@ export function DashboardStrip() {
               state={altAvg !== null ? premiumState(altAvg, locale) : undefined}
               valueClass={premiumColor(altAvg)}
               stateClass={premiumColor(altAvg)}
+              tooltip={tooltips.altPremium}
             />
             <Cell
               label={labels.fng}
@@ -197,6 +260,8 @@ export function DashboardStrip() {
               state={fng !== null ? fngState(fng, locale) : undefined}
               valueClass={fng !== null ? fngColor(fng) : undefined}
               stateClass={fng !== null ? fngColor(fng) : undefined}
+              tooltip={tooltips.fng}
+              link="https://alternative.me/crypto/fear-and-greed-index/"
             />
             <Cell
               label={labels.vix}
@@ -204,6 +269,8 @@ export function DashboardStrip() {
               state={vix !== null ? vixState(vix, locale) : undefined}
               valueClass={vix !== null ? vixColor(vix) : undefined}
               stateClass={vix !== null ? vixColor(vix) : undefined}
+              tooltip={tooltips.vix}
+              link="https://finance.yahoo.com/quote/%5EVIX/"
             />
             <Cell
               label={labels.rsiD}
@@ -211,6 +278,8 @@ export function DashboardStrip() {
               state={rsiD !== null ? rsiState(rsiD, locale) : undefined}
               valueClass={rsiD !== null ? rsiColor(rsiD) : undefined}
               stateClass={rsiD !== null ? rsiColor(rsiD) : undefined}
+              tooltip={tooltips.rsiD}
+              link="https://www.investopedia.com/terms/r/rsi.asp"
             />
             <Cell
               label={labels.rsiW}
@@ -218,6 +287,8 @@ export function DashboardStrip() {
               state={rsiW !== null ? rsiState(rsiW, locale) : undefined}
               valueClass={rsiW !== null ? rsiColor(rsiW) : undefined}
               stateClass={rsiW !== null ? rsiColor(rsiW) : undefined}
+              tooltip={tooltips.rsiW}
+              link="https://www.investopedia.com/terms/r/rsi.asp"
             />
             <Cell
               label={labels.rsiM}
@@ -225,45 +296,36 @@ export function DashboardStrip() {
               state={rsiM !== null ? rsiState(rsiM, locale) : undefined}
               valueClass={rsiM !== null ? rsiColor(rsiM) : undefined}
               stateClass={rsiM !== null ? rsiColor(rsiM) : undefined}
+              tooltip={tooltips.rsiM}
+              link="https://www.investopedia.com/terms/r/rsi.asp"
             />
             <Cell
               label={labels.dom}
               value={dominance !== null ? `${dominance.toFixed(1)}%` : null}
               valueClass="text-white"
+              tooltip={tooltips.dom}
+              link="https://coinmarketcap.com/charts/bitcoin-dominance/"
             />
           </div>
         </div>
       </div>
 
-      {/* 하단: Why Kimchi Premium? 강조 + 툴팁 */}
-      <div className="flex items-center gap-3 px-4 py-2">
-        <span className="text-sm">🌶️</span>
-
-        {/* 툴팁 트리거 */}
-        <div className="relative group">
-          <a
-            href={`/${locale}/about`}
-            className="text-xs font-bold text-white underline decoration-dotted underline-offset-2 decoration-white/30 hover:decoration-white/70 transition-colors"
-          >
+      {/* 하단: Why Kimchi Premium? + 설명 텍스트 */}
+      <div className="flex items-start gap-3 px-4 py-2.5">
+        <span className="text-sm mt-0.5">🌶️</span>
+        <div className="flex-1 min-w-0">
+          <span className="text-xs font-bold text-white">
             {isKo ? "왜 김치 프리미엄인가?" : isZh ? "为什么关注泡菜溢价？" : "Why Kimchi Premium?"}
-          </a>
-
-          {/* 툴팁 */}
-          <div className="pointer-events-none absolute bottom-full left-0 mb-2 w-72 rounded-xl border border-white/10 bg-[var(--bg-raised)] p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
-            <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
-              {isKo
-                ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유하고, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
-                : isZh
-                ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
-                : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
-            </p>
-            <p className="mt-1.5 text-[10px] text-[var(--fg-muted)]/60">
-              {isKo ? "자세히 보기 →" : isZh ? "了解更多 →" : "Learn more →"}
-            </p>
-          </div>
+          </span>
+          <span className="ml-2 text-[11px] text-[var(--fg-muted)]">
+            {isKo
+              ? "한국인은 세계 최고의 투자 민족 — 전체 인구의 30%가 암호화폐를 보유, 글로벌 거래량의 10%가 원화에서 나온다. 그들이 공포에 팔고 탐욕에 살 때, 전 세계가 뒤따른다."
+              : isZh
+              ? "韩国人是全球最活跃的加密投资者 — 30%人口持有加密货币，原币交易占全球10%。当他们恐慌抛售或贪婪买入时，全球市场随之波动。"
+              : "Koreans are the world's most passionate crypto investors — 30% own crypto, Korean Won drives 10% of global volume. When they panic-sell or FOMO-buy, the rest of the world follows."}
+          </span>
         </div>
-
-        <span className="ml-auto shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
+        <span className="shrink-0 inline-flex items-center gap-1 text-[10px] text-[var(--fg-muted)] bg-white/5 border border-white/8 rounded-full px-2 py-0.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
           {isKo ? "5초 갱신" : isZh ? "5秒更新" : "5s live"}
         </span>
