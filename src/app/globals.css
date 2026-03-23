@@ -44,11 +44,11 @@
   --fg:         #0d0d0d;
   --fg-secondary: #333333;
   --fg-muted:   #777777;
-  --border-color: rgba(55, 53, 47, 0.09);
-  --divider:    rgba(55, 53, 47, 0.06);
+  --border-color: rgba(55, 53, 47, 0.18);
+  --divider:    rgba(55, 53, 47, 0.10);
   --glass-bg:   #ffffff;
-  --card-shadow: none;
-  --card-shadow-hover: none;
+  --card-shadow: 0 1px 4px rgba(55, 53, 47, 0.07), 0 0 0 1px rgba(55, 53, 47, 0.06);
+  --card-shadow-hover: 0 2px 8px rgba(55, 53, 47, 0.11), 0 0 0 1px rgba(55, 53, 47, 0.10);
   --glow-brand: rgba(0, 0, 0, 0);
   color-scheme: light;
 }
@@ -162,7 +162,7 @@ body {
 }
 
 [data-theme="light"] .glass-hover:hover {
-  border-color: rgba(55, 53, 47, 0.12);
+  border-color: rgba(55, 53, 47, 0.28);
 }
 
 /* ── Number font — Space Grotesk ── */
@@ -236,10 +236,10 @@ body {
   & .hover\:bg-white\/10:hover { background-color: rgba(55, 53, 47, 0.06) !important; }
 
   /* 보더 */
-  & .border-white\/5  { border-color: rgba(55, 53, 47, 0.07) !important; }
-  & .border-white\/6  { border-color: rgba(55, 53, 47, 0.08) !important; }
-  & .border-white\/8  { border-color: rgba(55, 53, 47, 0.09) !important; }
-  & .border-white\/10 { border-color: rgba(55, 53, 47, 0.11) !important; }
+  & .border-white\/5  { border-color: rgba(55, 53, 47, 0.13) !important; }
+  & .border-white\/6  { border-color: rgba(55, 53, 47, 0.15) !important; }
+  & .border-white\/8  { border-color: rgba(55, 53, 47, 0.18) !important; }
+  & .border-white\/10 { border-color: rgba(55, 53, 47, 0.22) !important; }
 
   /* 밝은 gray 텍스트 → 검정 계열로 */
   & .text-white       { color: #111111 !important; }
