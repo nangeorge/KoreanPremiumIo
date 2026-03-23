@@ -55,7 +55,7 @@ const MARKET_CAP_RANK: Record<string, number> = {
 const COIN_RANK: Record<string, number> = MARKET_CAP_RANK;
 
 // ── 카테고리 ──────────────────────────────────────────────────────────────────
-type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "korea" | "watch";
+type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "cex" | "korea" | "watch";
 
 const CATEGORY_SYMBOLS: Record<Exclude<Category, "watch">, Set<string> | null> = {
   all: null,
@@ -65,6 +65,7 @@ const CATEGORY_SYMBOLS: Record<Exclude<Category, "watch">, Set<string> | null> =
   layer2: new Set(["POL","OP","ARB","IMX","MNT","BLAST","ZK","STX","TAIKO","LAYER","ALT","ZETA","BERA","MOVE","SONIC"]),
   ai: new Set(["RENDER","VIRTUAL","ARKM","AKT","MOCA","API3"]),
   game: new Set(["SAND","MANA","AXS","GMT","YGG","BIGTIME","BEAM","CARV","ANIME"]),
+  cex: new Set(["CRO","GT","MX"]),
   korea: new Set(["BORA","MBL","MLK","HUNT","MED","ICX","VTHO","BTT","IOST","AERGO","POLYX","ARDR","RED","SNT"]),
 };
 
@@ -76,6 +77,7 @@ const CATEGORY_LABELS: Record<Category, { ko: string; en: string; zh: string }> 
   layer2: { ko: "Layer2",  en: "Layer2",  zh: "Layer2" },
   ai:     { ko: "AI",      en: "AI",      zh: "AI"     },
   game:   { ko: "게임",     en: "Game",    zh: "游戏"   },
+  cex:    { ko: "CEX",     en: "CEX",     zh: "CEX"    },
   korea:  { ko: "한국전용", en: "KR Only", zh: "韩国限定"},
   watch:  { ko: "⭐ 관심", en: "⭐ Watch", zh: "⭐ 自选" },
 };
