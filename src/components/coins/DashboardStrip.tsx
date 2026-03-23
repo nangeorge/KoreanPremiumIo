@@ -87,9 +87,10 @@ interface CellProps {
   stateClass?: string;
   tooltip?: string;
   link?: string;
+  className?: string;
 }
 
-function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: CellProps) {
+function Cell({ label, value, state, valueClass, stateClass, tooltip, link, className }: CellProps) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -106,7 +107,7 @@ function Cell({ label, value, state, valueClass, stateClass, tooltip, link }: Ce
   return (
     <div
       ref={triggerRef}
-      className="flex flex-col items-center justify-center gap-0.5 px-3.5 py-2.5 min-w-[72px] cursor-default"
+      className={cn("flex flex-col items-center justify-center gap-0.5 px-2 sm:px-3.5 py-2.5 sm:min-w-[72px] cursor-default", className)}
       onMouseEnter={tooltip ? show : undefined}
       onMouseLeave={tooltip ? hide : undefined}
     >
@@ -424,7 +425,7 @@ export function DashboardStrip() {
       <div className="flex items-stretch border-b border-white/6">
         {/* BTC 김프 — 가장 중요한 지표 */}
         <div className={cn(
-          "flex flex-col items-center justify-center px-5 py-3 border-r border-white/6 min-w-[100px]",
+          "flex flex-col items-center justify-center px-5 py-3 border-r border-white/6 min-w-[100px] shrink-0",
           btcPremium !== null && btcPremium >= 3 ? "bg-orange-500/5" :
           btcPremium !== null && btcPremium < 0  ? "bg-blue-500/5"   : "bg-emerald-500/5"
         )}>
@@ -439,9 +440,9 @@ export function DashboardStrip() {
           )}
         </div>
 
-        {/* 나머지 지표들 — 가로 스크롤 */}
-        <div className="flex-1 overflow-x-auto scrollbar-none">
-          <div className="flex divide-x divide-white/6 min-w-max">
+        {/* 나머지 지표들 — 모바일: 4×2 그리드, sm+: 가로 스크롤 */}
+        <div className="flex-1 min-w-0 sm:overflow-x-auto sm:scrollbar-none">
+          <div className="grid grid-cols-4 sm:flex sm:divide-x sm:divide-white/6 sm:min-w-max">
             <Cell
               label={labels.ethPremium}
               value={ethPremium !== null ? formatPremium(ethPremium) : null}
@@ -449,6 +450,7 @@ export function DashboardStrip() {
               valueClass={premiumColor(ethPremium)}
               stateClass={premiumColor(ethPremium)}
               tooltip={tooltips.ethPremium}
+              className="border-r border-b border-white/6 sm:border-b-0 sm:border-r-0"
             />
             <Cell
               label={labels.altPremium}
@@ -457,6 +459,7 @@ export function DashboardStrip() {
               valueClass={premiumColor(altAvg)}
               stateClass={premiumColor(altAvg)}
               tooltip={tooltips.altPremium}
+              className="border-r border-b border-white/6 sm:border-b-0 sm:border-r-0"
             />
             <Cell
               label={labels.fng}
@@ -466,6 +469,7 @@ export function DashboardStrip() {
               stateClass={fng !== null ? fngColor(fng) : undefined}
               tooltip={tooltips.fng}
               link="https://alternative.me/crypto/fear-and-greed-index/"
+              className="border-r border-b border-white/6 sm:border-b-0 sm:border-r-0"
             />
             <Cell
               label={labels.vix}
@@ -475,6 +479,7 @@ export function DashboardStrip() {
               stateClass={vix !== null ? vixColor(vix) : undefined}
               tooltip={tooltips.vix}
               link="https://finance.yahoo.com/quote/%5EVIX/"
+              className="border-b border-white/6 sm:border-b-0 sm:border-r-0"
             />
             <Cell
               label={labels.rsiD}
@@ -484,6 +489,7 @@ export function DashboardStrip() {
               stateClass={rsiD !== null ? rsiColor(rsiD) : undefined}
               tooltip={tooltips.rsiD}
               link="https://www.investopedia.com/terms/r/rsi.asp"
+              className="border-r border-white/6 sm:border-r-0"
             />
             <Cell
               label={labels.rsiW}
@@ -493,6 +499,7 @@ export function DashboardStrip() {
               stateClass={rsiW !== null ? rsiColor(rsiW) : undefined}
               tooltip={tooltips.rsiW}
               link="https://www.investopedia.com/terms/r/rsi.asp"
+              className="border-r border-white/6 sm:border-r-0"
             />
             <Cell
               label={labels.rsiM}
@@ -502,6 +509,7 @@ export function DashboardStrip() {
               stateClass={rsiM !== null ? rsiColor(rsiM) : undefined}
               tooltip={tooltips.rsiM}
               link="https://www.investopedia.com/terms/r/rsi.asp"
+              className="border-r border-white/6 sm:border-r-0"
             />
             <Cell
               label={labels.dom}
