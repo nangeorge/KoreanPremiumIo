@@ -96,13 +96,13 @@ export async function generateMetadata({
       siteName: "KimchiPremium",
       type: "website",
       locale: ogLocale,
-      images: [{ url: `${BASE_URL}/og?locale=${locale}`, width: 1200, height: 630, alt: ogAlt }],
+      images: [{ url: `${BASE_URL}/og-image.png`, width: 1200, height: 630, alt: ogAlt }],
     },
     twitter: {
       card: "summary_large_image",
       title: m.title,
       description: m.description,
-      images: [`${BASE_URL}/og?locale=${locale}`],
+      images: [`${BASE_URL}/og-image.png`],
     },
   };
 }
