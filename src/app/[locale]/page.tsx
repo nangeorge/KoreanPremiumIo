@@ -9,7 +9,7 @@ import { DashboardStrip } from "@/components/coins/DashboardStrip";
 type Params = { locale: string };
 
 export default async function HomePage({ params }: { params: Promise<Params> }) {
-  await params;
+  const { locale } = await params;
 
   return (
     <>
@@ -29,7 +29,7 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
           <div className="xl:col-span-2 flex flex-col gap-4">
             <BTCChart />
             <PremiumChart />
-            <LiquidationFeed />
+            <LiquidationFeed locale={locale} />
             <AlertBanner />
           </div>
         </div>
