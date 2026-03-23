@@ -13,7 +13,7 @@ async function fetchMarketCaps(): Promise<Map<string, number>> {
   try {
     const res = await fetch(
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false",
-      { next: { revalidate: 300 } }
+      { next: { revalidate: 300 }, signal: AbortSignal.timeout(3000) }
     );
     if (!res.ok) return new Map();
     const data: Array<{ symbol: string; market_cap: number }> = await res.json();

@@ -16,6 +16,7 @@ export async function fetchUsdKrwRate(): Promise<number> {
     // Here we use an open exchange rate API
     const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD", {
       next: { revalidate: 300 },
+      signal: AbortSignal.timeout(3000),
     });
 
     if (res.ok) {
@@ -34,6 +35,7 @@ export async function fetchUsdKrwRate(): Promise<number> {
     // Fallback: use free currency API
     const res = await fetch("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json", {
       next: { revalidate: 300 },
+      signal: AbortSignal.timeout(3000),
     });
 
     if (res.ok) {

@@ -15,6 +15,7 @@ export async function fetchUpbitPrices(markets: string[]): Promise<UpbitTicker[]
   const opts = {
     next: { revalidate: 0 },
     headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(5000),
   };
 
   // 1) bulk 시도

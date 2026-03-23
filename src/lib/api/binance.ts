@@ -42,7 +42,7 @@ export async function fetchBinancePrices(symbols: string[]): Promise<BinanceTick
   }
 
   try {
-    const res = await fetch(OKX_API, { next: { revalidate: 5 } });
+    const res = await fetch(OKX_API, { next: { revalidate: 5 }, signal: AbortSignal.timeout(5000) });
     if (!res.ok) return [];
 
     const json: OkxResponse = await res.json();
