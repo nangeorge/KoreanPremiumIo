@@ -55,9 +55,9 @@ const MARKET_CAP_RANK: Record<string, number> = {
 const COIN_RANK: Record<string, number> = MARKET_CAP_RANK;
 
 // ── 카테고리 ──────────────────────────────────────────────────────────────────
-type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "cex" | "korea" | "watch";
+type Category = "all" | "top" | "meme" | "defi" | "layer2" | "ai" | "game" | "cex" | "korea" | "watch" | "alert";
 
-const CATEGORY_SYMBOLS: Record<Exclude<Category, "watch">, Set<string> | null> = {
+const CATEGORY_SYMBOLS: Record<Exclude<Category, "watch" | "alert">, Set<string> | null> = {
   all: null,
   top: new Set(["BTC","ETH","XRP","SOL","ADA","DOGE","TRX","TON","AVAX","SHIB","LTC","BCH","LINK","ATOM","DOT","UNI","APT","SUI","ICP","NEAR"]),
   meme: new Set(["DOGE","SHIB","PEPE","BONK","WIF","PENGU"]),
@@ -80,6 +80,7 @@ const CATEGORY_LABELS: Record<Category, { ko: string; en: string; zh: string }> 
   cex:    { ko: "CEX",     en: "CEX",     zh: "CEX"    },
   korea:  { ko: "한국전용", en: "KR Only", zh: "韩国限定"},
   watch:  { ko: "⭐ 관심", en: "⭐ Watch", zh: "⭐ 自选" },
+  alert:  { ko: "🚨 경보",  en: "🚨 Alert", zh: "🚨 警报" },
 };
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[];
@@ -311,11 +312,17 @@ export function PremiumTable() {
     }
   }
 
+  const alertSymbols = useMemo(
+    () => new Set(coins.filter((c) => c.premium !== null && Math.abs(c.premium) >= 10).map((c) => c.symbol)),
+    [coins]
+  );
+
   const sorted = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    const symbolSet = activeCategory === "watch"
-      ? new Set(favorites)
-      : CATEGORY_SYMBOLS[activeCategory as Exclude<Category, "watch">];
+    const symbolSet =
+      activeCategory === "watch" ? new Set(favorites) :
+      activeCategory === "alert" ? alertSymbols :
+      CATEGORY_SYMBOLS[activeCategory as Exclude<Category, "watch" | "alert">];
     const filtered = coins.filter((c) => {
       if (symbolSet && !symbolSet.has(c.symbol)) return false;
       if (!q) return true;
@@ -348,7 +355,7 @@ export function PremiumTable() {
       if (sortField === "volume24h") return val * (a.volume24h - b.volume24h);
       return 0;
     });
-  }, [coins, sortField, sortDirection, selectedExchange, activeCategory, searchQuery]);
+  }, [coins, sortField, sortDirection, selectedExchange, activeCategory, searchQuery, favorites, alertSymbols]);
 
   const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const pagedCoins = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -368,25 +375,42 @@ export function PremiumTable() {
       {/* 카테고리 탭 */}
       <div className="px-4 pt-4 sm:px-6">
         <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setActiveCategory(cat);
-                setSortField("marketCap");
-                setSortDirection("asc");
-                setPage(1);
-              }}
-              className={cn(
-                "flex-shrink-0 rounded px-2.5 py-1 text-xs font-medium transition-all duration-150",
-                activeCategory === cat
-                  ? "bg-white/10 text-[var(--fg)]"
-                  : "text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] hover:bg-white/5"
-              )}
-            >
-              {catLabel(cat)}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isAlert = cat === "alert";
+            const alertCount = isAlert ? alertSymbols.size : 0;
+            const isActive = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  setActiveCategory(cat);
+                  setSortField(cat === "alert" ? "premium" : "marketCap");
+                  setSortDirection(cat === "alert" ? "desc" : "asc");
+                  setPage(1);
+                }}
+                className={cn(
+                  "flex-shrink-0 flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition-all duration-150",
+                  isActive
+                    ? isAlert
+                      ? "bg-orange-500/20 text-orange-300 border border-orange-500/30"
+                      : "bg-white/10 text-[var(--fg)]"
+                    : isAlert && alertCount > 0
+                      ? "text-orange-400 hover:bg-orange-500/10 border border-orange-500/20"
+                      : "text-[var(--fg-muted)] hover:text-[var(--fg-secondary)] hover:bg-white/5"
+                )}
+              >
+                {catLabel(cat)}
+                {isAlert && alertCount > 0 && (
+                  <span className={cn(
+                    "inline-flex items-center justify-center rounded-full text-[10px] font-bold px-1.5 min-w-[18px] h-[18px]",
+                    isActive ? "bg-orange-500/30 text-orange-200" : "bg-orange-500/20 text-orange-400 animate-pulse"
+                  )}>
+                    {alertCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
