@@ -332,11 +332,22 @@ function ShareButtons({ btcPremium, fng, vix, rsiD, locale }: ShareButtonsProps)
 
 // ── 메인 컴포넌트 ──────────────────────────────────────────────────────────
 
+interface BtcPremiumResponse {
+  premium: number | null;
+  updatedAt: number;
+}
+
 export function DashboardStrip() {
   const locale = useLocale();
   const isKo = locale === "ko";
   const isZh = locale === "zh";
   const coins = useAppStore((s) => s.coins);
+
+  // BTC 프리미엄 전용 빠른 엔드포인트 — 전체 코인 로드 전에 먼저 표시
+  const { data: btcFast } = useSWR<BtcPremiumResponse>("/api/btcpremium", fetcher, {
+    refreshInterval: 5000,
+    revalidateOnMount: true,
+  });
 
   const { data: indicators } = useSWR<IndicatorsResponse>("/api/indicators", fetcher, {
     refreshInterval: 60_000,
@@ -347,10 +358,10 @@ export function DashboardStrip() {
     errorRetryInterval: 10_000,
   });
 
-  // BTC / ETH 프리미엄
+  // BTC / ETH 프리미엄 — store 데이터 있으면 우선, 없으면 빠른 엔드포인트 사용
   const btc = coins.find((c) => c.symbol === "BTC");
   const eth = coins.find((c) => c.symbol === "ETH");
-  const btcPremium = btc?.premium ?? null;
+  const btcPremium = btc?.premium ?? btcFast?.premium ?? null;
   const ethPremium = eth?.premium ?? null;
 
   // 알트 평균 프리미엄 (상위 20개 non-null)
