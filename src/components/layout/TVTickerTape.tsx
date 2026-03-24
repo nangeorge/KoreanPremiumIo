@@ -7,7 +7,7 @@ const SYMBOLS = [
   { proName: "FOREXCOM:SPXUSD",  title: "S&P 500"  },
   { proName: "FOREXCOM:NSXUSD",  title: "NASDAQ"   },
   { proName: "FOREXCOM:DJI",     title: "DOW"      },
-  { proName: "INDEX:KOSPI",      title: "KOSPI"    },
+  { proName: "FOREXCOM:EURUSD",  title: "EUR/USD"  },
   // ── NASDAQ Top 10 ──
   { proName: "NASDAQ:NVDA",  title: "NVDA"  },
   { proName: "NASDAQ:AAPL",  title: "AAPL"  },

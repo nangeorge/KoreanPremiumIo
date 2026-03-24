@@ -5,6 +5,7 @@ import { AlertBanner } from "@/components/coins/AlertBanner";
 import { TVTickerTape } from "@/components/layout/TVTickerTape";
 import { LiquidationFeed } from "@/components/coins/LiquidationFeed";
 import { DashboardStrip } from "@/components/coins/DashboardStrip";
+import { HotAlertsTicker } from "@/components/coins/HotAlertsTicker";
 
 type Params = { locale: string };
 
@@ -14,6 +15,7 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
   return (
     <>
       <TVTickerTape />
+      <HotAlertsTicker />
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 space-y-4">
         {/* 컴팩트 대시보드 — 핵심 지표 한눈에 */}
         <DashboardStrip />

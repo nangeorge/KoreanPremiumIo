@@ -141,6 +141,18 @@ body {
 .flash-up   { animation: flash-green 0.9s ease-out; }
 .flash-down { animation: flash-red   0.9s ease-out; }
 
+/* ── 고김프 경보 티커 스크롤 ── */
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker-scroll {
+  animation: ticker-scroll 30s linear infinite;
+}
+.animate-ticker-scroll:hover {
+  animation-play-state: paused;
+}
+
 /* ── 카드 — Flat Dark (DefiLlama style) ── */
 /*
   Glassmorphism 제거 → 명확한 배경색 + 얇은 보더로 레이어 표현
