@@ -3,10 +3,45 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Sun, Moon } from "lucide-react";
 import { cn, formatPremium } from "@/lib/utils";
 import { useAppStore } from "@/store";
+
+function useVisitors() {
+  const [count, setCount] = useState<number | null>(null);
+  const sessionRef = useRef<string>("");
+
+  useEffect(() => {
+    // sessionStorage에서 세션ID 가져오거나 생성
+    let sid = sessionStorage.getItem("kp_sid");
+    if (!sid) {
+      sid = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      sessionStorage.setItem("kp_sid", sid);
+    }
+    sessionRef.current = sid;
+
+    async function heartbeat() {
+      try {
+        const res = await fetch("/api/visitors", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sessionId: sessionRef.current }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setCount(data.count);
+        }
+      } catch { /* ignore */ }
+    }
+
+    heartbeat();
+    const interval = setInterval(heartbeat, 20_000); // 20초마다 heartbeat
+    return () => clearInterval(interval);
+  }, []);
+
+  return count;
+}
 
 const LOCALES = [
   { code: "ko", label: "한국어", flag: "🇰🇷" },
@@ -22,6 +57,7 @@ export function Header() {
   const updatedAt = useAppStore((s) => s.updatedAt);
   const coins = useAppStore((s) => s.coins);
   const btcPremium = coins.find((c) => c.symbol === "BTC")?.premium ?? null;
+  const visitorCount = useVisitors();
 
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
@@ -64,6 +100,12 @@ export function Header() {
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
               <span className="text-xs text-[var(--fg-secondary)]">LIVE</span>
             </div>
+            {visitorCount !== null && (
+              <div className="flex items-center gap-1 text-xs text-[var(--fg-muted)]">
+                <span>👥</span>
+                <span className="font-number">{visitorCount.toLocaleString()}</span>
+              </div>
+            )}
             {btcPremium !== null && (
               <div className={cn(
                 "flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-number bg-white/4",
