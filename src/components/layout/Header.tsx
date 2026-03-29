@@ -129,12 +129,18 @@ export function Header() {
 
           {/* Right: Theme toggle + Locale switcher */}
           <div className="flex items-center gap-3">
-            {/* Mobile: live dot + 환율 */}
+            {/* Mobile: live dot + 환율 + 접속자 */}
             <div className="flex items-center gap-1.5 md:hidden">
               <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
               {exchangeRate > 0 && (
                 <span className="font-number text-xs text-[var(--fg-secondary)] font-medium">
                   $1 = ₩{exchangeRate.toLocaleString("ko-KR")}
+                </span>
+              )}
+              {visitorCount !== null && (
+                <span className="flex items-center gap-0.5 text-xs text-[var(--fg-muted)]">
+                  <span>👥</span>
+                  <span className="font-number">{visitorCount.toLocaleString()}</span>
                 </span>
               )}
             </div>
