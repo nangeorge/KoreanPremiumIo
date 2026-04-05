@@ -4,22 +4,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { formatDistanceToNow } from "date-fns";
-import { ko, enUS, zhCN } from "date-fns/locale";
 import { Heart, MessageCircle, Eye, Pin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { lt } from "@/lib/lt";
+import { useDateLocale } from "@/hooks/useDateLocale";
 import { CATEGORY_LABELS } from "@/lib/community/schema";
 import type { PostDTO } from "@/lib/community/schema";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  free: "text-blue-400 bg-blue-400/10",
+  free:     "text-blue-400 bg-blue-400/10",
   analysis: "text-orange-400 bg-orange-400/10",
-  news: "text-emerald-400 bg-emerald-400/10",
+  news:     "text-emerald-400 bg-emerald-400/10",
   question: "text-purple-400 bg-purple-400/10",
 };
 
 export function PostCard({ post }: { post: PostDTO }) {
   const locale = useLocale();
-  const dateLocale = locale === "ko" ? ko : locale === "zh" ? zhCN : enUS;
+  const dateLocale = useDateLocale();
   const catLabel = CATEGORY_LABELS[post.category]?.[locale as "ko" | "en" | "zh"] ?? post.category;
 
   return (
@@ -30,18 +31,15 @@ export function PostCard({ post }: { post: PostDTO }) {
       )}>
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            {/* 상단: 카테고리 + 핀 */}
             <div className="flex items-center gap-2 mb-1.5">
               {post.isPinned && <Pin size={12} className="text-orange-400 flex-shrink-0" />}
               <span className={cn("text-[10px] font-semibold px-1.5 py-0.5 rounded", CATEGORY_COLORS[post.category])}>
                 {catLabel}
               </span>
             </div>
-            {/* 제목 */}
             <p className="text-sm font-medium text-[var(--fg)] group-hover:text-white transition-colors line-clamp-2 leading-snug">
               {post.title}
             </p>
-            {/* 메타 */}
             <div className="mt-2 flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-1.5">
                 {post.author.image ? (
@@ -57,15 +55,11 @@ export function PostCard({ post }: { post: PostDTO }) {
                 {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: dateLocale })}
               </span>
               <div className="flex items-center gap-2.5 ml-auto">
-                <span className="flex items-center gap-1 text-[11px] text-[var(--fg-muted)]">
-                  <Eye size={11} /> {post.viewCount}
-                </span>
+                <span className="flex items-center gap-1 text-[11px] text-[var(--fg-muted)]"><Eye size={11} /> {post.viewCount}</span>
                 <span className="flex items-center gap-1 text-[11px] text-[var(--fg-muted)]">
                   <Heart size={11} className={post.isLiked ? "fill-red-400 text-red-400" : ""} /> {post.likeCount}
                 </span>
-                <span className="flex items-center gap-1 text-[11px] text-[var(--fg-muted)]">
-                  <MessageCircle size={11} /> {post.commentCount}
-                </span>
+                <span className="flex items-center gap-1 text-[11px] text-[var(--fg-muted)]"><MessageCircle size={11} /> {post.commentCount}</span>
               </div>
             </div>
           </div>
