@@ -1,0 +1,43 @@
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import { upsertUser } from "@/lib/community/db";
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
+  ],
+  callbacks: {
+    jwt({ token, profile }) {
+      // Google 프로필 정보를 토큰에 저장
+      if (profile) {
+        token.picture = (profile as { picture?: string }).picture ?? token.picture;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+        if (token.picture) session.user.image = token.picture as string;
+      }
+      return session;
+    },
+    signIn({ user, account }) {
+      // 로그인 시 유저 정보 DB에 upsert
+      if (account?.provider === "google" && user.id) {
+        upsertUser({
+          id: user.id,
+          name: user.name ?? "이름 없음",
+          image: user.image ?? null,
+          email: user.email ?? "",
+        });
+      }
+      return true;
+    },
+  },
+  pages: {
+    signIn: "/auth/signin",
+  },
+});

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { Sun, Moon } from "lucide-react";
 import { cn, formatPremium } from "@/lib/utils";
 import { useAppStore } from "@/store";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 function useVisitors() {
   const [count, setCount] = useState<number | null>(null);
@@ -152,6 +153,8 @@ export function Header() {
             >
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
+
+            <UserMenu />
 
             <div className="flex items-center rounded border border-[var(--border-color)] bg-white/3 p-0.5">
               {LOCALES.map((loc) => (

@@ -1,4 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
+import { SessionProviderWrapper } from "@/components/auth/SessionProviderWrapper";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales } from "@/i18n/config";
@@ -187,6 +188,7 @@ export default async function LocaleLayout({
       : "This service is for informational purposes only and does not constitute investment advice or solicitation. All investment decisions and their resulting gains or losses are solely the responsibility of the user.";
 
   return (
+    <SessionProviderWrapper>
     <NextIntlClientProvider messages={messages} locale={locale}>
       {jsonLd.map((schema, i) => (
         <script
@@ -211,5 +213,6 @@ export default async function LocaleLayout({
         </div>
       </DataProvider>
     </NextIntlClientProvider>
+    </SessionProviderWrapper>
   );
 }

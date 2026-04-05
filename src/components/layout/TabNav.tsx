@@ -6,10 +6,11 @@ import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { key: "home",       href: "",           labelKo: "김치 프리미엄", labelEn: "Kimchi Premium", labelZh: "泡菜溢价" },
+  { key: "home",       href: "",            labelKo: "김치 프리미엄", labelEn: "Kimchi Premium", labelZh: "泡菜溢价" },
   { key: "indicators", href: "/indicators", labelKo: "지표 분석",    labelEn: "Indicators",     labelZh: "指标"    },
   { key: "news",       href: "/news",       labelKo: "뉴스",         labelEn: "News",           labelZh: "新闻"    },
   { key: "coin",       href: "/coin/btc",   labelKo: "코인 정보",    labelEn: "Coin Info",      labelZh: "币种信息" },
+  { key: "community",  href: "/community",  labelKo: "커뮤니티",     labelEn: "Community",      labelZh: "社区"    },
 ];
 
 export function TabNav() {
@@ -26,6 +27,7 @@ export function TabNav() {
     const expected = `/${locale}${tab.href}`;
     if (tab.key === "home") return pathname === `/${locale}` || pathname === `/${locale}/`;
     if (tab.key === "coin") return pathname.startsWith(`/${locale}/coin/`);
+    if (tab.key === "community") return pathname.startsWith(`/${locale}/community`);
     return pathname.startsWith(expected);
   }
 
