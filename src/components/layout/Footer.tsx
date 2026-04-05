@@ -117,8 +117,11 @@ export function Footer() {
             <Link href={`/${locale}/terms`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
               {locale === "ko" ? "이용약관" : locale === "zh" ? "服务条款" : "Terms of Service"}
             </Link>
-            <a href="mailto:contact@koreanpremium.io" className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
-              contact@koreanpremium.io
+            <Link href={`/${locale}/contact`} className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+              {locale === "ko" ? "문의하기" : locale === "zh" ? "联系我们" : "Contact"}
+            </Link>
+            <a href="mailto:contact@kimchipremium.com" className="text-xs text-[var(--fg-muted)] hover:text-[var(--fg)] transition-colors">
+              contact@kimchipremium.com
             </a>
           </div>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">

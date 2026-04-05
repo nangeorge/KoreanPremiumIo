@@ -52,7 +52,7 @@ const CONTENT = {
       },
       {
         heading: "11. 문의",
-        body: "개인정보 처리방침에 관한 문의사항은 아래 이메일로 연락해 주세요.\n\ncontact@koreanpremium.io",
+        body: "개인정보 처리방침에 관한 문의사항은 아래 이메일로 연락해 주세요.\n\ncontact@kimchipremium.com",
       },
     ],
   },
@@ -103,7 +103,7 @@ const CONTENT = {
       },
       {
         heading: "11. Contact",
-        body: "For questions about this Privacy Policy, please contact us at:\n\ncontact@koreanpremium.io",
+        body: "For questions about this Privacy Policy, please contact us at:\n\ncontact@kimchipremium.com",
       },
     ],
   },
@@ -154,7 +154,7 @@ const CONTENT = {
       },
       {
         heading: "11. 联系我们",
-        body: "如对本隐私政策有任何疑问，请通过以下邮箱联系我们：\n\ncontact@koreanpremium.io",
+        body: "如对本隐私政策有任何疑问，请通过以下邮箱联系我们：\n\ncontact@kimchipremium.com",
       },
     ],
   },

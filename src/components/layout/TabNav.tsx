@@ -11,6 +11,7 @@ const TABS = [
   { key: "news",       href: "/news",       labelKo: "뉴스",         labelEn: "News",           labelZh: "新闻"    },
   { key: "coin",       href: "/coin/btc",   labelKo: "코인 정보",    labelEn: "Coin Info",      labelZh: "币种信息" },
   { key: "community",  href: "/community",  labelKo: "커뮤니티",     labelEn: "Community",      labelZh: "社区"    },
+  { key: "guide",      href: "/guide",      labelKo: "비트코인 가이드", labelEn: "BTC Guide",     labelZh: "比特币指南" },
 ];
 
 export function TabNav() {
@@ -28,6 +29,7 @@ export function TabNav() {
     if (tab.key === "home") return pathname === `/${locale}` || pathname === `/${locale}/`;
     if (tab.key === "coin") return pathname.startsWith(`/${locale}/coin/`);
     if (tab.key === "community") return pathname.startsWith(`/${locale}/community`);
+    if (tab.key === "guide") return pathname.startsWith(`/${locale}/guide`);
     return pathname.startsWith(expected);
   }
 

@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.newsbtc.com" },
       { protocol: "https", hostname: "images.cryptocompare.com" },
       { protocol: "https", hostname: "**.cryptocompare.com" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
   },
   async headers() {

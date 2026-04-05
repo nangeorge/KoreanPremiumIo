@@ -38,7 +38,7 @@ const CONTENT = {
     contactSection: {
       heading: "문의하기",
       body: "버그 제보, 제안, 협업 문의는 아래 이메일로 보내주세요.",
-      email: "contact@koreanpremium.io",
+      email: "contact@kimchipremium.com",
     },
     legalLinks: { privacy: "개인정보 처리방침", terms: "이용약관" },
   },
@@ -75,7 +75,7 @@ const CONTENT = {
     contactSection: {
       heading: "Contact",
       body: "For bug reports, suggestions, or partnership inquiries, please email us at:",
-      email: "contact@koreanpremium.io",
+      email: "contact@kimchipremium.com",
     },
     legalLinks: { privacy: "Privacy Policy", terms: "Terms of Service" },
   },
@@ -112,7 +112,7 @@ const CONTENT = {
     contactSection: {
       heading: "联系我们",
       body: "如需报告错误、提出建议或商务合作，请发送邮件至：",
-      email: "contact@koreanpremium.io",
+      email: "contact@kimchipremium.com",
     },
     legalLinks: { privacy: "隐私政策", terms: "服务条款" },
   },

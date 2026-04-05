@@ -5,6 +5,7 @@ import { AlertBanner } from "@/components/coins/AlertBanner";
 import { TVTickerTape } from "@/components/layout/TVTickerTape";
 import { LiquidationFeed } from "@/components/coins/LiquidationFeed";
 import { DashboardStrip } from "@/components/coins/DashboardStrip";
+import { AdUnit } from "@/components/ads/AdUnit";
 
 type Params = { locale: string };
 
@@ -17,6 +18,9 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 space-y-4">
         {/* 컴팩트 대시보드 — 핵심 지표 한눈에 */}
         <DashboardStrip />
+
+        {/* 광고 — 상단 배너 */}
+        <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_BANNER ?? ""} format="horizontal" className="w-full" />
 
         {/* Chart + Table grid */}
         <div className="grid grid-cols-1 gap-4 md:gap-6 xl:grid-cols-5">

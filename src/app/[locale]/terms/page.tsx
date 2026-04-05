@@ -56,7 +56,7 @@ const CONTENT = {
       },
       {
         heading: "11. 문의",
-        body: "이용약관에 관한 문의는 아래 이메일로 연락해 주세요.\n\ncontact@koreanpremium.io",
+        body: "이용약관에 관한 문의는 아래 이메일로 연락해 주세요.\n\ncontact@kimchipremium.com",
       },
     ],
   },
@@ -111,7 +111,7 @@ const CONTENT = {
       },
       {
         heading: "11. Contact",
-        body: "For questions about these Terms, please contact us at:\n\ncontact@koreanpremium.io",
+        body: "For questions about these Terms, please contact us at:\n\ncontact@kimchipremium.com",
       },
     ],
   },
@@ -166,7 +166,7 @@ const CONTENT = {
       },
       {
         heading: "11. 联系我们",
-        body: "如对本条款有任何疑问，请通过以下邮箱联系我们：\n\ncontact@koreanpremium.io",
+        body: "如对本条款有任何疑问，请通过以下邮箱联系我们：\n\ncontact@kimchipremium.com",
       },
     ],
   },
