@@ -228,7 +228,18 @@ export function ChatWidget() {
             <span className="live-dot h-2 w-2 rounded-full bg-emerald-400" />
             <span className="text-sm font-semibold text-white">{t.title}</span>
           </div>
-          <div className="text-xs text-[var(--fg-muted)]">{t.rules}</div>
+          <div className="flex items-center gap-3">
+            <div className="text-xs text-[var(--fg-muted)] hidden sm:block">{t.rules}</div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              aria-label="채팅 닫기"
+            >
+              <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* 닉네임 설정 바 */}
