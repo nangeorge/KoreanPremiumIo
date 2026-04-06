@@ -126,10 +126,17 @@ export async function getPost(id: string, userId: string | null): Promise<PostDT
 
 // ── 게시글 작성 ───────────────────────────────────────────────────────────────
 export async function createPost(input: CreatePostInput, userId: string): Promise<PostDTO> {
-  const { data } = await supabase
+  // users 테이블에 해당 userId가 없으면 FK constraint 위반 → upsert로 보장
+  await supabase.from("users").upsert(
+    { id: userId, name: "알 수 없음", email: "" },
+    { onConflict: "id", ignoreDuplicates: true }
+  );
+
+  const { data, error } = await supabase
     .from("posts")
     .insert({ user_id: userId, category: input.category, title: input.title.slice(0, 100), content: input.content.slice(0, 10000) })
     .select("*, users!user_id(id,name,image)").single();
+  if (error || !data) throw new Error(error?.message ?? "insert failed");
   return toPostDTO(data as unknown as PostRow, new Set());
 }
 

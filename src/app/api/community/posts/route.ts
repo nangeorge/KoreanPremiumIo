@@ -24,11 +24,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  // rate limit: 1분에 2개
-  if (postRateLimit(session.user.id)) {
-    return NextResponse.json({ error: "1분에 최대 2개까지 작성할 수 있습니다." }, { status: 429 });
-  }
-
   try {
     const body: CreatePostInput = await request.json();
     const title = (body.title ?? "").trim().slice(0, 100);
@@ -41,9 +36,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "유효하지 않은 카테고리" }, { status: 400 });
     }
 
+    // rate limit: 유효성 검사 통과 후 체크 (실패한 요청은 카운트 소모 안 함)
+    if (postRateLimit(session.user.id)) {
+      return NextResponse.json({ error: "1분에 최대 2개까지 작성할 수 있습니다." }, { status: 429 });
+    }
+
     const post = await createPost({ category, title, content }, session.user.id);
     return NextResponse.json(post, { status: 201 });
   } catch {
-    return NextResponse.json({ error: "invalid" }, { status: 400 });
+    return NextResponse.json({ error: "서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요." }, { status: 500 });
   }
 }
