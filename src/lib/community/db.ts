@@ -1,324 +1,285 @@
-// ──────────────────────────────────────────────────────────────────────────────
-// 인메모리 Mock DB
-// DB 연결 시 이 파일의 각 함수 내부를 ORM/SQL 쿼리로 교체하면 됩니다.
-// global 변수를 사용해 Next.js Fast Refresh 시에도 데이터 유지.
-// ──────────────────────────────────────────────────────────────────────────────
+import { supabase } from "@/lib/supabase";
 import type {
-  DbPostInternal, DbCommentInternal, DbUser,
-  AuthorInfo, PostDTO, PostsResponse, CommentDTO,
-  CreatePostInput, UpdatePostInput, CreateCommentInput,
-  PostCategory,
+  DbUser, AuthorInfo, PostDTO, PostsResponse, CommentDTO,
+  CreatePostInput, UpdatePostInput, CreateCommentInput, PostCategory,
 } from "./schema";
 
-interface CommunityDB {
-  posts: Map<string, DbPostInternal>;
-  comments: Map<string, DbCommentInternal>;
-  users: Map<string, DbUser>;
+// ── 내부 타입 ─────────────────────────────────────────────────────────────────
+type PostRow = {
+  id: string; user_id: string; category: string; title: string; content: string;
+  like_count: number; comment_count: number; view_count: number;
+  is_pinned: boolean; is_deleted: boolean; created_at: string; updated_at: string;
+  users: { id: string; name: string; image: string | null } | null;
+};
+
+type CommentRow = {
+  id: string; post_id: string; user_id: string; parent_id: string | null;
+  content: string; like_count: number; is_deleted: boolean;
+  created_at: string; updated_at: string;
+  users: { id: string; name: string; image: string | null } | null;
+};
+
+function toAuthor(user: PostRow["users"], fallbackId: string): AuthorInfo {
+  return user
+    ? { id: user.id, name: user.name, image: user.image }
+    : { id: fallbackId, name: "탈퇴한 유저", image: null };
 }
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __communityDB: CommunityDB | undefined;
-}
-
-if (!global.__communityDB) {
-  global.__communityDB = { posts: new Map(), comments: new Map(), users: new Map() };
-  seedDB(global.__communityDB);
-}
-
-const db = global.__communityDB;
-
-// ── 유틸 ──────────────────────────────────────────────────────────────────────
-function uid(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
-
-function now(): string {
-  return new Date().toISOString();
-}
-
-function toAuthor(user: DbUser): AuthorInfo {
-  return { id: user.id, name: user.name, image: user.image };
-}
-
-function toPostDTO(post: DbPostInternal, userId: string | null): PostDTO {
-  const user = db.users.get(post.userId);
-  const author: AuthorInfo = user
-    ? toAuthor(user)
-    : { id: post.userId, name: "탈퇴한 유저", image: null };
+function toPostDTO(row: PostRow, likedSet: Set<string>): PostDTO {
   return {
-    id: post.id,
-    category: post.category,
-    title: post.title,
-    content: post.content,
-    author,
-    likeCount: post.likeCount,
-    commentCount: post.commentCount,
-    viewCount: post.viewCount,
-    isPinned: post.isPinned,
-    isLiked: userId ? post.likedBy.has(userId) : false,
-    createdAt: post.createdAt,
-    updatedAt: post.updatedAt,
+    id: row.id,
+    category: row.category as PostCategory,
+    title: row.title,
+    content: row.content,
+    author: toAuthor(row.users, row.user_id),
+    likeCount: row.like_count,
+    commentCount: row.comment_count,
+    viewCount: row.view_count,
+    isPinned: row.is_pinned,
+    isLiked: likedSet.has(row.id),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
 
-function toCommentDTO(
-  comment: DbCommentInternal,
-  userId: string | null,
-  repliesMap: Map<string, DbCommentInternal[]>
-): CommentDTO {
-  const user = db.users.get(comment.userId);
-  const author: AuthorInfo = user
-    ? toAuthor(user)
-    : { id: comment.userId, name: "탈퇴한 유저", image: null };
-
-  const replyList = repliesMap.get(comment.id) ?? [];
-  const replies = replyList.map((r) => toCommentDTO(r, userId, repliesMap));
-
-  return {
-    id: comment.id,
-    postId: comment.postId,
-    parentId: comment.parentId,
-    content: comment.isDeleted ? "[삭제된 댓글입니다]" : comment.content,
-    author,
-    likeCount: comment.likeCount,
-    isLiked: userId ? comment.likedBy.has(userId) : false,
-    isDeleted: comment.isDeleted,
-    replies,
-    createdAt: comment.createdAt,
-    updatedAt: comment.updatedAt,
-  };
+function buildCommentTree(rows: CommentRow[], likedSet: Set<string>, parentId: string | null = null): CommentDTO[] {
+  return rows
+    .filter((r) => r.parent_id === parentId)
+    .sort((a, b) => a.created_at.localeCompare(b.created_at))
+    .map((r) => ({
+      id: r.id, postId: r.post_id, parentId: r.parent_id,
+      content: r.is_deleted ? "[삭제된 댓글입니다]" : r.content,
+      author: toAuthor(r.users, r.user_id),
+      likeCount: r.like_count,
+      isLiked: likedSet.has(r.id),
+      isDeleted: r.is_deleted,
+      replies: buildCommentTree(rows, likedSet, r.id),
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+    }));
 }
 
-// ── 시드 데이터 ────────────────────────────────────────────────────────────────
-function seedDB(target: CommunityDB) {
-  const seedUser: DbUser = {
-    id: "seed-user-1",
-    name: "김치왕",
-    image: null,
-    email: "kimchi@example.com",
-    role: "admin",
-    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-  };
-  target.users.set(seedUser.id, seedUser);
-
-  const seedPosts: Array<{ category: PostCategory; title: string; content: string }> = [
-    {
-      category: "analysis",
-      title: "김프 10% 돌파 시 역사적으로 어떤 일이 있었나",
-      content: "2021년 4월, 2024년 3월 모두 김프가 10%를 넘어설 때 단기 고점이 형성됐습니다.\n\n이번에도 비슷한 패턴이 보입니다. 업비트 매수 대기 물량이 급증했고, 해외 선물 펀딩비도 양수로 전환됐습니다.\n\n여러분의 생각은 어떤가요?",
-    },
-    {
-      category: "free",
-      title: "역프 때 매수한 사람들 후기 공유",
-      content: "역프 -3% 찍었을 때 BTC 담았는데 지금 +18%네요. 김프 지표가 이렇게 유용할 줄 몰랐습니다.",
-    },
-    {
-      category: "question",
-      title: "역김프가 생기는 이유가 뭔가요?",
-      content: "업비트보다 해외 거래소 가격이 더 비싼 경우가 있더라고요. 이게 어떤 메커니즘인지 설명해주실 분 계신가요?",
-    },
-    {
-      category: "news",
-      title: "업비트, 신규 코인 15개 KRW 마켓 상장 예정",
-      content: "업비트가 다음 달 15개 신규 코인을 KRW 마켓에 상장할 예정이라고 합니다. 상장 직후 김프가 급등할 가능성이 있으니 주목해볼 필요가 있습니다.",
-    },
-  ];
-
-  const t = Date.now() - 86400000;
-  for (let i = 0; i < seedPosts.length; i++) {
-    const id = `seed-post-${i + 1}`;
-    target.posts.set(id, {
-      id,
-      userId: seedUser.id,
-      category: seedPosts[i].category,
-      title: seedPosts[i].title,
-      content: seedPosts[i].content,
-      likeCount: Math.floor(Math.random() * 20),
-      commentCount: 0,
-      viewCount: Math.floor(Math.random() * 200),
-      isPinned: i === 0,
-      isDeleted: false,
-      likedBy: new Set(),
-      createdAt: new Date(t - i * 3600000).toISOString(),
-      updatedAt: new Date(t - i * 3600000).toISOString(),
-    });
-  }
+// ── 유저 upsert ───────────────────────────────────────────────────────────────
+export async function upsertUser(user: Omit<DbUser, "role" | "createdAt">): Promise<void> {
+  await supabase.from("users").upsert(
+    { id: user.id, name: user.name, image: user.image, email: user.email },
+    { onConflict: "id" }
+  );
 }
 
-// ── 유저 upsert (OAuth 로그인 시 호출) ────────────────────────────────────────
-export function upsertUser(user: Omit<DbUser, "role" | "createdAt">): DbUser {
-  // SQL: INSERT INTO users ... ON CONFLICT (id) DO UPDATE SET name=..., image=...
-  const existing = db.users.get(user.id);
-  if (existing) {
-    existing.name = user.name;
-    existing.image = user.image;
-    return existing;
-  }
-  const newUser: DbUser = { ...user, role: "user", createdAt: now() };
-  db.users.set(user.id, newUser);
-  return newUser;
-}
-
-// ── 게시글 목록 ────────────────────────────────────────────────────────────────
-export function getPosts(opts: {
+// ── 게시글 목록 ───────────────────────────────────────────────────────────────
+export async function getPosts(opts: {
   category?: PostCategory | "all";
   page: number;
   pageSize: number;
   userId: string | null;
-}): PostsResponse {
-  // SQL: SELECT * FROM posts WHERE is_deleted=false [AND category=?] ORDER BY is_pinned DESC, created_at DESC LIMIT ? OFFSET ?
+}): Promise<PostsResponse> {
   const { category, page, pageSize, userId } = opts;
-  const all = [...db.posts.values()]
-    .filter((p) => !p.isDeleted && (category === "all" || !category || p.category === category))
-    .sort((a, b) => {
-      if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
-      return b.createdAt.localeCompare(a.createdAt);
-    });
+  const offset = (page - 1) * pageSize;
 
-  const total = all.length;
-  const posts = all.slice((page - 1) * pageSize, page * pageSize).map((p) => toPostDTO(p, userId));
-  return { posts, total, page, pageSize, hasMore: page * pageSize < total };
+  let query = supabase
+    .from("posts")
+    .select("*, users!user_id(id,name,image)", { count: "exact" })
+    .eq("is_deleted", false)
+    .order("is_pinned", { ascending: false })
+    .order("created_at", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  if (category && category !== "all") query = query.eq("category", category);
+
+  const { data, count } = await query;
+  const postRows = (data ?? []) as unknown as PostRow[];
+
+  let likedSet = new Set<string>();
+  if (userId && postRows.length > 0) {
+    const { data: likes } = await supabase
+      .from("likes").select("target_id")
+      .eq("user_id", userId).eq("target_type", "post")
+      .in("target_id", postRows.map((r) => r.id));
+    likedSet = new Set(likes?.map((l) => l.target_id) ?? []);
+  }
+
+  const total = count ?? 0;
+  return { posts: postRows.map((r) => toPostDTO(r, likedSet)), total, page, pageSize, hasMore: page * pageSize < total };
 }
 
-// ── 게시글 단건 ────────────────────────────────────────────────────────────────
-export function getPost(id: string, userId: string | null): PostDTO | null {
-  // SQL: SELECT * FROM posts WHERE id=? AND is_deleted=false
-  const post = db.posts.get(id);
-  if (!post || post.isDeleted) return null;
-  post.viewCount++;
-  return toPostDTO(post, userId);
+// ── 게시글 단건 ───────────────────────────────────────────────────────────────
+export async function getPost(id: string, userId: string | null): Promise<PostDTO | null> {
+  const { data } = await supabase
+    .from("posts").select("*, users!user_id(id,name,image)")
+    .eq("id", id).eq("is_deleted", false).single();
+  if (!data) return null;
+
+  // 조회수 증가 (비동기, 결과 무시)
+  supabase.rpc("increment_post_view", { p_id: id }).then(() => {});
+
+  let likedSet = new Set<string>();
+  if (userId) {
+    const { data: likes } = await supabase
+      .from("likes").select("target_id")
+      .eq("user_id", userId).eq("target_type", "post").eq("target_id", id);
+    likedSet = new Set(likes?.map((l) => l.target_id) ?? []);
+  }
+
+  return toPostDTO(data as unknown as PostRow, likedSet);
 }
 
-// ── 게시글 작성 ────────────────────────────────────────────────────────────────
-export function createPost(input: CreatePostInput, userId: string): PostDTO {
-  // SQL: INSERT INTO posts (id, user_id, category, title, content, ...) VALUES (...)
-  const id = uid();
-  const post: DbPostInternal = {
-    id, userId,
-    category: input.category,
-    title: input.title.slice(0, 100),
-    content: input.content.slice(0, 10000),
-    likeCount: 0, commentCount: 0, viewCount: 0,
-    isPinned: false, isDeleted: false,
-    likedBy: new Set(),
-    createdAt: now(), updatedAt: now(),
-  };
-  db.posts.set(id, post);
-  return toPostDTO(post, userId);
+// ── 게시글 작성 ───────────────────────────────────────────────────────────────
+export async function createPost(input: CreatePostInput, userId: string): Promise<PostDTO> {
+  const { data } = await supabase
+    .from("posts")
+    .insert({ user_id: userId, category: input.category, title: input.title.slice(0, 100), content: input.content.slice(0, 10000) })
+    .select("*, users!user_id(id,name,image)").single();
+  return toPostDTO(data as unknown as PostRow, new Set());
 }
 
-// ── 게시글 수정 ────────────────────────────────────────────────────────────────
-export function updatePost(id: string, input: UpdatePostInput, userId: string): PostDTO | null {
-  // SQL: UPDATE posts SET ... WHERE id=? AND user_id=?
-  const post = db.posts.get(id);
-  if (!post || post.isDeleted || post.userId !== userId) return null;
-  if (input.title) post.title = input.title.slice(0, 100);
-  if (input.content) post.content = input.content.slice(0, 10000);
-  if (input.category) post.category = input.category;
-  post.updatedAt = now();
-  return toPostDTO(post, userId);
+// ── 게시글 수정 ───────────────────────────────────────────────────────────────
+export async function updatePost(id: string, input: UpdatePostInput, userId: string): Promise<PostDTO | null> {
+  const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (input.title) updates.title = input.title.slice(0, 100);
+  if (input.content) updates.content = input.content.slice(0, 10000);
+  if (input.category) updates.category = input.category;
+
+  const { data } = await supabase
+    .from("posts").update(updates)
+    .eq("id", id).eq("user_id", userId).eq("is_deleted", false)
+    .select("*, users!user_id(id,name,image)").single();
+  if (!data) return null;
+  return toPostDTO(data as unknown as PostRow, new Set());
 }
 
 // ── 게시글 삭제 (소프트) ──────────────────────────────────────────────────────
-export function deletePost(id: string, userId: string): boolean {
-  // SQL: UPDATE posts SET is_deleted=true WHERE id=? AND user_id=?
-  const post = db.posts.get(id);
-  if (!post || post.userId !== userId) return false;
-  post.isDeleted = true;
-  post.updatedAt = now();
-  return true;
+export async function deletePost(id: string, userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("posts").update({ is_deleted: true, updated_at: new Date().toISOString() })
+    .eq("id", id).eq("user_id", userId).select("id").single();
+  return !!data;
 }
 
-// ── 게시글 좋아요 토글 ─────────────────────────────────────────────────────────
-export function togglePostLike(postId: string, userId: string): { liked: boolean; count: number } {
-  // SQL: INSERT INTO likes ... ON CONFLICT DO DELETE / UPDATE posts SET like_count=...
-  const post = db.posts.get(postId);
-  if (!post || post.isDeleted) return { liked: false, count: 0 };
-  if (post.likedBy.has(userId)) {
-    post.likedBy.delete(userId);
-    post.likeCount = Math.max(0, post.likeCount - 1);
-    return { liked: false, count: post.likeCount };
+// ── 게시글 좋아요 토글 ────────────────────────────────────────────────────────
+export async function togglePostLike(postId: string, userId: string): Promise<{ liked: boolean; count: number }> {
+  const { data: existing } = await supabase
+    .from("likes").select("id")
+    .eq("user_id", userId).eq("target_type", "post").eq("target_id", postId).maybeSingle();
+
+  const { data: post, error: postError } = await supabase.from("posts").select("like_count").eq("id", postId).maybeSingle();
+  if (postError || !post) return { liked: false, count: 0 };
+  const current = post.like_count ?? 0;
+
+  if (existing) {
+    await supabase.from("likes").delete().eq("id", existing.id);
+    const newCount = Math.max(0, current - 1);
+    await supabase.from("posts").update({ like_count: newCount }).eq("id", postId);
+    return { liked: false, count: newCount };
+  } else {
+    await supabase.from("likes").insert({ user_id: userId, target_type: "post", target_id: postId });
+    const newCount = current + 1;
+    await supabase.from("posts").update({ like_count: newCount }).eq("id", postId);
+    return { liked: true, count: newCount };
   }
-  post.likedBy.add(userId);
-  post.likeCount++;
-  return { liked: true, count: post.likeCount };
 }
 
 // ── 댓글 목록 ─────────────────────────────────────────────────────────────────
-export function getComments(postId: string, userId: string | null): CommentDTO[] {
-  // SQL: SELECT * FROM comments WHERE post_id=? ORDER BY created_at ASC
-  const all = [...db.comments.values()].filter((c) => c.postId === postId);
-  const roots = all.filter((c) => !c.parentId).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-  const repliesMap = new Map<string, DbCommentInternal[]>();
-  for (const c of all) {
-    if (c.parentId) {
-      const list = repliesMap.get(c.parentId) ?? [];
-      list.push(c);
-      repliesMap.set(c.parentId, list);
-    }
+export async function getComments(postId: string, userId: string | null): Promise<CommentDTO[]> {
+  const { data } = await supabase
+    .from("comments").select("*, users!user_id(id,name,image)")
+    .eq("post_id", postId).order("created_at", { ascending: true });
+
+  const rows = (data ?? []) as unknown as CommentRow[];
+
+  let likedSet = new Set<string>();
+  if (userId && rows.length > 0) {
+    const { data: likes } = await supabase
+      .from("likes").select("target_id")
+      .eq("user_id", userId).eq("target_type", "comment")
+      .in("target_id", rows.map((r) => r.id));
+    likedSet = new Set(likes?.map((l) => l.target_id) ?? []);
   }
-  for (const [k, v] of repliesMap) {
-    repliesMap.set(k, v.sort((a, b) => a.createdAt.localeCompare(b.createdAt)));
-  }
-  return roots.map((c) => toCommentDTO(c, userId, repliesMap));
+
+  return buildCommentTree(rows, likedSet);
 }
 
 // ── 댓글 작성 ─────────────────────────────────────────────────────────────────
-export function createComment(
-  postId: string, input: CreateCommentInput, userId: string
-): CommentDTO | null {
-  // SQL: INSERT INTO comments (...) VALUES (...); UPDATE posts SET comment_count=comment_count+1
-  const post = db.posts.get(postId);
-  if (!post || post.isDeleted) return null;
-  const id = uid();
-  const comment: DbCommentInternal = {
-    id, postId, userId,
-    parentId: input.parentId ?? null,
-    content: input.content.slice(0, 1000),
-    likeCount: 0, isDeleted: false,
-    likedBy: new Set(),
-    createdAt: now(), updatedAt: now(),
+export async function createComment(postId: string, input: CreateCommentInput, userId: string): Promise<CommentDTO | null> {
+  const { data: post } = await supabase
+    .from("posts").select("id,comment_count").eq("id", postId).eq("is_deleted", false).single();
+  if (!post) return null;
+
+  // parentId 검증 — 반드시 같은 post의 댓글이어야 함 (IDOR 방지)
+  if (input.parentId) {
+    const { data: parentComment } = await supabase
+      .from("comments").select("post_id").eq("id", input.parentId).single();
+    if (!parentComment || parentComment.post_id !== postId) return null;
+  }
+
+  const { data } = await supabase
+    .from("comments")
+    .insert({ post_id: postId, user_id: userId, parent_id: input.parentId ?? null, content: input.content.slice(0, 1000) })
+    .select("*, users!user_id(id,name,image)").single();
+
+  await supabase.from("posts").update({ comment_count: (post.comment_count ?? 0) + 1 }).eq("id", postId);
+
+  const r = data as unknown as CommentRow;
+  return {
+    id: r.id, postId: r.post_id, parentId: r.parent_id, content: r.content,
+    author: toAuthor(r.users, r.user_id),
+    likeCount: 0, isLiked: false, isDeleted: false, replies: [],
+    createdAt: r.created_at, updatedAt: r.updated_at,
   };
-  db.comments.set(id, comment);
-  post.commentCount++;
-  return toCommentDTO(comment, userId, new Map());
 }
 
 // ── 댓글 수정 ─────────────────────────────────────────────────────────────────
-export function updateComment(id: string, content: string, userId: string): CommentDTO | null {
-  // SQL: UPDATE comments SET content=?, updated_at=NOW() WHERE id=? AND user_id=?
-  const comment = db.comments.get(id);
-  if (!comment || comment.isDeleted || comment.userId !== userId) return null;
-  comment.content = content.slice(0, 1000);
-  comment.updatedAt = now();
-  return toCommentDTO(comment, userId, new Map());
+export async function updateComment(id: string, content: string, userId: string): Promise<CommentDTO | null> {
+  const { data } = await supabase
+    .from("comments")
+    .update({ content: content.slice(0, 1000), updated_at: new Date().toISOString() })
+    .eq("id", id).eq("user_id", userId).eq("is_deleted", false)
+    .select("*, users!user_id(id,name,image)").single();
+  if (!data) return null;
+  const r = data as unknown as CommentRow;
+  return {
+    id: r.id, postId: r.post_id, parentId: r.parent_id, content: r.content,
+    author: toAuthor(r.users, r.user_id),
+    likeCount: r.like_count, isLiked: false, isDeleted: false, replies: [],
+    createdAt: r.created_at, updatedAt: r.updated_at,
+  };
 }
 
 // ── 댓글 삭제 ─────────────────────────────────────────────────────────────────
-export function deleteComment(id: string, userId: string): boolean {
-  // SQL: UPDATE comments SET is_deleted=true WHERE id=? AND user_id=?
-  // + UPDATE posts SET comment_count=comment_count-1
-  const comment = db.comments.get(id);
-  if (!comment || comment.userId !== userId) return false;
-  comment.isDeleted = true;
-  comment.updatedAt = now();
-  const post = db.posts.get(comment.postId);
-  if (post) post.commentCount = Math.max(0, post.commentCount - 1);
+export async function deleteComment(id: string, userId: string): Promise<boolean> {
+  const { data: comment } = await supabase
+    .from("comments").select("id,post_id").eq("id", id).eq("user_id", userId).single();
+  if (!comment) return false;
+
+  await supabase.from("comments")
+    .update({ is_deleted: true, updated_at: new Date().toISOString() }).eq("id", id);
+
+  const { data: post } = await supabase.from("posts").select("comment_count").eq("id", comment.post_id).single();
+  if (post) {
+    await supabase.from("posts").update({ comment_count: Math.max(0, (post.comment_count ?? 1) - 1) }).eq("id", comment.post_id);
+  }
   return true;
 }
 
-// ── 댓글 좋아요 토글 ──────────────────────────────────────────────────────────
-export function toggleCommentLike(id: string, userId: string): { liked: boolean; count: number } {
-  // SQL: INSERT INTO likes ... ON CONFLICT DO DELETE / UPDATE comments SET like_count=...
-  const comment = db.comments.get(id);
-  if (!comment) return { liked: false, count: 0 };
-  if (comment.likedBy.has(userId)) {
-    comment.likedBy.delete(userId);
-    comment.likeCount = Math.max(0, comment.likeCount - 1);
-    return { liked: false, count: comment.likeCount };
+// ── 댓글 좋아요 토글 ─────────────────────────────────────────────────────────
+export async function toggleCommentLike(id: string, userId: string): Promise<{ liked: boolean; count: number }> {
+  const { data: existing } = await supabase
+    .from("likes").select("id")
+    .eq("user_id", userId).eq("target_type", "comment").eq("target_id", id).maybeSingle();
+
+  const { data: comment, error: commentError } = await supabase.from("comments").select("like_count").eq("id", id).maybeSingle();
+  if (commentError || !comment) return { liked: false, count: 0 };
+  const current = comment.like_count ?? 0;
+
+  if (existing) {
+    await supabase.from("likes").delete().eq("id", existing.id);
+    const newCount = Math.max(0, current - 1);
+    await supabase.from("comments").update({ like_count: newCount }).eq("id", id);
+    return { liked: false, count: newCount };
+  } else {
+    await supabase.from("likes").insert({ user_id: userId, target_type: "comment", target_id: id });
+    const newCount = current + 1;
+    await supabase.from("comments").update({ like_count: newCount }).eq("id", id);
+    return { liked: true, count: newCount };
   }
-  comment.likedBy.add(userId);
-  comment.likeCount++;
-  return { liked: true, count: comment.likeCount };
 }

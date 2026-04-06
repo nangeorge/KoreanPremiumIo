@@ -1,30 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-// 파일 기반 구독자 저장소 (프로덕션에서는 Supabase/Resend/Mailchimp으로 교체)
-const DATA_DIR = path.join(process.cwd(), "data");
-const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
-
-function loadSubscribers(): Set<string> {
-  try {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    if (!fs.existsSync(SUBSCRIBERS_FILE)) return new Set();
-    const raw = fs.readFileSync(SUBSCRIBERS_FILE, "utf-8");
-    return new Set(JSON.parse(raw));
-  } catch {
-    return new Set();
-  }
-}
-
-function saveSubscribers(set: Set<string>) {
-  try {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.writeFileSync(SUBSCRIBERS_FILE, JSON.stringify([...set]), "utf-8");
-  } catch {
-    // 저장 실패 시 무시 (서버리스 환경에서는 쓰기 불가)
-  }
-}
+import { supabase } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,12 +15,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
 
-    const subscribers = loadSubscribers();
-    const isNew = !subscribers.has(trimmed);
-    subscribers.add(trimmed);
-    saveSubscribers(subscribers);
+    const { data: existing } = await supabase
+      .from("subscribers").select("id").eq("email", trimmed).maybeSingle();
 
-    return NextResponse.json({ ok: true, isNew, total: subscribers.size });
+    if (existing) {
+      const { count } = await supabase.from("subscribers").select("*", { count: "exact", head: true });
+      return NextResponse.json({ ok: true, isNew: false, total: count ?? 0 });
+    }
+
+    await supabase.from("subscribers").insert({ email: trimmed });
+    const { count } = await supabase.from("subscribers").select("*", { count: "exact", head: true });
+
+    return NextResponse.json({ ok: true, isNew: true, total: count ?? 0 });
   } catch {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }

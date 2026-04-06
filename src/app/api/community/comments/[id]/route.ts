@@ -9,7 +9,7 @@ export const PUT = withAuth<P>(async (req, { params, session }) => {
   try {
     const { content } = await req.json();
     if (!content?.trim()) return NextResponse.json({ error: "내용을 입력하세요" }, { status: 400 });
-    const comment = updateComment(id, content.trim(), session.user.id);
+    const comment = await updateComment(id, content.trim(), session.user.id);
     if (!comment) return NextResponse.json({ error: "not_found_or_forbidden" }, { status: 403 });
     return NextResponse.json(comment);
   } catch {
@@ -19,7 +19,7 @@ export const PUT = withAuth<P>(async (req, { params, session }) => {
 
 export const DELETE = withAuth<P>(async (_req, { params, session }) => {
   const { id } = await params;
-  const ok = deleteComment(id, session.user.id);
+  const ok = await deleteComment(id, session.user.id);
   if (!ok) return NextResponse.json({ error: "not_found_or_forbidden" }, { status: 403 });
   return NextResponse.json({ ok: true });
 });

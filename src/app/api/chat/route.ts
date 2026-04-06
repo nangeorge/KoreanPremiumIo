@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
 export interface ChatMessage {
   id: string;
@@ -9,22 +10,9 @@ export interface ChatMessage {
   badge?: "whale" | "bear" | "bull";
 }
 
-// 개발/단일 서버용 인메모리 스토어
-// 프로덕션(Vercel)에서는 Upstash Redis 또는 Supabase로 교체 권장
-const MAX_MESSAGES = 100;
-declare global {
-  // eslint-disable-next-line no-var
-  var __chatMessages: ChatMessage[] | undefined;
-  // eslint-disable-next-line no-var
-  var __chatRateLimit: Map<string, number[]> | undefined;
-}
-if (!global.__chatMessages) global.__chatMessages = [];
-if (!global.__chatRateLimit) global.__chatRateLimit = new Map();
+// IP당 10초 내 최대 3회 rate limit (인메모리)
+const rateLimit = new Map<string, number[]>();
 
-const messages = global.__chatMessages;
-const rateLimit = global.__chatRateLimit;
-
-// IP당 10초 내 최대 3회
 const RATE_WINDOW_MS = 10_000;
 const RATE_MAX = 3;
 
@@ -39,7 +27,6 @@ function isRateLimited(ip: string): boolean {
   if (times.length >= RATE_MAX) return true;
   times.push(now);
   rateLimit.set(ip, times);
-  // 오래된 IP 항목 정리 (메모리 누수 방지)
   if (rateLimit.size > 5000) {
     for (const [key, val] of rateLimit) {
       if (val.every((t) => now - t >= RATE_WINDOW_MS)) rateLimit.delete(key);
@@ -49,9 +36,9 @@ function isRateLimited(ip: string): boolean {
 }
 
 function getBadge(nickname: string): ChatMessage["badge"] {
-  if (nickname.includes("고래") || nickname.includes("whale")) return "whale";
-  if (nickname.includes("곰") || nickname.includes("bear")) return "bear";
-  if (nickname.includes("황소") || nickname.includes("bull")) return "bull";
+  if (nickname.includes("고래") || nickname.toLowerCase().includes("whale")) return "whale";
+  if (nickname.includes("곰") || nickname.toLowerCase().includes("bear")) return "bear";
+  if (nickname.includes("황소") || nickname.toLowerCase().includes("bull")) return "bull";
   return undefined;
 }
 
@@ -61,11 +48,22 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const after = Math.max(0, parseInt(searchParams.get("after") ?? "0") || 0);
 
-  const result = after > 0
-    ? messages.filter((m) => m.timestamp > after)
-    : messages.slice(-50);
+  let query = supabase
+    .from("chat_messages")
+    .select("id,nickname,text,locale,timestamp,badge")
+    .order("timestamp", { ascending: after > 0 });
 
-  return NextResponse.json({ messages: result, serverTime: Date.now() });
+  if (after > 0) {
+    query = query.gt("timestamp", after);
+  } else {
+    query = query.limit(50);
+  }
+
+  const { data } = await query;
+  const messages = (data ?? []) as ChatMessage[];
+  if (after === 0) messages.reverse();
+
+  return NextResponse.json({ messages, serverTime: Date.now() });
 }
 
 export async function POST(request: Request) {
@@ -82,23 +80,36 @@ export async function POST(request: Request) {
 
     if (!text) return NextResponse.json({ error: "empty" }, { status: 400 });
 
-    // 같은 닉네임의 마지막 3개 메시지 중 동일 텍스트 있으면 스팸 처리
-    const recentByNick = messages.filter((m) => m.nickname === nickname).slice(-3);
-    if (recentByNick.some((m) => m.text === text)) {
+    // 스팸 방지: 같은 닉네임의 최근 3개 중 동일 텍스트 차단
+    const { data: recent } = await supabase
+      .from("chat_messages").select("text")
+      .eq("nickname", nickname)
+      .order("timestamp", { ascending: false }).limit(3);
+
+    if (recent?.some((m) => m.text === text)) {
       return NextResponse.json({ error: "duplicate" }, { status: 429 });
     }
 
-    const msg: ChatMessage = {
+    const msg = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      nickname,
-      text,
-      locale,
+      nickname, text, locale,
       timestamp: Date.now(),
-      badge: getBadge(nickname),
+      badge: getBadge(nickname) ?? null,
     };
 
-    messages.push(msg);
-    if (messages.length > MAX_MESSAGES) messages.splice(0, messages.length - MAX_MESSAGES);
+    await supabase.from("chat_messages").insert(msg);
+
+    // 100개 초과 시 오래된 메시지 정리
+    const { count } = await supabase
+      .from("chat_messages").select("*", { count: "exact", head: true });
+    if ((count ?? 0) > 100) {
+      const { data: oldest } = await supabase
+        .from("chat_messages").select("id")
+        .order("timestamp", { ascending: true }).limit((count ?? 100) - 100);
+      if (oldest?.length) {
+        await supabase.from("chat_messages").delete().in("id", oldest.map((r) => r.id));
+      }
+    }
 
     return NextResponse.json({ message: msg });
   } catch {

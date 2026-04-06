@@ -10,10 +10,10 @@ export default async function PostDetailPage({ params }: { params: Promise<Param
   const session = await auth();
 
   // 서버에서 직접 DB 함수 호출 — API round-trip 없음
-  const post = getPost(postId, session?.user?.id ?? null);
+  const post = await getPost(postId, session?.user?.id ?? null);
   if (!post) notFound();
 
-  const comments = getComments(postId, session?.user?.id ?? null);
+  const comments = await getComments(postId, session?.user?.id ?? null);
 
   return <PostDetailClient post={post} initialComments={comments} locale={locale} />;
 }

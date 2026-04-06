@@ -24,10 +24,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session;
     },
-    signIn({ user, account }) {
+    async signIn({ user, account }) {
       // 로그인 시 유저 정보 DB에 upsert
       if (account?.provider === "google" && user.id) {
-        upsertUser({
+        await upsertUser({
           id: user.id,
           name: user.name ?? "이름 없음",
           image: user.image ?? null,

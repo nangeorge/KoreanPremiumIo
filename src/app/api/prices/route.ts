@@ -247,11 +247,13 @@ export async function GET() {
       updatedAt: Date.now(),
     };
 
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || "https://kimchipremium.com";
+    const ALLOWED_ORIGINS = ["https://koreanpremium.io", "https://kimchipremium.com", "http://localhost:3000"];
+    const requestOrigin = request.headers.get("origin") ?? "";
+    const allowedOrigin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : ALLOWED_ORIGINS[0];
     return NextResponse.json(response, {
       headers: {
         "Cache-Control": "public, s-maxage=5, stale-while-revalidate=10",
-        "Access-Control-Allow-Origin": origin,
+        "Access-Control-Allow-Origin": allowedOrigin,
         "Vary": "Origin",
       },
     });

@@ -7,7 +7,7 @@ type P = { id: string };
 
 export const GET = withOptionalAuth<P>(async (_req, { params, session }) => {
   const { id } = await params;
-  const post = getPost(id, session?.user?.id ?? null);
+  const post = await getPost(id, session?.user?.id ?? null);
   if (!post) return NextResponse.json({ error: "not_found" }, { status: 404 });
   return NextResponse.json(post);
 });
@@ -16,7 +16,7 @@ export const PUT = withAuth<P>(async (req, { params, session }) => {
   const { id } = await params;
   try {
     const body: UpdatePostInput = await req.json();
-    const post = updatePost(id, body, session.user.id);
+    const post = await updatePost(id, body, session.user.id);
     if (!post) return NextResponse.json({ error: "not_found_or_forbidden" }, { status: 403 });
     return NextResponse.json(post);
   } catch {
@@ -26,7 +26,7 @@ export const PUT = withAuth<P>(async (req, { params, session }) => {
 
 export const DELETE = withAuth<P>(async (_req, { params, session }) => {
   const { id } = await params;
-  const ok = deletePost(id, session.user.id);
+  const ok = await deletePost(id, session.user.id);
   if (!ok) return NextResponse.json({ error: "not_found_or_forbidden" }, { status: 403 });
   return NextResponse.json({ ok: true });
 });
