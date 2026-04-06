@@ -170,7 +170,7 @@ const COIN_LOGOS: Record<string, string> = {
   HUNT:    "/logos/HUNT.png",
 };
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const upbitMarkets = SUPPORTED_COINS.map((c) => c.upbitPair).filter(Boolean);
     const binanceSymbols = SUPPORTED_COINS.map((c) => c.binancePair).filter(Boolean);
