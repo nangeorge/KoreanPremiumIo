@@ -1,5 +1,27 @@
 const UPBIT_API = "https://api.upbit.com/v1";
 
+export interface UpbitMarketInfo {
+  market: string;        // e.g. "KRW-BTC"
+  korean_name: string;   // e.g. "비트코인"
+  english_name: string;  // e.g. "Bitcoin"
+}
+
+// 업비트 KRW 마켓 전체 목록 동적 조회 (1분 캐시)
+export async function fetchUpbitMarkets(): Promise<UpbitMarketInfo[]> {
+  try {
+    const res = await fetch(`${UPBIT_API}/market/all?isDetails=false`, {
+      next: { revalidate: 60 },
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return [];
+    const all: UpbitMarketInfo[] = await res.json();
+    return all.filter((m) => m.market.startsWith("KRW-"));
+  } catch {
+    return [];
+  }
+}
+
 export interface UpbitTicker {
   market: string;
   trade_price: number;

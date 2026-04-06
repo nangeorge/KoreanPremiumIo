@@ -1,10 +1,27 @@
 import { NextResponse } from "next/server";
-import { fetchUpbitPrices } from "@/lib/api/upbit";
+import { fetchUpbitPrices, fetchUpbitMarkets } from "@/lib/api/upbit";
 import { fetchBinancePrices } from "@/lib/api/binance";
 import { fetchCoinbasePrices } from "@/lib/api/coinbase";
 import { fetchUsdKrwRate } from "@/lib/api/exchangeRate";
-import { SUPPORTED_COINS } from "@/types";
 import type { CoinPrice, PriceResponse } from "@/types";
+
+// 업비트 심볼 → 바이낸스 심볼 특수 매핑
+const BINANCE_SYMBOL_MAP: Record<string, string> = {
+  SONIC:  "S",
+  MANTRA: "OM",
+  BTT:    "BTTC",
+  HOLO:   "HOT",
+};
+
+// 업비트 심볼 → Coinbase 페어 특수 매핑
+const COINBASE_PAIR_MAP: Record<string, string> = {
+  BTC: "BTC-USD", ETH: "ETH-USD", XRP: "XRP-USD", SOL: "SOL-USD",
+  ADA: "ADA-USD", DOGE: "DOGE-USD", LINK: "LINK-USD", DOT: "DOT-USD",
+  AVAX: "AVAX-USD", LTC: "LTC-USD", BCH: "BCH-USD", UNI: "UNI-USD",
+  ATOM: "ATOM-USD", NEAR: "NEAR-USD", APT: "APT-USD", SUI: "SUI-USD",
+  ICP: "ICP-USD", FIL: "FIL-USD", OP: "OP-USD", ARB: "ARB-USD",
+  SHIB: "SHIB-USD", TRX: "TRX-USD", POL: "POL-USD", ETC: "ETC-USD",
+};
 
 export const revalidate = 5;
 
@@ -172,11 +189,29 @@ const COIN_LOGOS: Record<string, string> = {
 
 export async function GET(request: Request) {
   try {
-    const upbitMarkets = SUPPORTED_COINS.map((c) => c.upbitPair).filter(Boolean);
-    const binanceSymbols = SUPPORTED_COINS.map((c) => c.binancePair).filter(Boolean);
-    const coinbasePairs = SUPPORTED_COINS
-      .filter((c) => c.coinbasePair)
-      .map((c) => ({ symbol: c.symbol, pair: c.coinbasePair }));
+    // 업비트 KRW 마켓 동적 조회 (신규 상장 자동 반영)
+    const upbitMarketList = await fetchUpbitMarkets().catch(() => []);
+    const upbitMarkets = upbitMarketList.map((m) => m.market);
+
+    // 심볼 → 마켓 정보 맵
+    const marketInfoMap = new Map(
+      upbitMarketList.map((m) => [m.market.replace("KRW-", ""), m])
+    );
+
+    // 바이낸스 심볼 목록 (특수 매핑 적용)
+    const binanceSymbols = upbitMarketList.map((m) => {
+      const symbol = m.market.replace("KRW-", "");
+      const binanceSymbol = BINANCE_SYMBOL_MAP[symbol] ?? symbol;
+      return `${binanceSymbol}USDT`;
+    });
+
+    // Coinbase 페어 목록 (매핑된 것만)
+    const coinbasePairs = upbitMarketList
+      .filter((m) => COINBASE_PAIR_MAP[m.market.replace("KRW-", "")])
+      .map((m) => {
+        const symbol = m.market.replace("KRW-", "");
+        return { symbol, pair: COINBASE_PAIR_MAP[symbol] };
+      });
 
     const [upbitResult, binanceResult, coinbaseResult, exchangeRate, marketCapMap] = await Promise.all([
       fetchUpbitPrices(upbitMarkets).catch(() => []),
@@ -186,22 +221,19 @@ export async function GET(request: Request) {
       fetchMarketCaps().catch(() => new Map<string, number>()),
     ]);
 
-    const upbitData = upbitResult;
-    const binanceData = binanceResult;
-    const coinbaseData = coinbaseResult;
+    const upbitMap = new Map(upbitResult.map((t) => [t.market, t]));
+    const binanceMap = new Map(binanceResult.map((t) => [t.symbol, t]));
+    const coinbaseMap = new Map(coinbaseResult.map((t) => [t.symbol, t]));
 
-    const upbitMap = new Map(upbitData.map((t) => [t.market, t]));
-    const binanceMap = new Map(binanceData.map((t) => [t.symbol, t]));
-    const coinbaseMap = new Map(coinbaseData.map((t) => [t.symbol, t]));
-
-    const coins: CoinPrice[] = SUPPORTED_COINS.flatMap((coin) => {
-      const upbit = upbitMap.get(coin.upbitPair);
-
-      // 업비트에 데이터 없음 = 상장폐지 또는 API 오류 → 목록에서 제외
+    const coins: CoinPrice[] = upbitMarketList.flatMap((marketInfo) => {
+      const symbol = marketInfo.market.replace("KRW-", "");
+      const upbit = upbitMap.get(marketInfo.market);
       if (!upbit) return [];
 
-      const binance = binanceMap.get(coin.binancePair);
-      const coinbase = coinbaseMap.get(coin.symbol);
+      const binanceSymbol = BINANCE_SYMBOL_MAP[symbol] ?? symbol;
+      const binancePair = `${binanceSymbol}USDT`;
+      const binance = binanceMap.get(binancePair);
+      const coinbase = coinbaseMap.get(symbol);
 
       const upbitPrice = upbit.trade_price;
       const binancePrice = parseFloat(binance?.lastPrice ?? "0");
@@ -214,19 +246,18 @@ export async function GET(request: Request) {
       const rawCoinbasePremium = (upbitPrice > 0 && coinbasePriceKrw > 0)
         ? ((upbitPrice - coinbasePriceKrw) / coinbasePriceKrw) * 100 : null;
 
-      // 100% 초과 or -100% 미만은 데이터 오염으로 간주 → null 처리
       const premium = rawPremium !== null && Math.abs(rawPremium) <= 100 ? rawPremium : null;
       const coinbasePremium = rawCoinbasePremium !== null && Math.abs(rawCoinbasePremium) <= 100 ? rawCoinbasePremium : null;
       const change24h = upbit.signed_change_rate * 100;
       const volume24h = upbit.acc_trade_price_24h;
-
-      const marketCap = marketCapMap.get(coin.symbol) ?? null;
+      const marketCap = marketCapMap.get(symbol) ?? null;
+      const info = marketInfoMap.get(symbol);
 
       return [{
-        symbol: coin.symbol,
-        name: coin.name,
-        nameKo: coin.nameKo,
-        nameZh: coin.nameZh,
+        symbol,
+        name: info?.english_name ?? symbol,
+        nameKo: info?.korean_name ?? symbol,
+        nameZh: info?.english_name ?? symbol, // 중국어명은 업비트 미제공 → 영문으로 fallback
         upbitPrice,
         binancePrice,
         binancePriceKrw,
@@ -237,7 +268,7 @@ export async function GET(request: Request) {
         change24h: parseFloat(change24h.toFixed(2)),
         volume24h,
         marketCap: marketCap && marketCap > 0 ? marketCap : null,
-        logoUrl: COIN_LOGOS[coin.symbol] ?? "",
+        logoUrl: COIN_LOGOS[symbol] ?? "",
       }];
     });
 
