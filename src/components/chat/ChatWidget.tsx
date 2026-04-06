@@ -31,6 +31,25 @@ const NICKNAMES_ZH = [
 
 const BADGE_ICON: Record<string, string> = { whale: "🐳", bear: "🐻", bull: "🐂" };
 
+const NICK_COLORS = [
+  "#60a5fa", // blue-400
+  "#34d399", // emerald-400
+  "#f472b6", // pink-400
+  "#fb923c", // orange-400
+  "#a78bfa", // violet-400
+  "#facc15", // yellow-400
+  "#2dd4bf", // teal-400
+  "#f87171", // red-400
+  "#c084fc", // purple-400
+  "#4ade80", // green-400
+];
+
+function nickColor(nickname: string): string {
+  let hash = 0;
+  for (let i = 0; i < nickname.length; i++) hash = (hash * 31 + nickname.charCodeAt(i)) >>> 0;
+  return NICK_COLORS[hash % NICK_COLORS.length];
+}
+
 const LABELS = {
   ko: {
     title: "실시간 채팅",
@@ -298,7 +317,10 @@ export function ChatWidget() {
                 >
                   <div className={cn("flex items-center gap-1 text-[10px]", isMe ? "flex-row-reverse" : "flex-row")}>
                     {msg.badge && <span>{BADGE_ICON[msg.badge]}</span>}
-                    <span className={cn("font-medium", isMe ? "text-white" : "text-[var(--fg-secondary)]")}>
+                    <span
+                      className="font-medium"
+                      style={{ color: isMe ? "#ffffff" : nickColor(msg.nickname) }}
+                    >
                       {msg.nickname}
                     </span>
                     <span className="text-[var(--fg-muted)]">{timeLabel(msg.timestamp, locale)}</span>
