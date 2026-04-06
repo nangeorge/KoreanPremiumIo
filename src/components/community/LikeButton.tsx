@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { safeSignIn } from "@/lib/safeSignIn";
 
 interface LikeButtonProps {
   targetType: "post" | "comment";
@@ -15,12 +17,13 @@ interface LikeButtonProps {
 
 export function LikeButton({ targetType, targetId, initialLiked, initialCount, size = "md" }: LikeButtonProps) {
   const { data: session } = useSession();
+  const locale = useLocale();
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialCount);
   const [loading, setLoading] = useState(false);
 
   async function toggle() {
-    if (!session) { signIn("google"); return; }
+    if (!session) { safeSignIn(locale); return; }
     if (loading) return;
     // 낙관적 업데이트
     setLiked((v) => !v);

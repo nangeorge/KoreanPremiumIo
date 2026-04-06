@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { safeSignIn } from "@/lib/safeSignIn";
 import { formatDistanceToNow } from "date-fns";
 import { CornerDownRight, Trash2, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -159,7 +160,7 @@ export function CommentSection({ postId, initialComments }: { postId: string; in
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) { signIn("google"); return; }
+    if (!session) { safeSignIn(locale); return; }
     if (!input.trim()) return;
     setLoading(true);
     try {
@@ -203,7 +204,7 @@ export function CommentSection({ postId, initialComments }: { postId: string; in
             placeholder={session
               ? lt(locale, "댓글을 입력하세요", "Write a comment...", "写评论...")
               : lt(locale, "로그인하여 댓글 달기", "Sign in to comment", "登录后评论")}
-            onClick={() => { if (!session) signIn("google"); }}
+            onClick={() => { if (!session) safeSignIn(locale); }}
             readOnly={!session}
             className={cn(
               "flex-1 rounded border border-[var(--border-color)] bg-[var(--bg-base)] px-3 py-2 text-sm text-[var(--fg)] placeholder-[var(--fg-muted)] outline-none focus:border-white/20 transition-colors",

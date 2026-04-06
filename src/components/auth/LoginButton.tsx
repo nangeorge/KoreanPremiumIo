@@ -2,16 +2,72 @@
 
 import { signIn } from "next-auth/react";
 import { useLocale } from "next-intl";
+import { useState, useEffect } from "react";
 
 interface LoginButtonProps {
   className?: string;
   label?: string;
 }
 
+function isInAppBrowser(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  return /KAKAOTALK|Instagram|FBAN|FBAV|Line\/|NAVER|NaverApp|Twitter|MicroMessenger|Snapchat/i.test(ua);
+}
+
+const LABELS = {
+  ko: {
+    warning: "카카오톡·인스타 등 인앱 브라우저에서는 Google 로그인이 차단됩니다.",
+    guide: "Safari 또는 Chrome에서 열어주세요.",
+    copy: "주소 복사",
+    copied: "복사됨!",
+  },
+  en: {
+    warning: "Google sign-in is blocked in in-app browsers (KakaoTalk, Instagram, etc.).",
+    guide: "Please open in Safari or Chrome.",
+    copy: "Copy URL",
+    copied: "Copied!",
+  },
+  zh: {
+    warning: "应用内浏览器（KakaoTalk、Instagram 等）中 Google 登录被屏蔽。",
+    guide: "请在 Safari 或 Chrome 中打开。",
+    copy: "复制链接",
+    copied: "已复制！",
+  },
+};
+
 export function LoginButton({ className, label }: LoginButtonProps) {
   const locale = useLocale();
+  const t = LABELS[locale as keyof typeof LABELS] ?? LABELS.ko;
+  const [inApp, setInApp] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setInApp(isInAppBrowser());
+  }, []);
+
   const defaultLabel =
     locale === "ko" ? "Google로 로그인" : locale === "zh" ? "Google 登录" : "Sign in with Google";
+
+  if (inApp) {
+    return (
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-4 text-center max-w-xs">
+        <span className="text-2xl">⚠️</span>
+        <p className="text-sm text-amber-300 font-medium">{t.warning}</p>
+        <p className="text-xs text-amber-200/70">{t.guide}</p>
+        <button
+          onClick={async () => {
+            await navigator.clipboard.writeText(window.location.href).catch(() => {});
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }}
+          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-black transition-opacity hover:opacity-90"
+        >
+          {copied ? t.copied : t.copy}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <button
