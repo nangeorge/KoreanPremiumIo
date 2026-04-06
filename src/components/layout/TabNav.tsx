@@ -36,13 +36,13 @@ export function TabNav() {
   return (
     <div className="sticky top-16 z-40 w-full backdrop-blur-xl" style={{ backgroundColor: "color-mix(in srgb, var(--bg-base) 90%, transparent)", borderBottom: "1px solid var(--border-color)" }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex gap-1">
+        <div className="flex gap-1 overflow-x-auto scrollbar-hide">
           {TABS.map((tab) => (
             <Link
               key={tab.key}
               href={`/${locale}${tab.href}`}
               className={cn(
-                "flex items-center gap-1.5 border-b-2 px-3 py-3 sm:px-4 text-sm font-medium transition-all duration-200",
+                "flex flex-shrink-0 items-center gap-1.5 border-b-2 px-3 py-3 sm:px-4 text-sm font-medium whitespace-nowrap transition-all duration-200",
                 isActive(tab)
                   ? "border-white text-[var(--fg)]"
                   : "border-transparent text-[var(--fg-secondary)] hover:text-[var(--fg)]"
