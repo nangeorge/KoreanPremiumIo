@@ -26,9 +26,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async signIn({ user, account }) {
       // 로그인 시 유저 정보 DB에 upsert
-      if (account?.provider === "google" && user.id) {
+      // account.providerAccountId = Google sub → token.sub과 동일하므로 session.user.id와 일치
+      const userId = account?.providerAccountId ?? user.id;
+      if (account?.provider === "google" && userId) {
         await upsertUser({
-          id: user.id,
+          id: userId,
           name: user.name ?? "이름 없음",
           image: user.image ?? null,
           email: user.email ?? "",
