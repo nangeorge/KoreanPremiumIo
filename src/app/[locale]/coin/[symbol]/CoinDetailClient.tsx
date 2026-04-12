@@ -63,7 +63,7 @@ export default function CoinDetailClient({ locale, symbol }: Props) {
     },
     {
       label: isKo ? "Bybit (USD)" : "Bybit (USD)",
-      value: formatUsd(coin.binancePrice),
+      value: coin.binancePrice != null ? formatUsd(coin.binancePrice) : "—",
       color: "text-white",
     },
     {

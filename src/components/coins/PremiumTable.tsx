@@ -108,9 +108,10 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
   const premium = exchange === "coinbase" ? coin.coinbasePremium : coin.premium;
 
   // 가격 변동 플래시
-  const prevPriceRef = useRef<number>(extPrice);
+  const prevPriceRef = useRef<number>(extPrice ?? 0);
   const [flashClass, setFlashClass] = useState<string>("");
   useEffect(() => {
+    if (extPrice == null) return;
     if (prevPriceRef.current !== 0 && prevPriceRef.current !== extPrice) {
       const cls = extPrice > prevPriceRef.current ? "flash-up" : "flash-down";
       setFlashClass(cls);
@@ -129,9 +130,9 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
     premium < -2  ? "bg-blue-500/4" :
     "";
 
-  // 24h USD 거래량 = KRW 거래량 / 환율 (extPrice > 0 이면 가능, 아니면 KRW 표시)
-  const volumeUsd = extPrice > 0 && coin.volume24h > 0
-    ? coin.volume24h / (coin.binancePriceKrw / coin.binancePrice || 1)
+  // 24h USD 거래량 = KRW 거래량 / 환율
+  const volumeUsd = extPrice != null && extPrice > 0 && coin.volume24h > 0
+    ? coin.volume24h / (coin.binancePriceKrw / extPrice || 1)
     : null;
 
   return (
@@ -193,13 +194,13 @@ const CoinRow = memo(function CoinRow({ coin, isSelected, onClick, locale, excha
       {/* Market Price (USD) */}
       <td className={cn("px-3 py-3.5 text-right", flashClass)}>
         <div className="font-number text-sm font-medium text-[var(--fg)]">
-          {formatUsd(extPrice)}
+          {extPrice != null ? formatUsd(extPrice) : "—"}
         </div>
         <div className="font-number text-xs text-[var(--fg-muted)] mt-0.5">
           ₩{formatKrw(coin.upbitPrice)}
-          {extPrice > 0 && (
+          {extPrice != null && extPrice > 0 && (
             <span className="ml-1 text-[var(--fg-muted)]">
-              · ≈{formatUsd(coin.upbitPrice / (coin.binancePriceKrw / coin.binancePrice || 1))}
+              · ≈{formatUsd(coin.upbitPrice / (coin.binancePriceKrw / extPrice || 1))}
             </span>
           )}
         </div>

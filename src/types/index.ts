@@ -6,9 +6,9 @@ export interface CoinPrice {
   nameKo: string;
   nameZh: string;
   upbitPrice: number; // KRW
-  binancePrice: number; // USD
+  binancePrice: number | null; // USD (바이낸스 미상장 시 null)
   binancePriceKrw: number; // USD * exchangeRate
-  coinbasePrice: number; // USD
+  coinbasePrice: number | null; // USD (Coinbase 미상장 시 null)
   coinbasePriceKrw: number; // USD * exchangeRate
   premium: number | null; // vs binance, percentage (null = not listed on one exchange)
   coinbasePremium: number | null; // vs coinbase, percentage

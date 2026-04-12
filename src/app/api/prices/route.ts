@@ -236,10 +236,10 @@ export async function GET(request: Request) {
       const coinbase = coinbaseMap.get(symbol);
 
       const upbitPrice = upbit.trade_price;
-      const binancePrice = parseFloat(binance?.lastPrice ?? "0");
-      const binancePriceKrw = binancePrice * exchangeRate;
-      const coinbasePrice = coinbase?.usdPrice ?? 0;
-      const coinbasePriceKrw = coinbasePrice * exchangeRate;
+      const binancePrice = binance ? parseFloat(binance.lastPrice) : null;
+      const binancePriceKrw = (binancePrice ?? 0) * exchangeRate;
+      const coinbasePrice = coinbase?.usdPrice ?? null;
+      const coinbasePriceKrw = (coinbasePrice ?? 0) * exchangeRate;
 
       const rawPremium = (upbitPrice > 0 && binancePriceKrw > 0)
         ? ((upbitPrice - binancePriceKrw) / binancePriceKrw) * 100 : null;
