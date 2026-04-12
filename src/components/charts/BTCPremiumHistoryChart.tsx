@@ -98,10 +98,10 @@ export function BTCPremiumHistoryChart({ locale }: { locale: string }) {
 
     const chart = createChart(containerRef.current, {
       layout: { background: { color: "transparent" }, textColor: "#9ca3af" },
-      grid: { vertLines: { color: "rgba(255,255,255,0.04)" }, horzLines: { color: "rgba(255,255,255,0.04)" } },
+      grid: { vertLines: { color: "rgba(255,255,255,0.03)" }, horzLines: { color: "rgba(255,255,255,0.03)" } },
       crosshair: { mode: 1 },
-      leftPriceScale:  { visible: true,  borderColor: "rgba(255,255,255,0.08)", scaleMargins: { top: 0.08, bottom: 0.08 } },
-      rightPriceScale: { visible: true,  borderColor: "rgba(255,255,255,0.08)", scaleMargins: { top: 0.08, bottom: 0.08 } },
+      leftPriceScale:  { visible: true,  borderColor: "rgba(255,255,255,0.08)", scaleMargins: { top: 0.04, bottom: 0.5 } },
+      rightPriceScale: { visible: true,  borderColor: "rgba(255,255,255,0.08)", scaleMargins: { top: 0.58, bottom: 0.04 } },
       timeScale: { borderColor: "rgba(255,255,255,0.08)", timeVisible: true },
     });
 
@@ -229,11 +229,11 @@ export function BTCPremiumHistoryChart({ locale }: { locale: string }) {
       <div className="flex items-center gap-4 mb-3">
         <div className="flex items-center gap-1.5">
           <span className="h-0.5 w-4 bg-slate-400 inline-block rounded" />
-          <span className="text-[10px] text-[var(--fg-muted)]">{t.btcPrice}</span>
+          <span className="text-[10px] text-[var(--fg-muted)]">{t.btcPrice} <span className="text-white/30">(상단)</span></span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className={`h-0.5 w-4 inline-block rounded ${latestPremium != null && latestPremium >= 10 ? "bg-rose-400" : latestPremium != null && latestPremium < -2 ? "bg-blue-400" : "bg-amber-400"}`} />
-          <span className="text-[10px] text-[var(--fg-muted)]">{t.kimchi}</span>
+          <span className="text-[10px] text-[var(--fg-muted)]">{t.kimchi} <span className="text-white/30">(하단)</span></span>
         </div>
         {/* 크로스헤어 툴팁 */}
         {tooltip && (
