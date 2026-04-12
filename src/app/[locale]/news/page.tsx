@@ -71,7 +71,41 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
+const EDITORIAL = {
+  ko: {
+    heading: "암호화폐 뉴스",
+    desc: "비트코인, 이더리움, XRP 등 주요 코인의 최신 뉴스를 한 곳에서 확인하세요. 코인별 필터로 원하는 뉴스만 빠르게 찾을 수 있습니다.",
+    source: "뉴스 출처: CryptoCompare API. 각 기사의 저작권은 원본 출처에 있습니다. 본 페이지는 헤드라인 및 요약을 제공하며, 전문은 원본 사이트에서 확인하세요.",
+    disclaimer: "⚠️ 본 뉴스는 정보 제공 목적으로만 제공됩니다. 투자 결정의 근거로 삼지 마세요.",
+  },
+  en: {
+    heading: "Crypto News",
+    desc: "Stay up to date with the latest news on Bitcoin, Ethereum, XRP, and more. Use coin filters to quickly find the stories that matter to you.",
+    source: "News source: CryptoCompare API. Copyright for each article belongs to the original publisher. This page provides headlines and summaries — read the full article at the source.",
+    disclaimer: "⚠️ News is provided for informational purposes only. Do not use it as the sole basis for investment decisions.",
+  },
+  zh: {
+    heading: "加密货币新闻",
+    desc: "一站式获取比特币、以太坊、XRP等主要币种的最新新闻。使用币种筛选器快速找到您关注的内容。",
+    source: "新闻来源：CryptoCompare API。每篇文章的版权归原始发布者所有。本页面提供标题和摘要，完整文章请访问原始来源。",
+    disclaimer: "⚠️ 新闻仅供参考，请勿将其作为投资决策的唯一依据。",
+  },
+};
+
 export default async function NewsPage() {
   const locale = await getLocale();
-  return <NewsClient locale={locale} />;
+  const e = EDITORIAL[locale as keyof typeof EDITORIAL] ?? EDITORIAL.en;
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+      {/* 편집 노트 */}
+      <div className="mb-5 space-y-2">
+        <h1 className="text-lg font-bold text-white">{e.heading}</h1>
+        <p className="text-sm text-[var(--fg-secondary)] leading-relaxed">{e.desc}</p>
+        <p className="text-xs text-[var(--fg-muted)] leading-relaxed">{e.source}</p>
+        <p className="text-xs text-amber-300/70">{e.disclaimer}</p>
+      </div>
+      <NewsClient locale={locale} />
+    </div>
+  );
 }

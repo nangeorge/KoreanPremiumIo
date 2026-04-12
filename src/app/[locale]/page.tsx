@@ -5,6 +5,7 @@ import { AlertBanner } from "@/components/coins/AlertBanner";
 import { TVTickerTape } from "@/components/layout/TVTickerTape";
 import { LiquidationFeed } from "@/components/coins/LiquidationFeed";
 import { DashboardStrip } from "@/components/coins/DashboardStrip";
+import { KimchiPremiumExplainer } from "@/components/coins/KimchiPremiumExplainer";
 import { AdUnit } from "@/components/ads/AdUnit";
 
 type Params = { locale: string };
@@ -37,6 +38,12 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
             <AlertBanner />
           </div>
         </div>
+
+        {/* 김치 프리미엄 설명 섹션 — 원본 콘텐츠 */}
+        <KimchiPremiumExplainer locale={locale} />
+
+        {/* 광고 — 하단 */}
+        <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SQUARE ?? ""} format="rectangle" className="w-full" />
       </div>
     </>
   );
