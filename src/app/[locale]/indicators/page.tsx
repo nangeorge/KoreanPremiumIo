@@ -1,5 +1,6 @@
 import { getLocale } from "next-intl/server";
 import { IndicatorsClient } from "@/components/indicators/IndicatorsClient";
+import { BTCPremiumHistoryChart } from "@/components/charts/BTCPremiumHistoryChart";
 import type { Metadata } from "next";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://kimchipremium.com";
@@ -93,5 +94,10 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function IndicatorsPage() {
   const locale = await getLocale();
-  return <IndicatorsClient locale={locale} />;
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 space-y-4">
+      <BTCPremiumHistoryChart locale={locale} />
+      <IndicatorsClient locale={locale} />
+    </div>
+  );
 }
